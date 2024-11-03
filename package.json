@@ -1,0 +1,130 @@
+{
+  "name": "squidwest-layout-controls",
+  "version": "1.0.0",
+  "squidwest": {
+    "month": "November 2024"
+  },
+  "description": "NodeCG Dashboard system for SquidWest Splatoon events",
+  "homepage": "",
+  "author": {
+    "name": "EpicYoshiMaster",
+    "email": "epicyoshim@gmail.com",
+    "url": ""
+  },
+  "files": [
+    "dashboard",
+    "graphics",
+    "extension.js",
+    "extension"
+  ],
+  "keywords": [
+    "nodecg-bundle"
+  ],
+  "nodecg": {
+    "compatibleRange": "^2.0.0",
+    "dashboardPanels": [
+      {
+        "name": "credits",
+        "title": "Credits",
+        "width": 3,
+        "file": "credits.html",
+        "workspace": "1. Stream Tech",
+        "headerColor": "#525F78"
+      },
+      {
+        "name": "intermission",
+        "title": "Intermission Screen",
+        "width": 3,
+        "file": "intermission.html",
+        "workspace": "1. Stream Tech",
+        "headerColor": "#525F78"
+      },
+      {
+        "name": "commentators",
+        "title": "Commentators Information",
+        "width": 3,
+        "file": "commentators.html",
+        "workspace": "1. Stream Tech",
+        "headerColor": "#525F78"
+      },
+      {
+        "name": "time",
+        "title": "Time Information",
+        "width": 3,
+        "file": "time.html",
+        "workspace": "1. Stream Tech",
+        "headerColor": "#525F78"
+      },
+      {
+        "name": "eventinformation",
+        "title": "Event Information",
+        "width": 3,
+        "file": "eventinformation.html",
+        "workspace": "2. Settings",
+        "headerColor": "#525F78"
+      },
+      {
+        "name": "socials",
+        "title": "Socials Information",
+        "width": 3,
+        "file": "socials.html",
+        "workspace": "2. Settings",
+        "headerColor": "#525F78"
+      },
+      {
+        "name": "obs",
+        "title": "OBS Settings",
+        "width": 3,
+        "file": "obssettings.html",
+        "workspace": "2. Settings",
+        "headerColor": "#525F78"
+      }
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs --all",
+    "build:extension": "node scripts/build.mjs --extension",
+    "watch": "node scripts/build.mjs --all --watch",
+    "watch:browser": "node scripts/build.mjs --dashboard --graphics --watch",
+    "watch:schemas": "node scripts/build.mjs --schemas --watch",
+    "dev": "concurrently --kill-others \"npm run watch:schemas\" \"npm run watch:browser\" \"nodemon\"",
+    "generate-schema-types": "trash src/types/schemas && nodecg schema-types"
+  },
+  "dependencies": {
+    "@nodecg/react-hooks": "^1.0.3",
+    "@phosphor-icons/react": "^2.1.7",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "obs-websocket-js": "^5.0.6",
+    "react": "*",
+    "react-dom": "*",
+    "styled-components": "^6.1.13",
+    "ts-node": "*"
+  },
+  "devDependencies": {
+    "@nodecg/types": "^2.0.0",
+    "@parcel/config-default": "*",
+    "@parcel/core": "*",
+    "@parcel/reporter-cli": "*",
+    "@parcel/validator-typescript": "*",
+    "@types/node": "^18",
+    "concurrently": "*",
+    "glob": "^10.2.7",
+    "nodemon": "*",
+    "trash-cli": "*",
+    "typescript": "^5.1.3"
+  },
+  "license": "MIT"
+}

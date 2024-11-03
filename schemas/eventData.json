@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "currentEvent": { "$ref": "#/$defs/eventInfo" },
+        "nextEvent": { "$ref": "#/$defs/eventInfo" }
+    },
+    "$defs": {
+        "eventInfo": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": { "type": "string", "default": "Event Name" },
+                "location": { "type": "string", "default": "Event Location" },
+                "number": { "type": "number", "default": 1 },
+                "date": { "type": "string", "default": "January 1, 2024" }
+            },
+            "required": ["name", "location", "number", "date"]
+        }
+    },
+    "required": ["currentEvent", "nextEvent"]
+}

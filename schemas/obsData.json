@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "serverIp": {
+            "type": "string",
+            "default": ""
+		},
+		"serverPort": {
+			"type": "string",
+			"default": ""
+		},
+		"serverPassword": {
+			"type": "string",
+			"default": ""
+		},
+		"autoConnect": {
+			"type": "boolean",
+			"default": false
+		}
+    },
+    "required": ["serverIp", "serverPort", "autoConnect"]
+}
