@@ -119,4 +119,5 @@ export const InputCheckbox = styled.button<{ $checked: boolean }>`
 export const InputButtonSmall = styled(InputButton)`
     font-size: 1.25rem;
     padding: 5px 25px;
+	font-family: 'Courier New', Courier, Consolas, monospace;
 `;

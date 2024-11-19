@@ -78,6 +78,14 @@
         "file": "obssettings.html",
         "workspace": "2. Settings",
         "headerColor": "#525F78"
+      },
+      {
+        "name": "scores",
+        "title": "Scores",
+        "width": 4,
+        "file": "scores.html",
+        "workspace": "1. Stream Tech",
+        "headerColor": "#525F78"
       }
     ]
   },
