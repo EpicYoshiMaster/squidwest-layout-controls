@@ -14,7 +14,7 @@ export interface CommentatorData {
 	lifetime: number;
 }
 export interface CommentatorInfo {
-	name?: string;
-	pronouns?: string;
-	tag?: string;
+	name: string;
+	pronouns: string;
+	tag: string;
 }

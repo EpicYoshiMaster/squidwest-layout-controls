@@ -18,7 +18,8 @@
 				"name": { "type": "string", "default": "Commentator Name" },
 				"pronouns": { "type": "string", "default": "" },
 				"tag": { "type": "string", "default": "@CommentatorTag" }
-			}
+			},
+			"required": ["name", "pronouns", "tag"]
 		}
 	},
     "required": [ "commentatorOne", "commentatorTwo", "autoShow", "delay", "autoHide", "lifetime" ]

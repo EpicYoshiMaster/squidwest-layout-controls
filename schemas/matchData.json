@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+		"teamA": { "type": "string", "default": "Team A" },
+		"teamB": { "type": "string", "default": "Team B" },
+		"scoreA": { "type": "number", "default": 0 },
+		"scoreB": { "type": "number", "default": 0 }
+    },
+    "required": [ "teamA", "teamB", "scoreA", "scoreB" ]
+}
