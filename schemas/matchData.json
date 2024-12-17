@@ -3,10 +3,32 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-		"teamA": { "type": "string", "default": "Team A" },
-		"teamB": { "type": "string", "default": "Team B" },
-		"scoreA": { "type": "number", "default": 0 },
-		"scoreB": { "type": "number", "default": 0 }
+      "matchInfo": { "type": "string", "default": "Round 1" },
+		  "teamA": { "type": "string", "default": "Team A" },
+		  "teamB": { "type": "string", "default": "Team B" },
+		  "scoreA": { "type": "number", "default": 0 },
+		  "scoreB": { "type": "number", "default": 0 },
+      "matchColor": { "$ref": "#/$defs/colorInfo" },
+      "swapColor": { "type": "boolean", "default": false }
     },
-    "required": [ "teamA", "teamB", "scoreA", "scoreB" ]
+    "$defs": {
+      "colorInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "default": {
+          "index": 0,
+          "name": "DefaultColor",
+          "teamA": "#d3d2cb",
+          "teamB": "#647e7b"
+        },
+        "properties": {
+          "index": { "type": "number", "default": 0 },
+          "name": { "type": "string", "default": "DefaultColor" },
+          "teamA": { "type": "string", "default": "#d3d2cb" },
+          "teamB": { "type": "string", "default": "#647e7b" }
+        },
+        "required": [ "index", "name", "teamA", "teamB" ]
+      }
+    },
+    "required": [ "matchInfo", "teamA", "teamB", "scoreA", "scoreB", "matchColor", "swapColor" ]
 }
