@@ -1,17 +1,32 @@
 # squidwest-layout-controls
 
-squidwest-layout-controls is a [NodeCG](http://github.com/nodecg/nodecg) bundle.
-It works with NodeCG versions which satisfy this [semver](https://docs.npmjs.com/getting-started/semantic-versioning) range: `^2.0.0`
-You will need to have an appropriate version of NodeCG installed to use it.
+squidwest-layout-controls is a [NodeCG](http://github.com/nodecg/nodecg) bundle for use with [SquidWest](https://bsky.app/profile/squidwest.bsky.social) events.
 
+This bundle contains the associated dashboards and functionality to be used in tandem with a graphics bundle for the associated event.
 
-## Developing
+Events using this repository include:
 
-Use the following commands:
+- **Chi-Shoals**, a Chicago Splatoon LAN: [chishoals-layouts](https://github.com/EpicYoshiMaster/chishoals-layouts)
+- **Twin Squiddies**, a Minneapolis Splatoon LAN: [twinsquiddies-layouts](https://github.com/EpicYoshiMaster/twinsquiddies-layouts)
 
--   `npm run build`: Build the project once.
--   `npm run watch`: Build the project and automatically rebuild on changes.
--   `npm run dev`: Build the project, automatically rebuild on changes, launch the NodeCG server, and automatically restart the NodeCG server on changes.
-    -   Only restarts the NodeCG server when server-side (i.e. extension) code changes. Changes to client-side code (i.e. dashboard panels and graphics) will not cause the server to restart, nor will they cause browser tabs to automatically refresh.
+## Images
 
+Images reflect the dashboards as of November 2024, changes or additions may have been made since then!
 
+![Stream Tech Dashboard](./screenshots/DashboardStreamTech.png)
+
+The Stream Tech tab includes panels for features like a custom credits sequence, a customizable omnibar, commentary lower thirds, and time tracking information.
+
+![Settings Dashboard](./screenshots/DashboardSettings.png)
+
+The Settings tab includes panels for event management including event information, socials, and OBS websocket support.
+
+## Install
+
+1. Complete the steps to obtain [NodeCG](https://www.nodecg.dev/) and [nodecg-cli](https://github.com/nodecg/nodecg-cli).
+
+2. Install the bundle: `nodecg install EpicYoshiMaster/squidwest-layout-controls`.
+
+## Support
+
+If you like the things I make, consider supporting me on my ko-fi page: [https://ko-fi.com/epicyoshimaster](https://ko-fi.com/epicyoshimaster)!

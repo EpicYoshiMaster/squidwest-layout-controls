@@ -1,8 +1,8 @@
 {
   "name": "squidwest-layout-controls",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "squidwest": {
-    "month": "November 2024"
+    "month": "December 2024"
   },
   "description": "NodeCG Dashboard system for SquidWest Splatoon events",
   "homepage": "",
@@ -77,6 +77,14 @@
         "width": 3,
         "file": "obssettings.html",
         "workspace": "2. Settings",
+        "headerColor": "#525F78"
+      },
+      {
+        "name": "scores",
+        "title": "Scores",
+        "width": 4,
+        "file": "scores.html",
+        "workspace": "1. Stream Tech",
         "headerColor": "#525F78"
       }
     ]

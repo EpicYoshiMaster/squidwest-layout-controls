@@ -1,3 +1,5 @@
+import { ColorInfo } from "schemas";
+
 export const formatTimeHMSC = (ms: number): string => {
 	ms = ms > 0 ? ms : 0;
 
@@ -21,4 +23,12 @@ export const formatDateHM = (date: Date) => {
 
 export const formatDateMDY = (date: Date) => {
 	return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+}
+
+export const modulo = (dividend: number, divisor: number) => {
+	return ((dividend % divisor) + divisor) % divisor;
+}
+
+export const getIndexColor = (index: number, list: ColorInfo[], swap: boolean) => {
+	return !swap ? list[modulo(index, list.length)].teamA : list[modulo(index, list.length)].teamB;
 }

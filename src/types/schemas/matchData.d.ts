@@ -5,16 +5,18 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface CommentatorData {
-	commentatorOne: CommentatorInfo;
-	commentatorTwo: CommentatorInfo;
-	autoShow: boolean;
-	delay: number;
-	autoHide: boolean;
-	lifetime: number;
+export interface MatchData {
+	matchInfo: string;
+	teamA: string;
+	teamB: string;
+	scoreA: number;
+	scoreB: number;
+	matchColor: ColorInfo;
+	swapColor: boolean;
 }
-export interface CommentatorInfo {
+export interface ColorInfo {
+	index: number;
 	name: string;
-	pronouns: string;
-	tag: string;
+	teamA: string;
+	teamB: string;
 }

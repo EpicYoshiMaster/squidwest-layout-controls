@@ -7,6 +7,7 @@ import { createRoot } from 'react-dom/client';
 import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { Commentator } from './components/Commentator';
+import { CollapseContainer } from './components/CollapseContainer';
 
 const defaultCommentator: CommentatorInfo = { name: "Commentator Name", pronouns: "any/all", tag: "@TagName" }
 
@@ -76,31 +77,34 @@ export function Commentators() {
 	return (
 		<PanelContainer>
 			<InputSection>
-				<InputSubheader>Commentator #1</InputSubheader>
-				<Commentator comm={commentatorOne} setCommentator={setCommentatorOne} />
-				<InputSubheader>Commentator #2</InputSubheader>
-				<Commentator comm={commentatorTwo} setCommentator={setCommentatorTwo} />
+				<CollapseContainer title="Commentator #1">
+					<Commentator comm={commentatorOne} setCommentator={setCommentatorOne} />
+				</CollapseContainer>
+				<CollapseContainer title="Commentator #2">
+					<Commentator comm={commentatorTwo} setCommentator={setCommentatorTwo} />
+				</CollapseContainer>
 			</InputSection>
 			<InputButton onClick={() => { swapCommentators(); }}>Swap Commentators</InputButton>
 			<InputButton onClick={() => { addToCredits(); }}>Add to Credits</InputButton>
 			<InputSection>
-				<InputSubheader>Configuration</InputSubheader>
-				<InputRow>
-					<InputLabel>Show Automatically</InputLabel>
-					<InputCheckbox $checked={autoShow} onClick={() => setAutoShow(!autoShow) } />
-				</InputRow>
-				<InputRow>
-					<InputLabel>Show Delay Time (ms)</InputLabel>
-					<input type="number" value={delay} onChange={(event) => { setDelay(Number(event.target.value));  }}/>
-				</InputRow>
-				<InputRow>
-					<InputLabel>Hide Automatically</InputLabel>
-					<InputCheckbox $checked={autoHide} onClick={() => setAutoHide(!autoHide) } />
-				</InputRow>
-				<InputRow>
-					<InputLabel>Lifetime (ms)</InputLabel>
-					<input type="number" value={lifetime} onChange={(event) => { setLifetime(Number(event.target.value)); }}/>
-				</InputRow>
+				<CollapseContainer title="Configuration">
+					<InputRow>
+						<InputLabel>Show Automatically</InputLabel>
+						<InputCheckbox $checked={autoShow} onClick={() => setAutoShow(!autoShow) } />
+					</InputRow>
+					<InputRow>
+						<InputLabel>Show Delay Time (ms)</InputLabel>
+						<input type="number" value={delay} onChange={(event) => { setDelay(Number(event.target.value));  }}/>
+					</InputRow>
+					<InputRow>
+						<InputLabel>Hide Automatically</InputLabel>
+						<InputCheckbox $checked={autoHide} onClick={() => setAutoHide(!autoHide) } />
+					</InputRow>
+					<InputRow>
+						<InputLabel>Lifetime (ms)</InputLabel>
+						<input type="number" value={lifetime} onChange={(event) => { setLifetime(Number(event.target.value)); }}/>
+					</InputRow>
+				</CollapseContainer>
 			</InputSection>
 			<InputButton onClick={() => { updateCommentators(); }}>Save</InputButton>
 			<InputSection>
