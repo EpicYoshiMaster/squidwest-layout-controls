@@ -1,0 +1,78 @@
+{
+	"anarchy": [
+		{
+			"index": 0,
+			"name": "GreenPurple",
+			"teamA": "#a0c937",
+			"teamB": "#ba30b0"
+		},
+		{
+			"index": 1,
+			"name": "OrangeBlue",
+			"teamA": "#de6624",
+			"teamB": "#343bc4"
+		},
+		{
+			"index": 2,
+			"name": "OrangePurple",
+			"teamA": "#cd510a",
+			"teamB": "#6e04b6"
+		},
+		{
+			"index": 3,
+			"name": "BlueYellow",
+			"teamA": "#1a1aae",
+			"teamB": "#e38d24"
+		},
+		{
+			"index": 4,
+			"name": "LimegreenPurple",
+			"teamA": "#becd41",
+			"teamB": "#6325cd"
+		},
+		{
+			"index": 5,
+			"name": "YellowBlue",
+			"teamA": "#d0be08", 
+			"teamB": "#3a0ccd"
+		},
+		{
+			"index": 6,
+			"name": "TurquoiseRed",
+			"teamA": "#1ec0ad",
+			"teamB": "#d74b31"
+		},
+		{
+			"index": 7,
+			"name": "TurquoisePink",
+			"teamA": "#1bbeab",
+			"teamB": "#c43a6e"
+		},
+		{
+			"index": 8,
+			"name": "PinkGreen",
+			"teamA": "#c12d74",
+			"teamB": "#2cb721"
+		},
+		{
+			"index": 9,
+			"name": "YellowPurple",
+			"teamA": "#ceb121",
+			"teamB": "#9025c6"
+		}
+	],
+	"colorLock": [
+		{
+			"index": 0,
+			"name": "YellowBlue",
+			"teamA": "#caba21",
+			"teamB": "#502eba"
+		},
+		{
+			"index": 1,
+			"name": "OrangeBlue",
+			"teamA": "#d99116",
+			"teamB": "#1655be"
+		}
+	]
+}

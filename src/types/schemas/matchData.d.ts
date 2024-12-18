@@ -6,8 +6,17 @@
  */
 
 export interface MatchData {
+	matchInfo: string;
 	teamA: string;
 	teamB: string;
 	scoreA: number;
 	scoreB: number;
+	matchColor: ColorInfo;
+	swapColor: boolean;
+}
+export interface ColorInfo {
+	index: number;
+	name: string;
+	teamA: string;
+	teamB: string;
 }
