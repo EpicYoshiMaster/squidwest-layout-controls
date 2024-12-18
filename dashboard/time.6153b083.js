@@ -347,6 +347,8 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "formatTimeHMSC", ()=>formatTimeHMSC);
 parcelHelpers.export(exports, "formatDateHM", ()=>formatDateHM);
 parcelHelpers.export(exports, "formatDateMDY", ()=>formatDateMDY);
+parcelHelpers.export(exports, "modulo", ()=>modulo);
+parcelHelpers.export(exports, "getIndexColor", ()=>getIndexColor);
 const formatTimeHMSC = (ms)=>{
     ms = ms > 0 ? ms : 0;
     const hour = Math.floor(ms / 60 / 60 / 1000);
@@ -363,6 +365,12 @@ const formatDateHM = (date)=>{
 };
 const formatDateMDY = (date)=>{
     return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
+};
+const modulo = (dividend, divisor)=>{
+    return (dividend % divisor + divisor) % divisor;
+};
+const getIndexColor = (index, list, swap)=>{
+    return !swap ? list[modulo(index, list.length)].teamA : list[modulo(index, list.length)].teamB;
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"2VUsa":[function(require,module,exports) {

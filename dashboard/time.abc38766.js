@@ -26106,6 +26106,7 @@ const InputCheckbox = (0, _styledComponentsDefault.default).button`
 const InputButtonSmall = (0, _styledComponentsDefault.default)(InputButton)`
     font-size: 1.25rem;
     padding: 5px 25px;
+	font-family: 'Courier New', Courier, Consolas, monospace;
 `;
 
 },{"styled-components":"9xpRL","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},[], null, "parcelRequire156b")

@@ -154,6 +154,7 @@ var _client = require("react-dom/client");
 var _layout = require("./components/Layout");
 var _reactHooks = require("@nodecg/react-hooks");
 var _commentator = require("./components/Commentator");
+var _collapseContainer = require("./components/CollapseContainer");
 const defaultCommentator = {
     name: "Commentator Name",
     pronouns: "any/all",
@@ -233,56 +234,58 @@ function Commentators() {
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelContainer, {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 77,
+            lineNumber: 78,
             columnNumber: 3
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 78,
+            lineNumber: 79,
             columnNumber: 4
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 79,
-            columnNumber: 5
-        },
-        __self: this
-    }, "Commentator #1"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _commentator.Commentator), {
-        comm: commentatorOne,
-        setCommentator: setCommentatorOne,
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
+        title: "Commentator #1",
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
             lineNumber: 80,
             columnNumber: 5
         },
         __self: this
-    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _commentator.Commentator), {
+        comm: commentatorOne,
+        setCommentator: setCommentatorOne,
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
             lineNumber: 81,
+            columnNumber: 6
+        },
+        __self: this
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
+        title: "Commentator #2",
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 83,
             columnNumber: 5
         },
         __self: this
-    }, "Commentator #2"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _commentator.Commentator), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _commentator.Commentator), {
         comm: commentatorTwo,
         setCommentator: setCommentatorTwo,
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 82,
-            columnNumber: 5
+            lineNumber: 84,
+            columnNumber: 6
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
         onClick: ()=>{
             swapCommentators();
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 84,
+            lineNumber: 87,
             columnNumber: 4
         },
         __self: this
@@ -292,36 +295,37 @@ function Commentators() {
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 85,
+            lineNumber: 88,
             columnNumber: 4
         },
         __self: this
     }, "Add to Credits"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 86,
+            lineNumber: 89,
             columnNumber: 4
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
+        title: "Configuration",
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 87,
+            lineNumber: 90,
             columnNumber: 5
         },
         __self: this
-    }, "Configuration"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 88,
-            columnNumber: 5
+            lineNumber: 91,
+            columnNumber: 6
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 89,
-            columnNumber: 6
+            lineNumber: 92,
+            columnNumber: 7
         },
         __self: this
     }, "Show Automatically"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
@@ -329,22 +333,22 @@ function Commentators() {
         onClick: ()=>setAutoShow(!autoShow),
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 90,
-            columnNumber: 6
+            lineNumber: 93,
+            columnNumber: 7
         },
         __self: this
     })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 92,
-            columnNumber: 5
+            lineNumber: 95,
+            columnNumber: 6
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 93,
-            columnNumber: 6
+            lineNumber: 96,
+            columnNumber: 7
         },
         __self: this
     }, "Show Delay Time (ms)"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
@@ -355,22 +359,22 @@ function Commentators() {
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 94,
-            columnNumber: 6
+            lineNumber: 97,
+            columnNumber: 7
         },
         __self: this
     })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 96,
-            columnNumber: 5
+            lineNumber: 99,
+            columnNumber: 6
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 97,
-            columnNumber: 6
+            lineNumber: 100,
+            columnNumber: 7
         },
         __self: this
     }, "Hide Automatically"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
@@ -378,22 +382,22 @@ function Commentators() {
         onClick: ()=>setAutoHide(!autoHide),
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 98,
-            columnNumber: 6
+            lineNumber: 101,
+            columnNumber: 7
         },
         __self: this
     })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 100,
-            columnNumber: 5
+            lineNumber: 103,
+            columnNumber: 6
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 101,
-            columnNumber: 6
+            lineNumber: 104,
+            columnNumber: 7
         },
         __self: this
     }, "Lifetime (ms)"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
@@ -404,31 +408,31 @@ function Commentators() {
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 102,
-            columnNumber: 6
+            lineNumber: 105,
+            columnNumber: 7
         },
         __self: this
-    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    })))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
         onClick: ()=>{
             updateCommentators();
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 105,
+            lineNumber: 109,
             columnNumber: 4
         },
         __self: this
     }, "Save"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 106,
+            lineNumber: 110,
             columnNumber: 4
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 107,
+            lineNumber: 111,
             columnNumber: 5
         },
         __self: this
@@ -438,7 +442,7 @@ function Commentators() {
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 109,
+            lineNumber: 113,
             columnNumber: 4
         },
         __self: this
@@ -448,7 +452,7 @@ function Commentators() {
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 110,
+            lineNumber: 114,
             columnNumber: 4
         },
         __self: this
@@ -464,20 +468,20 @@ const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).StrictMode, {
     __source: {
         fileName: "src/dashboard/Commentators.tsx",
-        lineNumber: 123,
+        lineNumber: 127,
         columnNumber: 13
     },
     __self: undefined
 }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Commentators, {
     __source: {
         fileName: "src/dashboard/Commentators.tsx",
-        lineNumber: 123,
+        lineNumber: 127,
         columnNumber: 31
     },
     __self: undefined
 })));
 
-},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","./components/Commentator":"dOv3o","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"audz3":[function(require,module,exports) {
+},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","./components/Commentator":"dOv3o","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","./components/CollapseContainer":"hrG5d"}],"audz3":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _useReplicant = require("./use-replicant");
@@ -707,6 +711,90 @@ const Container = (0, _styledComponentsDefault.default).div`
     display: contents;
 `;
 
-},{"react":"bH1AQ","styled-components":"9xpRL","../components/Layout":"72fYZ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["cGl2D"], "cGl2D", "parcelRequire156b")
+},{"react":"bH1AQ","styled-components":"9xpRL","../components/Layout":"72fYZ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"hrG5d":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "CollapseContainer", ()=>CollapseContainer);
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _styledComponents = require("styled-components");
+var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
+var _layout = require("./Layout");
+var _react1 = require("@phosphor-icons/react");
+const CollapseContainer = ({ title, children })=>{
+    const [collapsed, setCollapsed] = (0, _react.useState)(false);
+    return /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 16,
+            columnNumber: 9
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(HeadRow, {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 17,
+            columnNumber: 13
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 18,
+            columnNumber: 17
+        },
+        __self: undefined
+    }, title), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.CollapseButton), {
+        onClick: ()=>{
+            setCollapsed(!collapsed);
+        },
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 19,
+            columnNumber: 17
+        },
+        __self: undefined
+    }, collapsed ? /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretDown), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 21,
+            columnNumber: 32
+        },
+        __self: undefined
+    }) : /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretUp), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 21,
+            columnNumber: 50
+        },
+        __self: undefined
+    }))), !collapsed && /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 24,
+            columnNumber: 13
+        },
+        __self: undefined
+    }, children));
+};
+const Container = (0, _styledComponentsDefault.default).div`
+    display: contents;
+`;
+const HeadRow = (0, _styledComponentsDefault.default).div`
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+`;
+const AddRemoveList = (0, _styledComponentsDefault.default).div`
+    grid-column: 2;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+`;
+
+},{"react":"bH1AQ","styled-components":"9xpRL","./Layout":"72fYZ","@phosphor-icons/react":"h9z2e","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["cGl2D"], "cGl2D", "parcelRequire156b")
 
 //# sourceMappingURL=commentators.8345df0e.js.map
