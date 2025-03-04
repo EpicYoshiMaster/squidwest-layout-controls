@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { CommentatorInfo } from "schemas";
+import { CommentatorInfo } from "schemas/commentatorData";
 import { InputLabel, InputRow } from '../components/Layout';
 
 interface CommentatorProps {

@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { EventInfo } from "schemas";
+import { EventInfo } from "schemas/eventData";
 import { InputLabel, InputRow } from '../components/Layout';
 
 interface EventProps {

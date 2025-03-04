@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components'
 import NodeCG from '@nodecg/types';
-import { CreditsData } from 'schemas';
+import { CreditsData } from 'schemas/creditsData';
 import { createRoot } from 'react-dom/client';
 import { NameList } from './components/NameList';
 import { InputButton, InputLabel, InputRow, InputSection, InputSubheader } from './components/Layout';

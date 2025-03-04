@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components'
 import NodeCG from '@nodecg/types';
-import { MatchData } from 'schemas';
+import { MatchData } from 'schemas/matchData';
 import { createRoot } from 'react-dom/client';
 import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader, InputButtonSmall } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'

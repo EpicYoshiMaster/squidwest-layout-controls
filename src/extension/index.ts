@@ -1,7 +1,7 @@
 import NodeCG from '@nodecg/types';
 import Package from '../../package.json'
 import { OBSControl } from './OBSControl';
-import { ObsData } from 'schemas';
+import { ObsData } from 'schemas/obsData';
 import { Logger, TimeLogger } from './Logger';
 
 export = async (nodecg: NodeCG.ServerAPI) => {

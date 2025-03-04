@@ -4,7 +4,7 @@ import NodeCG from '@nodecg/types';
 import { createRoot } from 'react-dom/client';
 import { InputCheckbox, InputSubheader, InputRow, InputLabel, InputSection, InputText, InputButton, ErrorText } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks';
-import { ObsData } from 'schemas';
+import { ObsData } from 'schemas/obsData';
 import { useObsConnectionStatus } from '../helpers/hooks'
 
 export function OBSSettings() {
