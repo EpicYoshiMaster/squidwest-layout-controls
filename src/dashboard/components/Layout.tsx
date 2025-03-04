@@ -28,6 +28,11 @@ export const InputText = styled.div`
     grid-column: 1 / -1;
     font-size: 1rem;
 	margin-bottom: 0.75rem;
+
+	p {
+		margin: 0;
+		margin-bottom: 5px;
+	}
 `;
 
 export const ErrorText = styled.div`
@@ -35,11 +40,17 @@ export const ErrorText = styled.div`
 	font-size: 1.25rem;
 	margin: 0.5rem 0;
 	text-align: center;
+
+	p {
+		margin: 0;
+		margin-bottom: 5px;
+	}
 `;
 
 export const InputLabel = styled.div`
 	display: flex;
 	justify-content: flex-end;
+	align-items: center;
 	padding-right: 0.5rem;
 	font-weight: 700;
 	line-height: 2;

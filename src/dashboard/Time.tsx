@@ -71,9 +71,9 @@ export function Time() {
 			{!connected && (
 			<MarginWrapper>
 				<ErrorText>
-					OBS is not currently connected!
-					To use this panel, OBS functionality must be enabled.
-					Check the OBS Settings panel.
+					<p>OBS is not currently connected!</p>
+					<p>This panel provides information on OBS transitions and break timings.</p>
+					<p>To use it, go to <strong>2. Settings</strong> and check the <strong>OBS Settings</strong> NodeCG Panel to enable websocket support.</p>
 				</ErrorText>
 			</MarginWrapper>
 			)}
@@ -95,7 +95,7 @@ const Wrapper = styled.div`
 `;
 
 const MarginWrapper = styled.div`
-	margin: 4rem 0;
+	margin: 1.5rem 0;
 `;
 
 const root = createRoot(document.getElementById('root')!);

@@ -88,11 +88,11 @@ export function Scores() {
 							<input type="text" value={matchInfo} onChange={(event) => { setMatchInfo(event.target.value); }} />
 						</InputRow>
 						<InputRow>
-							<InputLabel>Team A</InputLabel>
+							<InputLabel><ColorDisplay $size={20} $color={getIndexColor(colorIndex, colorList, swapColor)} /> Team A</InputLabel>
 							<input type="text" value={teamA} onChange={(event) => { setTeamA(event.target.value); }} />
 						</InputRow>
 						<InputRow>
-							<InputLabel>Team B</InputLabel>
+							<InputLabel><ColorDisplay $size={20} $color={getIndexColor(colorIndex, colorList, !swapColor)} /> Team B</InputLabel>
 							<input type="text" value={teamB} onChange={(event) => { setTeamB(event.target.value); }} />
 						</InputRow>
 					</TeamInputSection>
@@ -188,6 +188,7 @@ const ScoreColumn = styled(PanelColumn)`
 
 const ScoreButton = styled(InputButtonSmall)`
 	margin: 0 10px;
+	padding: 5px 20px;
 `;
 
 const TeamInputSection = styled(InputSection)`
@@ -219,6 +220,13 @@ const ColorDisplay = styled.div<{ $size: number, $color: string }>`
 	border: 3px solid black;
 	border-radius: 5px;
 	background-color: ${({ $color }) => $color};
+`;
+
+const ColorDisplayTall = styled(ColorDisplay)`
+	margin: 0 3px;
+	height: 40%;
+	border: 1px solid black;
+	width: ${({ $size }) => $size}px;	
 `;
 
 const BigNumbers = styled.div`

@@ -14,7 +14,7 @@ export function OBSSettings() {
 		defaultValue: { serverIp: "", serverPort: "", autoConnect: false}
 	});
 
-	const [ serverIp, setServerIp ] = useState("");
+	const [ serverIp, setServerIp ] = useState("localhost");
 	const [ serverPort, setServerPort ] = useState("");
 	const [ serverPassword, setServerPassword ] = useState("");
 	const [ autoConnect, setAutoConnect ] = useState(false);
@@ -97,9 +97,11 @@ export function OBSSettings() {
 			<InputSection>
 				<InputSubheader>OBS Configuration</InputSubheader>
 				<InputText>
-					To use this functionality, go to <strong>OBS</strong>, then <strong>Tools</strong>, then <strong>WebSocket Server Settings</strong>.
-					Select <strong>Enable WebSocket Server</strong>, then copy everything in <strong>Show Connect Info</strong> here.
-					Make sure to click <strong>Apply</strong> in OBS afterwards.
+					<p>To use this functionality, go to <strong>OBS</strong>, then <strong>Tools</strong>, then <strong>WebSocket Server Settings</strong>.</p>
+					<p>Select <strong>Enable WebSocket Server</strong>, then copy everything in <strong>Show Connect Info</strong> here.</p>
+					<p>If OBS is being hosted on this computer, you can instead enter <strong>localhost</strong> for the <strong>Server IP</strong>.</p>
+					<p>This tool expects <strong>IPv4 addresses</strong> and will not work with IPv6.</p>
+					<p>Once you're done, make sure to click <strong>Apply</strong> in OBS afterwards.</p>
 				</InputText>
 				<InputRow>
 					<InputLabel>Server IP</InputLabel>
