@@ -1,4 +1,4 @@
-import { ColorInfo } from "schemas";
+import { ColorInfo } from 'schemas/matchData';
 
 export const formatTimeHMSC = (ms: number): string => {
 	ms = ms > 0 ? ms : 0;
@@ -32,3 +32,7 @@ export const modulo = (dividend: number, divisor: number) => {
 export const getIndexColor = (index: number, list: ColorInfo[], swap: boolean) => {
 	return !swap ? list[modulo(index, list.length)].teamA : list[modulo(index, list.length)].teamB;
 }
+
+export const lerp = (a: number, b: number, alpha: number) => { return a + alpha * (b - a)};
+
+export const clamp = (value: number, min: number, max: number) => { return Math.min(Math.max(value, min), max)};

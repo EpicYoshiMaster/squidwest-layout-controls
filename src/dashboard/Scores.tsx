@@ -7,8 +7,11 @@ import { createRoot } from 'react-dom/client';
 import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader, InputButtonSmall } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { CaretLeft, CaretRight, Swap } from '@phosphor-icons/react';
-import { modulo, getIndexColor } from '../helpers/utils';
+import { modulo, getIndexColor, clamp } from '../helpers/utils';
 import Colors from '../data/colors.json'
+
+const MIN_SCORE = 0;
+const MAX_SCORE = 9;
 
 export function Scores() {
 	const [match, setMatch] = useReplicant<MatchData>('match', { 
@@ -19,7 +22,7 @@ export function Scores() {
 			teamB: "Team B",
 			scoreA: 0,
 			scoreB: 0,
-			matchColor: Colors.anarchy[0],
+			matchColor: Colors.localMode[0],
 			swapColor: false
 		}
 	});
@@ -32,10 +35,11 @@ export function Scores() {
 	const [colorIndex, setColorIndex] = useState<number>(0);
 	const [swapColor, setSwapColor] = useState<boolean>(false);
 	const [colorLock, setColorLock] = useState<boolean>(false);
+	const [onlineMode, setOnlineMode] = useState<boolean>(false);
 
 	const colorList = useMemo(() => {
-		return !colorLock ? Colors.anarchy : Colors.colorLock;
-	}, [colorLock]);
+		return colorLock ? Colors.colorLock : (onlineMode ? Colors.onlineMode : Colors.localMode);
+	}, [colorLock, onlineMode]);
 
 	useEffect(() => {
 		if(!match) return;
@@ -72,6 +76,14 @@ export function Scores() {
 	const hideScores = useCallback(() => {
 		nodecg.sendMessage('scoresControl', false);
 	}, []);
+	
+	const showCommentators = useCallback(() => {
+		nodecg.sendMessage('commsControl', true);
+	}, []);
+
+	const hideCommentators = useCallback(() => {
+		nodecg.sendMessage('commsControl', false);
+	}, []);
 
 	const updateColorIndex = useCallback((index: number) => {
 		setColorIndex(modulo(index, colorList.length));
@@ -87,14 +99,14 @@ export function Scores() {
 							<InputLabel>Info (opt.)</InputLabel>
 							<input type="text" value={matchInfo} onChange={(event) => { setMatchInfo(event.target.value); }} />
 						</InputRow>
-						<InputRow>
+						<InputRowLarge>
 							<InputLabel><ColorDisplay $size={20} $color={getIndexColor(colorIndex, colorList, swapColor)} /> Team A</InputLabel>
 							<input type="text" value={teamA} onChange={(event) => { setTeamA(event.target.value); }} />
-						</InputRow>
-						<InputRow>
+						</InputRowLarge>
+						<InputRowLarge>
 							<InputLabel><ColorDisplay $size={20} $color={getIndexColor(colorIndex, colorList, !swapColor)} /> Team B</InputLabel>
 							<input type="text" value={teamB} onChange={(event) => { setTeamB(event.target.value); }} />
-						</InputRow>
+						</InputRowLarge>
 					</TeamInputSection>
 					<ColorRow>
 						<ColorButton onClick={() => { updateColorIndex(colorIndex - 1); }}>
@@ -119,41 +131,44 @@ export function Scores() {
 							</PanelRow>
 						</ColorButton>
 					</ColorRow>
-					<PanelRow>
-						<InputSection>
-							<InputRow>
-								<InputLabel>Color Lock</InputLabel>
-								<InputCheckbox $checked={colorLock} onClick={() => { setColorLock(!colorLock); setColorIndex(0); } } />
-							</InputRow>
-						</InputSection>
-						<InputButton onClick={() => { updateMatch(); }}>Save</InputButton>
-					</PanelRow>
 				</PanelColumn>
-				<ScoreRow>
-					<ScoreColumn>
-						<ScoreButton onClick={() => { setScoreA(scoreA + 1); }}>+</ScoreButton>
+				<ScoreColumn>
+					<ScoreRow>
+						<ScoreButton onClick={() => { setScoreA(clamp(scoreA - 1, MIN_SCORE, MAX_SCORE)); }}>-</ScoreButton>
 						<BigNumbers>
-						{scoreA}
+							{scoreA}
 						</BigNumbers>
-						<ScoreButton onClick={() => { setScoreA(Math.max(scoreA - 1, 0)); }}>-</ScoreButton>
-					</ScoreColumn>
-					<BigNumbers>
-						:
-					</BigNumbers>
-					<ScoreColumn>
-						<ScoreButton onClick={() => { setScoreB(scoreB + 1); }}>+</ScoreButton>
+						<ScoreButton onClick={() => { setScoreA(clamp(scoreA + 1, MIN_SCORE, MAX_SCORE)); }}>+</ScoreButton>
+					</ScoreRow>
+					<ScoreRow>
+						<ScoreButton onClick={() => { setScoreB(clamp(scoreB - 1, MIN_SCORE, MAX_SCORE)); }}>-</ScoreButton>
 						<BigNumbers>
-						{scoreB}
+							{scoreB}
 						</BigNumbers>
-						<ScoreButton onClick={() => { setScoreB(Math.max(scoreB - 1, 0)); }}>-</ScoreButton>
-					</ScoreColumn>
-				</ScoreRow>
+						<ScoreButton onClick={() => { setScoreB(clamp(scoreB + 1, MIN_SCORE, MAX_SCORE)); }}>+</ScoreButton>
+					</ScoreRow>
+				</ScoreColumn>
 			</TeamScoreRow>
+			<LeftPanelRow>
+				<InputRow>
+					<InputLabel>Color Lock</InputLabel>
+					<InputCheckbox $checked={colorLock} onClick={() => { setColorLock(!colorLock); setColorIndex(0); } } />
+				</InputRow>
+				<InputRow>
+					<InputLabel>Online</InputLabel>
+					<InputCheckbox $checked={onlineMode} onClick={() => { setOnlineMode(!onlineMode); setColorIndex(0); } } />
+				</InputRow>
+				<InputButton onClick={() => { updateMatch(); }}>Save</InputButton>
+			</LeftPanelRow>
 			<PanelColumn>
 				<LeftInputSubheader>Controls</LeftInputSubheader>
 				<PanelRow>
 					<InputButton onClick={() => { showScores(); }}>Show Scores</InputButton>
 					<InputButton onClick={() => { hideScores(); }}>Hide Scores</InputButton>
+				</PanelRow>
+				<PanelRow>
+					<InputButton onClick={() => { showCommentators(); }}>Show Comms</InputButton>
+					<InputButton onClick={() => { hideCommentators(); }}>Hide Comms</InputButton>
 				</PanelRow>
 			</PanelColumn>
 		</PanelColumn>
@@ -166,6 +181,11 @@ const PanelRow = styled.div`
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
+`;
+
+const LeftPanelRow = styled(PanelRow)`
+	justify-content: flex-start;	
+	padding-left: 5px;
 `;
 
 const TeamScoreRow = styled.div`
@@ -183,12 +203,14 @@ const PanelColumn = styled.div`
 `;
 
 const ScoreColumn = styled(PanelColumn)`
-	justify-content: space-evenly;
+	padding-top: 5.5rem;
+	justify-content: flex-start;
 `;
 
 const ScoreButton = styled(InputButtonSmall)`
 	margin: 0 10px;
-	padding: 5px 20px;
+	padding: 3px 15px;
+	font-size: 1.5rem;
 `;
 
 const TeamInputSection = styled(InputSection)`
@@ -210,7 +232,15 @@ const ColorRow = styled(PanelRow)`
 `;
 
 const ScoreRow = styled(PanelRow)`
-	max-height: 250px;
+`;
+
+const InputRowLarge = styled(InputRow)`
+	& > div, input, textarea, select {
+	}
+
+	& input, textarea, select {
+		height: 2.5rem;
+	}
 `;
 
 const ColorDisplay = styled.div<{ $size: number, $color: string }>`
@@ -222,15 +252,8 @@ const ColorDisplay = styled.div<{ $size: number, $color: string }>`
 	background-color: ${({ $color }) => $color};
 `;
 
-const ColorDisplayTall = styled(ColorDisplay)`
-	margin: 0 3px;
-	height: 40%;
-	border: 1px solid black;
-	width: ${({ $size }) => $size}px;	
-`;
-
 const BigNumbers = styled.div`
-	font-size: 4rem;
+	font-size: 2.5rem;
 	font-weight: 600;
 	font-family: 'Courier New', Courier, Consolas, monospace;
 `;

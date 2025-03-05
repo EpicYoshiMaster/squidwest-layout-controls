@@ -54,7 +54,7 @@ export const InputLabel = styled.div`
 	padding-right: 0.5rem;
 	font-weight: 700;
 	line-height: 2;
-`
+`;
 
 export const InputButton = styled.button`
 	margin: 10px;
@@ -101,6 +101,7 @@ export const InputCheckbox = styled.button<{ $checked: boolean }>`
 	width: 1.5rem;
 	height: 1.5rem;
 	margin: 3px;
+	margin-right: 8px;
 	padding: 15px;
 	border: solid 2px #d346fe;
 	border-radius: 0.5rem;
