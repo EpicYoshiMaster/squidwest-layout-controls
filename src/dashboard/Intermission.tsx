@@ -4,7 +4,7 @@ import NodeCG from '@nodecg/types';
 import { createRoot } from 'react-dom/client';
 import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
-import { IntermissionData } from 'schemas';
+import { IntermissionData } from 'schemas/intermissionData';
 import { CollapseContainer } from './components/CollapseContainer';
 
 export function Intermission() {

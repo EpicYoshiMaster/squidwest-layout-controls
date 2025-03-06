@@ -1,4 +1,5 @@
 import OBSWebSocket, { OBSEventTypes } from 'obs-websocket-js';
+import { lerp, clamp } from '../helpers/utils';
 
 export type OBSCallback = (obs: OBSControl) => void;
 export type OBSEventCallback<E extends keyof OBSEventTypes> = (obs: OBSControl, event: OBSEventTypes[E]) => void;
@@ -82,9 +83,6 @@ export class OBSControl {
         const { inputVolumeDb } = await this.getInputVolume(input);
 
         let startTime = new Date().getTime();
-
-        const lerp = (a: number, b: number, alpha: number) => { return a + alpha * (b - a)};
-        const clamp = (value: number, min: number, max: number) => { return Math.min(Math.max(value, min), max)};
 
         let setVolumeInterval = setInterval(() => { 
             const alpha = (new Date().getTime() - startTime) / transitionTime;

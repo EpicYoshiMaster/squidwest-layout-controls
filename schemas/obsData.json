@@ -5,7 +5,7 @@
     "properties": {
         "serverIp": {
             "type": "string",
-            "default": ""
+            "default": "localhost"
 		},
 		"serverPort": {
 			"type": "string",
