@@ -163,7 +163,7 @@ function OBSSettings() {
             autoConnect: false
         }
     });
-    const [serverIp, setServerIp] = (0, _react.useState)("");
+    const [serverIp, setServerIp] = (0, _react.useState)("localhost");
     const [serverPort, setServerPort] = (0, _react.useState)("");
     const [serverPassword, setServerPassword] = (0, _react.useState)("");
     const [autoConnect, setAutoConnect] = (0, _react.useState)(false);
@@ -248,59 +248,115 @@ function OBSSettings() {
             columnNumber: 5
         },
         __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 100,
+            columnNumber: 6
+        },
+        __self: this
     }, "To use this functionality, go to ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 100,
-            columnNumber: 39
+            columnNumber: 42
         },
         __self: this
     }, "OBS"), ", then ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 100,
-            columnNumber: 66
+            columnNumber: 69
         },
         __self: this
     }, "Tools"), ", then ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 100,
-            columnNumber: 95
+            columnNumber: 98
         },
         __self: this
-    }, "WebSocket Server Settings"), ". Select ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+    }, "WebSocket Server Settings"), "."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 101,
-            columnNumber: 13
+            columnNumber: 6
+        },
+        __self: this
+    }, "Select ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 101,
+            columnNumber: 16
         },
         __self: this
     }, "Enable WebSocket Server"), ", then copy everything in ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 101,
-            columnNumber: 79
+            columnNumber: 82
         },
         __self: this
-    }, "Show Connect Info"), " here. Make sure to click ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+    }, "Show Connect Info"), " here."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 102,
-            columnNumber: 25
+            columnNumber: 6
         },
         __self: this
-    }, "Apply"), " in OBS afterwards."), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, "If OBS is being hosted on this computer, you can instead enter ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 102,
+            columnNumber: 72
+        },
+        __self: this
+    }, "localhost"), " for the ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 102,
+            columnNumber: 107
+        },
+        __self: this
+    }, "Server IP"), "."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 103,
+            columnNumber: 6
+        },
+        __self: this
+    }, "This tool expects ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 103,
+            columnNumber: 27
+        },
+        __self: this
+    }, "IPv4 addresses"), " and will not work with IPv6."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 104,
+            columnNumber: 6
+        },
+        __self: this
+    }, "Once you're done, make sure to click ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 104,
+            columnNumber: 46
+        },
+        __self: this
+    }, "Apply"), " in OBS afterwards.")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 106,
             columnNumber: 5
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 105,
+            lineNumber: 107,
             columnNumber: 6
         },
         __self: this
@@ -312,21 +368,21 @@ function OBSSettings() {
         },
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 106,
+            lineNumber: 108,
             columnNumber: 6
         },
         __self: this
     })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 108,
+            lineNumber: 110,
             columnNumber: 5
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 109,
+            lineNumber: 111,
             columnNumber: 6
         },
         __self: this
@@ -338,21 +394,21 @@ function OBSSettings() {
         },
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 110,
+            lineNumber: 112,
             columnNumber: 6
         },
         __self: this
     })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 112,
+            lineNumber: 114,
             columnNumber: 5
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 113,
+            lineNumber: 115,
             columnNumber: 6
         },
         __self: this
@@ -364,21 +420,21 @@ function OBSSettings() {
         },
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 114,
+            lineNumber: 116,
             columnNumber: 6
         },
         __self: this
     })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 116,
+            lineNumber: 118,
             columnNumber: 5
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 117,
+            lineNumber: 119,
             columnNumber: 6
         },
         __self: this
@@ -387,7 +443,7 @@ function OBSSettings() {
         onClick: ()=>setAutoConnect(!autoConnect),
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 118,
+            lineNumber: 120,
             columnNumber: 6
         },
         __self: this
@@ -397,28 +453,28 @@ function OBSSettings() {
         },
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 121,
+            lineNumber: 123,
             columnNumber: 4
         },
         __self: this
     }, "Save"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 122,
+            lineNumber: 124,
             columnNumber: 4
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 123,
+            lineNumber: 125,
             columnNumber: 5
         },
         __self: this
     }, "OBS Connection")), statusText && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ErrorText), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 126,
+            lineNumber: 128,
             columnNumber: 5
         },
         __self: this
@@ -429,7 +485,7 @@ function OBSSettings() {
         },
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 128,
+            lineNumber: 130,
             columnNumber: 4
         },
         __self: this
@@ -445,7 +501,7 @@ const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement(OBSSettings, {
     __source: {
         fileName: "src/dashboard/OBSSettings.tsx",
-        lineNumber: 141,
+        lineNumber: 143,
         columnNumber: 13
     },
     __self: undefined

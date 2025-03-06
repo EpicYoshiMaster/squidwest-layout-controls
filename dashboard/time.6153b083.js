@@ -269,7 +269,42 @@ function Time() {
             columnNumber: 5
         },
         __self: this
-    }, "OBS is not currently connected! To use this panel, OBS functionality must be enabled. Check the OBS Settings panel.")));
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
+        __source: {
+            fileName: "src/dashboard/Time.tsx",
+            lineNumber: 74,
+            columnNumber: 6
+        },
+        __self: this
+    }, "OBS is not currently connected!"), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
+        __source: {
+            fileName: "src/dashboard/Time.tsx",
+            lineNumber: 75,
+            columnNumber: 6
+        },
+        __self: this
+    }, "This panel provides information on OBS transitions and break timings."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
+        __source: {
+            fileName: "src/dashboard/Time.tsx",
+            lineNumber: 76,
+            columnNumber: 6
+        },
+        __self: this
+    }, "To use it, go to ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+        __source: {
+            fileName: "src/dashboard/Time.tsx",
+            lineNumber: 76,
+            columnNumber: 26
+        },
+        __self: this
+    }, "2. Settings"), " and check the ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
+        __source: {
+            fileName: "src/dashboard/Time.tsx",
+            lineNumber: 76,
+            columnNumber: 69
+        },
+        __self: this
+    }, "OBS Settings"), " NodeCG Panel to enable websocket support."))));
 }
 const PanelContainer = (0, _styledComponentsDefault.default).div`
 	display: flex;
@@ -282,7 +317,7 @@ const Wrapper = (0, _styledComponentsDefault.default).div`
 	display: contents;
 `;
 const MarginWrapper = (0, _styledComponentsDefault.default).div`
-	margin: 4rem 0;
+	margin: 1.5rem 0;
 `;
 const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement(Time, {
@@ -349,6 +384,8 @@ parcelHelpers.export(exports, "formatDateHM", ()=>formatDateHM);
 parcelHelpers.export(exports, "formatDateMDY", ()=>formatDateMDY);
 parcelHelpers.export(exports, "modulo", ()=>modulo);
 parcelHelpers.export(exports, "getIndexColor", ()=>getIndexColor);
+parcelHelpers.export(exports, "lerp", ()=>lerp);
+parcelHelpers.export(exports, "clamp", ()=>clamp);
 const formatTimeHMSC = (ms)=>{
     ms = ms > 0 ? ms : 0;
     const hour = Math.floor(ms / 60 / 60 / 1000);
@@ -371,6 +408,12 @@ const modulo = (dividend, divisor)=>{
 };
 const getIndexColor = (index, list, swap)=>{
     return !swap ? list[modulo(index, list.length)].teamA : list[modulo(index, list.length)].teamB;
+};
+const lerp = (a, b, alpha)=>{
+    return a + alpha * (b - a);
+};
+const clamp = (value, min, max)=>{
+    return Math.min(Math.max(value, min), max);
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"2VUsa":[function(require,module,exports) {

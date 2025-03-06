@@ -204,7 +204,7 @@ module.exports = async (nodecg)=>{
 	});*/ };
 
 },{"../../package.json":"jpc7V","./OBSControl":"dZhDB","./Logger":"6o2Jo","@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q"}],"jpc7V":[function(require,module,exports) {
-module.exports = JSON.parse('{"name":"squidwest-layout-controls","version":"1.1.0","squidwest":{"month":"December 2024"},"description":"NodeCG Dashboard system for SquidWest Splatoon events","homepage":"","author":{"name":"EpicYoshiMaster","email":"epicyoshim@gmail.com","url":""},"files":["dashboard","graphics","extension.js","extension"],"keywords":["nodecg-bundle"],"nodecg":{"compatibleRange":"^2.0.0","dashboardPanels":[{"name":"credits","title":"Credits","width":3,"file":"credits.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"intermission","title":"Intermission Screen","width":3,"file":"intermission.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"commentators","title":"Commentators Information","width":3,"file":"commentators.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"time","title":"Time Information","width":3,"file":"time.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"eventinformation","title":"Event Information","width":3,"file":"eventinformation.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"socials","title":"Socials Information","width":3,"file":"socials.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"obs","title":"OBS Settings","width":3,"file":"obssettings.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"scores","title":"Scores","width":4,"file":"scores.html","workspace":"1. Stream Tech","headerColor":"#525F78"}]},"browserslist":{"production":[">0.5%","not dead","not op_mini all"],"development":["last 1 chrome version","last 1 firefox version","last 1 safari version"]},"scripts":{"build":"node scripts/build.mjs --all","build:extension":"node scripts/build.mjs --extension","watch":"node scripts/build.mjs --all --watch","watch:browser":"node scripts/build.mjs --dashboard --graphics --watch","watch:schemas":"node scripts/build.mjs --schemas --watch","dev":"concurrently --kill-others \\"npm run watch:schemas\\" \\"npm run watch:browser\\" \\"nodemon\\"","generate-schema-types":"trash src/types/schemas && nodecg schema-types"},"dependencies":{"@nodecg/react-hooks":"^1.0.3","@phosphor-icons/react":"^2.1.7","@types/react":"*","@types/react-dom":"*","obs-websocket-js":"^5.0.6","react":"*","react-dom":"*","styled-components":"^6.1.13","ts-node":"*"},"devDependencies":{"@nodecg/types":"^2.0.0","@parcel/config-default":"*","@parcel/core":"*","@parcel/reporter-cli":"*","@parcel/validator-typescript":"*","@types/node":"^18","concurrently":"*","glob":"^10.2.7","nodemon":"*","trash-cli":"*","typescript":"^5.1.3"},"license":"MIT"}');
+module.exports = JSON.parse('{"name":"squidwest-layout-controls","version":"1.2.0","squidwest":{"month":"March 2025"},"description":"NodeCG Dashboard system for SquidWest Splatoon events","homepage":"","author":{"name":"EpicYoshiMaster","email":"epicyoshim@gmail.com","url":""},"files":["dashboard","graphics","extension.js","extension"],"keywords":["nodecg-bundle"],"nodecg":{"compatibleRange":"^2.0.0","dashboardPanels":[{"name":"credits","title":"Credits","width":3,"file":"credits.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"intermission","title":"Intermission Screen","width":3,"file":"intermission.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"commentators","title":"Commentators Information","width":3,"file":"commentators.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"time","title":"Time Information","width":3,"file":"time.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"eventinformation","title":"Event Information","width":3,"file":"eventinformation.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"socials","title":"Socials Information","width":3,"file":"socials.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"obs","title":"OBS Settings","width":3,"file":"obssettings.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"scores","title":"Scores","width":4,"file":"scores.html","workspace":"1. Stream Tech","headerColor":"#525F78"}]},"browserslist":{"production":[">0.5%","not dead","not op_mini all"],"development":["last 1 chrome version","last 1 firefox version","last 1 safari version"]},"scripts":{"build":"node scripts/build.mjs --all","build:extension":"node scripts/build.mjs --extension","watch":"node scripts/build.mjs --all --watch","watch:browser":"node scripts/build.mjs --dashboard --graphics --watch","watch:schemas":"node scripts/build.mjs --schemas --watch","dev":"concurrently --kill-others \\"npm run watch:schemas\\" \\"npm run watch:browser\\" \\"nodemon\\"","generate-schema-types":"trash src/types/schemas && nodecg schema-types"},"dependencies":{"@nodecg/react-hooks":"^1.0.3","@phosphor-icons/react":"^2.1.7","@types/react":"*","@types/react-dom":"*","obs-websocket-js":"^5.0.6","react":"*","react-dom":"*","styled-components":"^6.1.13","ts-node":"*"},"devDependencies":{"@nodecg/types":"^2.0.0","@parcel/config-default":"*","@parcel/core":"*","@parcel/reporter-cli":"*","@parcel/validator-typescript":"*","@types/node":"^18","concurrently":"*","glob":"^10.2.7","nodemon":"*","trash-cli":"*","typescript":"^5.1.3"},"license":"MIT"}');
 
 },{}],"dZhDB":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -212,6 +212,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "OBSControl", ()=>OBSControl);
 var _obsWebsocketJs = require("obs-websocket-js");
 var _obsWebsocketJsDefault = parcelHelpers.interopDefault(_obsWebsocketJs);
+var _utils = require("../helpers/utils");
 class OBSControl {
     async connect(ip, port, password) {
         try {
@@ -249,16 +250,10 @@ class OBSControl {
         if (startDb) await this.setInputVolume(input, startDb);
         const { inputVolumeDb } = await this.getInputVolume(input);
         let startTime = new Date().getTime();
-        const lerp = (a, b, alpha)=>{
-            return a + alpha * (b - a);
-        };
-        const clamp = (value, min, max)=>{
-            return Math.min(Math.max(value, min), max);
-        };
         let setVolumeInterval = setInterval(()=>{
             const alpha = (new Date().getTime() - startTime) / transitionTime;
-            this.setInputVolume(input, lerp(inputVolumeDb, targetDb, clamp(interpFunc ? interpFunc(alpha) : alpha, 0, 1)));
-            console.log(`${input} - alpha: ${alpha}, dB: ${lerp(inputVolumeDb, targetDb, clamp(interpFunc ? interpFunc(alpha) : alpha, 0, 1))}`);
+            this.setInputVolume(input, (0, _utils.lerp)(inputVolumeDb, targetDb, (0, _utils.clamp)(interpFunc ? interpFunc(alpha) : alpha, 0, 1)));
+            console.log(`${input} - alpha: ${alpha}, dB: ${(0, _utils.lerp)(inputVolumeDb, targetDb, (0, _utils.clamp)(interpFunc ? interpFunc(alpha) : alpha, 0, 1))}`);
         }, 10);
         await setTimeout(()=>{
             clearInterval(setVolumeInterval);
@@ -283,7 +278,7 @@ class OBSControl {
     }
 }
 
-},{"obs-websocket-js":"obs-websocket-js","@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q"}],"9VN6q":[function(require,module,exports) {
+},{"obs-websocket-js":"obs-websocket-js","@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q","../helpers/utils":"8neMH"}],"9VN6q":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -313,7 +308,47 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"6o2Jo":[function(require,module,exports) {
+},{}],"8neMH":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "formatTimeHMSC", ()=>formatTimeHMSC);
+parcelHelpers.export(exports, "formatDateHM", ()=>formatDateHM);
+parcelHelpers.export(exports, "formatDateMDY", ()=>formatDateMDY);
+parcelHelpers.export(exports, "modulo", ()=>modulo);
+parcelHelpers.export(exports, "getIndexColor", ()=>getIndexColor);
+parcelHelpers.export(exports, "lerp", ()=>lerp);
+parcelHelpers.export(exports, "clamp", ()=>clamp);
+const formatTimeHMSC = (ms)=>{
+    ms = ms > 0 ? ms : 0;
+    const hour = Math.floor(ms / 60 / 60 / 1000);
+    ms = ms % 3600000;
+    const minute = Math.floor(ms / 60 / 1000);
+    ms = ms % 60000;
+    const second = Math.floor(ms / 1000);
+    ms = ms % 1000;
+    const centiseconds = Math.floor(ms / 10);
+    return `${hour}:${minute < 10 ? `0${minute}` : minute}:${second < 10 ? `0${second}` : second}.${centiseconds < 10 ? `0${centiseconds}` : centiseconds}`;
+};
+const formatDateHM = (date)=>{
+    return date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
+};
+const formatDateMDY = (date)=>{
+    return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
+};
+const modulo = (dividend, divisor)=>{
+    return (dividend % divisor + divisor) % divisor;
+};
+const getIndexColor = (index, list, swap)=>{
+    return !swap ? list[modulo(index, list.length)].teamA : list[modulo(index, list.length)].teamB;
+};
+const lerp = (a, b, alpha)=>{
+    return a + alpha * (b - a);
+};
+const clamp = (value, min, max)=>{
+    return Math.min(Math.max(value, min), max);
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q"}],"6o2Jo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Logger", ()=>Logger);
@@ -460,38 +495,6 @@ function _object_spread_props(target, source) {
     });
     return target;
 }
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q"}],"8neMH":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "formatTimeHMSC", ()=>formatTimeHMSC);
-parcelHelpers.export(exports, "formatDateHM", ()=>formatDateHM);
-parcelHelpers.export(exports, "formatDateMDY", ()=>formatDateMDY);
-parcelHelpers.export(exports, "modulo", ()=>modulo);
-parcelHelpers.export(exports, "getIndexColor", ()=>getIndexColor);
-const formatTimeHMSC = (ms)=>{
-    ms = ms > 0 ? ms : 0;
-    const hour = Math.floor(ms / 60 / 60 / 1000);
-    ms = ms % 3600000;
-    const minute = Math.floor(ms / 60 / 1000);
-    ms = ms % 60000;
-    const second = Math.floor(ms / 1000);
-    ms = ms % 1000;
-    const centiseconds = Math.floor(ms / 10);
-    return `${hour}:${minute < 10 ? `0${minute}` : minute}:${second < 10 ? `0${second}` : second}.${centiseconds < 10 ? `0${centiseconds}` : centiseconds}`;
-};
-const formatDateHM = (date)=>{
-    return date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
-};
-const formatDateMDY = (date)=>{
-    return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
-};
-const modulo = (dividend, divisor)=>{
-    return (dividend % divisor + divisor) % divisor;
-};
-const getIndexColor = (index, list, swap)=>{
-    return !swap ? list[modulo(index, list.length)].teamA : list[modulo(index, list.length)].teamB;
-};
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q"}]},["adkVt"], "adkVt", "parcelRequire156b")
 
