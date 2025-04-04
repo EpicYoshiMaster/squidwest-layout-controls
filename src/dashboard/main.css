@@ -15,6 +15,11 @@
 	--red-active: #972d3b;
 	--red-border: #6b1b2f;
 
+	--dark-red: #c02b2b;
+	--dark-red-hover: #be3c63;
+	--dark-red-active: #972d3b;
+	--dark-red-border: #6b1b2f;
+
 	/* 
 	--yellow: #f3e17a;
 	--yellow-hover: #96942f;
@@ -32,8 +37,6 @@
 	--pink-active: #741844;
 	--pink-border: #5e1437;
 
-
-
 	--blue: #4976f1;
 	--blue-hover: #3253af;
 	--blue-active: #21397a;
@@ -43,6 +46,8 @@
 	--light-purple-hover: #5548a1;
 	--light-purple-active: #39306e;
 	--light-purple-border: #372d7b;
+
+	--purple: #ae67dd;
 }
 
 body {

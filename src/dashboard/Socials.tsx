@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled, { css } from 'styled-components'
 import NodeCG from '@nodecg/types';
 import { Socials, SocialsGroup, SocialItem } from 'schemas/socials';
@@ -9,6 +9,8 @@ import { CollapseContainer } from './components/NewCollapseContainer';
 import { X, Plus, CaretUp, CaretDown } from '@phosphor-icons/react';
 import { TransparentButtonSmall } from './components/Layout';
 import { useDropzone } from 'react-dropzone';
+import { isEqual, cloneDeep } from 'lodash';
+import { exportJSON, fileToJSON } from '../helpers/utils';
 
 //New Socials:
 //Socials Groups
@@ -39,7 +41,6 @@ import { useDropzone } from 'react-dropzone';
 
 //Next steps:
 // - Make confirm buttons
-// - Contextual Save button
 // - color tags for other elements (text, badges)
 
 const DefaultSocialItem: SocialItem = { platform: Platform.Bluesky, social: "" };
@@ -78,14 +79,24 @@ export function SocialsInformation() {
 
 	const [importError, setImportError] = useState("");
 
-	//useEffect(() => {
-	//	if(!socials) return;
-	//	
-	//	setDashboardSocials(socials);
-	//}, [socials]);	
+	const hasUnsavedChanges = useMemo(() => {
+
+		console.log(`Checking for Unsaved Changes`);
+		console.log(socials);
+		console.log(dashboardSocials);
+		console.log(`Has Unsaved Changes: ${!isEqual(socials, dashboardSocials)}`);
+
+		return !isEqual(socials, dashboardSocials);
+	}, [socials, dashboardSocials]);
+
+	useEffect(() => {
+		if(!socials) return;
+		
+		setDashboardSocials(cloneDeep(socials));
+	}, [socials]);	
 
 	const addGroup = useCallback(() => {
-		setDashboardSocials([...dashboardSocials, structuredClone(DefaultGroup)]);
+		setDashboardSocials([...dashboardSocials, cloneDeep(DefaultGroup)]);
 	}, [dashboardSocials]);
 
 	const changeGroup = useCallback((socialGroup: SocialsGroup, index: number) => {
@@ -134,7 +145,7 @@ export function SocialsInformation() {
 	}, [changeGroup]);
 
 	const addDashboardSocial = useCallback((socialGroup: SocialsGroup, groupIndex: number) => {
-		socialGroup.items.push(structuredClone(DefaultSocialItem));
+		socialGroup.items.push(cloneDeep(DefaultSocialItem));
 
 		changeGroup(socialGroup, groupIndex);
 	}, [changeGroup]);
@@ -155,74 +166,24 @@ export function SocialsInformation() {
 		setSocials(dashboardSocials);
 	}, [dashboardSocials]);
 
-	
-	const handleImport = useCallback((acceptedFiles: File[]) => {
-		if(acceptedFiles.length > 1)
-		{
-			setImportError("Only one file can be imported at a time.");
-			return;
+	const onImportJSON = useCallback((json: any) => {
+		if(json && isSocials(json)) {
+			setDashboardSocials(json);
+			setImportError("");
 		}
-
-		if(acceptedFiles.length == 0)
-		{
-			setImportError("An unknown issue occurred while trying to load the file. (No files were accepted?)");
-			return;
+		else {
+			setImportError("The file provided failed to be matched.");
 		}
-
-		const [ file ] = acceptedFiles;
-
-		if(!file.name.endsWith('.json'))
-		{
-			setImportError("File must end in .json");
-			return;
-		}
-
-
-
-		const reader = new FileReader();
-
-		reader.onabort = () => {
-			setImportError("The file read process was aborted.");
-		}
-
-		reader.onerror = () => {
-			setImportError("An unknown issue occurred while trying to read the file. The file may be corrupted.");
-		}
-
-		file.text().then((value: string) => {
-			try {
-				const importedJSON = JSON.parse(value);
-
-				if(importedJSON && isSocials(importedJSON))
-				{
-					setDashboardSocials(importedJSON);
-					setImportError("");
-				}
-				else
-				{
-					setImportError("The file provided failed to be matched.");
-				}
-			} catch (error) {
-				setImportError(`The file could not be read: ${error}.`);
-			}
-		});
-
 	}, []);
 
-	const { getRootProps, getInputProps, open } = useDropzone({ onDrop: handleImport, accept: { 'application/json': ['.json'] } , noClick: true, noDrag: true, noKeyboard: true, multiple: false });
+	const { getRootProps, getInputProps, open } = useDropzone({ 
+		onDrop:  (acceptedFiles: File[]) => { fileToJSON(acceptedFiles, onImportJSON, setImportError); }, 
+		accept: { 'application/json': ['.json'] } , 
+		noClick: true, noDrag: true, noKeyboard: true, multiple: false 
+	});
 
 	const handleExport = useCallback(() => {
-		const a = document.createElement('a');
-
-		a.href = URL.createObjectURL(new Blob([JSON.stringify(dashboardSocials, null, 2)], { type: 'text/plain' }));
-
-		a.setAttribute('download', 'socials.json');
-
-		document.body.appendChild(a);
-
-		a.click();
-
-		document.body.removeChild(a);
+		exportJSON(dashboardSocials, 'socials.json');
 	}, [dashboardSocials]);
 
 	return (
@@ -236,7 +197,7 @@ export function SocialsInformation() {
 							<ButtonTiny $colorTag='red' $border={true} disabled={groupIndex >= groupArray.length - 1} onClick={() => { moveGroup(groupIndex, true); }}><CaretDown weight='bold' /></ButtonTiny>
 						</Column>
 						{socialGroup.name}
-						{socialGroup.items.length > 0 && (<Badge>{socialGroup.items.length} Socials</Badge>)}
+						{socialGroup.items.length > 0 && (<Badge $colorTag='purple'>{socialGroup.items.length} Socials</Badge>)}
 					</>
 				)} key={groupIndex}>
 					<Row $align='flex-end' $height='4rem'>
@@ -283,7 +244,7 @@ export function SocialsInformation() {
 			))}
 			<GridRow $height='3rem'>
 				<ButtonWide $expand={true} $colorTag='green' onClick={() => { addGroup(); }}>New Group</ButtonWide>
-				<ButtonWide $expand={true} $colorTag='pink' onClick={() => { updateSocials(); }}>Save</ButtonWide>
+				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { updateSocials(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='orange' onClick={() => { open(); }}>Import</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { handleExport(); }}>Export</ButtonWide>
 			</GridRow>
@@ -357,7 +318,7 @@ const Fieldset = styled.fieldset<{ $maxHeight?: number }>`
 	` : css``}
 `;
 
-const Badge = styled.div`
+const Badge = styled.div<{ $colorTag?: string }>`
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -366,7 +327,8 @@ const Badge = styled.div`
 
 	font-size: 1rem;
 	border-radius: 0.5rem;
-	background-color: #ae67dd;
+	color: var(--text);
+	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`});
 `;
 
 const NewInput = styled.input`
@@ -412,7 +374,7 @@ const ButtonSmall = styled.button<{ $colorTag?: string, $expand?: boolean, $bord
 `;
 
 const ButtonWide = styled(ButtonSmall)`
-	padding: 6px 15px;
+	padding: 6px 10px;
 	border-width: 3px;
 `;
 
