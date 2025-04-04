@@ -6,21 +6,13 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface Socials {
-	/**
-	 * Youtube Channel
-	 */
-	youtube: string;
-	/**
-	 * Twitter Username
-	 */
-	twitter: string;
-	/**
-	 * Bluesky Username
-	 */
-	bluesky: string;
-	/**
-	 * Discord Link
-	 */
-	discord: string;
+export type Socials = SocialsGroup[];
+
+export interface SocialsGroup {
+	name: string;
+	items: SocialItem[];
+}
+export interface SocialItem {
+	platform: 'Bluesky' | 'Discord' | 'Twitter' | 'YouTube';
+	social: string;
 }

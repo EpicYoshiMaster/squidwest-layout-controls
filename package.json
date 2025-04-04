@@ -118,6 +118,7 @@
     "obs-websocket-js": "^5.0.6",
     "react": "*",
     "react-dom": "*",
+    "react-dropzone": "^14.3.8",
     "styled-components": "^6.1.13",
     "ts-node": "*"
   },

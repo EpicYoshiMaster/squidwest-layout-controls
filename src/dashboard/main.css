@@ -1,0 +1,57 @@
+:root {
+
+	--button: #d346fe;
+	--button-hover: #5f2573;
+	--button-active: #4c1d5c;
+	--button-border: #491c52;
+
+	--green: #1ea530;
+	--green-hover: #1b7427;
+	--green-active: #0f4616;
+	--green-border: #114117;
+
+	--red: #fe4674;
+	--red-hover: #be3c63;
+	--red-active: #972d3b;
+	--red-border: #6b1b2f;
+
+	/* 
+	--yellow: #f3e17a;
+	--yellow-hover: #96942f;
+	--yellow-active: #666518;
+	--yellow-border: #8d7c33;
+	*/ 
+
+	--orange: #eb9e47;
+	--orange-hover: #ac712e;
+	--orange-active: #815625;
+	--orange-border: #4d3112;
+
+	--pink: #ec3a90;
+	--pink-hover: #a72463;
+	--pink-active: #741844;
+	--pink-border: #5e1437;
+
+
+
+	--blue: #4976f1;
+	--blue-hover: #3253af;
+	--blue-active: #21397a;
+	--blue-border: #1e3679;
+
+	--light-purple: #7967dd;
+	--light-purple-hover: #5548a1;
+	--light-purple-active: #39306e;
+	--light-purple-border: #372d7b;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+	margin: 0;
+}
+
+.monospace {
+	font-family: monospace;
+}
+
+* { box-sizing: border-box; }

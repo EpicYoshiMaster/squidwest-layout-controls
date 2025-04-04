@@ -79,7 +79,7 @@ export const InputButton = styled.button`
 	}
 `;
 
-export const CollapseButton = styled.button`
+export const TransparentButton = styled.button`
     margin: 0;
     padding: 0;
     font-size: 2rem;
@@ -87,10 +87,16 @@ export const CollapseButton = styled.button`
     color: white;
     background: transparent;
     border: transparent;
+	display: flex;
+	align-items: center;
 
     :hover {
         cursor: pointer;
     }
+`;
+
+export const TransparentButtonSmall = styled(TransparentButton)`
+	font-size: 1rem;
 `;
 
 export const InputCheckbox = styled.button<{ $checked: boolean }>`

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { InputSubheader, CollapseButton } from './Layout';
+import { InputSubheader, TransparentButton } from './Layout';
 import { CaretDown, CaretUp } from '@phosphor-icons/react'
 
 //Title
@@ -16,9 +16,9 @@ export const CollapseContainer: React.FC<CollapseContainerProps> = ({ title, chi
         <Container>
             <HeadRow>
                 <InputSubheader>{title}</InputSubheader>
-                <CollapseButton
+                <TransparentButton
                     onClick={() => { setCollapsed(!collapsed); }}
-                >{collapsed ? (<CaretDown />) : (<CaretUp />)}</CollapseButton>
+                >{collapsed ? (<CaretDown />) : (<CaretUp />)}</TransparentButton>
             </HeadRow>
             {!collapsed && (
             <Container>

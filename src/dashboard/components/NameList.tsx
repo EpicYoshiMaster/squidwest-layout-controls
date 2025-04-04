@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { InputButtonSmall, InputLabel, InputRow, InputSubheader, CollapseButton } from './Layout';
+import { InputButtonSmall, InputLabel, InputRow, InputSubheader, TransparentButton } from './Layout';
 import { CollapseContainer } from './CollapseContainer';
 
 //Title
