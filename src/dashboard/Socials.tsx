@@ -7,10 +7,11 @@ import { useReplicant } from '@nodecg/react-hooks';
 import { Platform } from '../types/types';
 import { CollapseContainer } from './components/NewCollapseContainer';
 import { X, Plus, CaretUp, CaretDown } from '@phosphor-icons/react';
-import { TransparentButtonSmall } from './components/Layout';
+import { ColorSpan, Text } from './components/Layout';
 import { useDropzone } from 'react-dropzone';
 import { isEqual, cloneDeep } from 'lodash';
 import { exportJSON, fileToJSON } from '../helpers/utils';
+import { useTimedActive } from '../helpers/hooks';
 
 //New Socials:
 //Socials Groups
@@ -39,10 +40,6 @@ import { exportJSON, fileToJSON } from '../helpers/utils';
 //ex. { platform: Platform, social: string }, onClick might return { social: string }
 //use { ...socialItem, ...partialObject } to apply
 
-//Next steps:
-// - Make confirm buttons
-// - color tags for other elements (text, badges)
-
 const DefaultSocialItem: SocialItem = { platform: Platform.Bluesky, social: "" };
 const DefaultGroup: SocialsGroup = { name: "New Group", items: [DefaultSocialItem] };
 
@@ -62,7 +59,7 @@ const isSocials = (object: any): object is Socials => {
 	}
 
 	//Technically only validates for presence of name and items but should be fine enough
-	if(object.some((value) => { return value.name !== undefined && !Array.isArray(value.items); })) {
+	if(object.some((value) => { return value.name === undefined || !Array.isArray(value.items); })) {
 		return false;
 	}
 
@@ -78,14 +75,10 @@ export function SocialsInformation() {
 	const [dashboardSocials, setDashboardSocials] = useState(DefaultSocials);
 
 	const [importError, setImportError] = useState("");
+	const [error, startErrorTime] = useTimedActive(5000, () => { setImportError(""); });
+	const [confirm, startConfirmTime] = useTimedActive(2000);
 
 	const hasUnsavedChanges = useMemo(() => {
-
-		console.log(`Checking for Unsaved Changes`);
-		console.log(socials);
-		console.log(dashboardSocials);
-		console.log(`Has Unsaved Changes: ${!isEqual(socials, dashboardSocials)}`);
-
 		return !isEqual(socials, dashboardSocials);
 	}, [socials, dashboardSocials]);
 
@@ -93,7 +86,15 @@ export function SocialsInformation() {
 		if(!socials) return;
 		
 		setDashboardSocials(cloneDeep(socials));
-	}, [socials]);	
+	}, [socials]);
+
+	const showImportError = useCallback((error: string) => {
+		setImportError(error);
+
+		if(error !== "") {
+			startErrorTime();
+		}
+	}, [startErrorTime]);
 
 	const addGroup = useCallback(() => {
 		setDashboardSocials([...dashboardSocials, cloneDeep(DefaultGroup)]);
@@ -112,16 +113,6 @@ export function SocialsInformation() {
 
 	const moveGroup = useCallback((groupIndex: number, moveForward: boolean) => {
 		if((groupIndex <= 0 && !moveForward) || (groupIndex >= dashboardSocials.length - 1 && moveForward)) return;
-
-		//groupIndex is 3, moveForward is true
-		//we want to swap 3 and 4
-		//4 should be first, 3 should be second
-		//4 should be placed at index 3
-
-		//groupIndex is 3, moveForward is false
-		//we want to swap 2 and 3
-		//3 should be first, 2 should be second
-		//3 should be placed at index 2
 
 		const firstGroup = dashboardSocials[moveForward ? groupIndex + 1 : groupIndex];
 		const secondGroup = dashboardSocials[moveForward ? groupIndex : groupIndex - 1];
@@ -169,15 +160,15 @@ export function SocialsInformation() {
 	const onImportJSON = useCallback((json: any) => {
 		if(json && isSocials(json)) {
 			setDashboardSocials(json);
-			setImportError("");
+			showImportError("");
 		}
 		else {
-			setImportError("The file provided failed to be matched.");
+			showImportError("The file provided failed to be matched.");
 		}
 	}, []);
 
 	const { getRootProps, getInputProps, open } = useDropzone({ 
-		onDrop:  (acceptedFiles: File[]) => { fileToJSON(acceptedFiles, onImportJSON, setImportError); }, 
+		onDrop:  (acceptedFiles: File[]) => { fileToJSON(acceptedFiles, onImportJSON, showImportError); }, 
 		accept: { 'application/json': ['.json'] } , 
 		noClick: true, noDrag: true, noKeyboard: true, multiple: false 
 	});
@@ -189,67 +180,75 @@ export function SocialsInformation() {
 	return (
 		<PanelContainer {...getRootProps()}>
 			<input {...getInputProps()} />
-			{dashboardSocials.map((socialGroup, groupIndex, groupArray) => (
-				<CollapseContainer title={(
+			<ScrollContainer $maxHeight={600}>
+				{dashboardSocials.length <= 0 && (
 					<>
-						<Column>
-							<ButtonTiny $colorTag='blue' $border={true} disabled={groupIndex <= 0} onClick={() => { moveGroup(groupIndex, false); }}><CaretUp weight='bold' /></ButtonTiny>
-							<ButtonTiny $colorTag='red' $border={true} disabled={groupIndex >= groupArray.length - 1} onClick={() => { moveGroup(groupIndex, true); }}><CaretDown weight='bold' /></ButtonTiny>
-						</Column>
-						{socialGroup.name}
-						{socialGroup.items.length > 0 && (<Badge $colorTag='purple'>{socialGroup.items.length} Socials</Badge>)}
+						<Text>There are no Social Groups!</Text>
+						<Text>Click <ColorSpan $colorTag='green'>New Group</ColorSpan> to add one!</Text>
 					</>
-				)} key={groupIndex}>
-					<Row $align='flex-end' $height='4rem'>
-						<Fieldset>
-							<legend><InputLabel>Group Name</InputLabel></legend>
-							<NewInput type="text" value={socialGroup.name} onChange={(event) => { changeGroup({ ...socialGroup, name: event.target.value }, groupIndex); }} />
-						</Fieldset>
-						<ButtonLarge $colorTag='red' $expand={true} onClick={() => { deleteGroup(groupIndex); }}>Delete Group</ButtonLarge>
-					</Row>
-					<Fieldset $maxHeight={350}>
-						<legend>
-							<Row>
-								<InputLabel>Socials</InputLabel>
-								<ButtonFieldset $colorTag='green' onClick={() => { addDashboardSocial(socialGroup, groupIndex); }}>
-									<Plus weight="bold" />
-								</ButtonFieldset>
-							</Row>
-						</legend>
-						{socialGroup.items.length <= 0 && (
-							<Row $justify='center'>
-								<InputLabel>Empty! Click the + to add items here.</InputLabel>
-							</Row>
-						)}
-						{socialGroup.items.map((socialItem, itemIndex, itemArray) => (
-						<Row key={itemIndex}>
+				)}
+				{dashboardSocials.map((socialGroup, groupIndex, groupArray) => (
+					<CollapseContainer title={(
+						<>
 							<Column>
-								<ButtonTiny $colorTag='blue' $border={true} disabled={itemIndex <= 0} onClick={() => { moveSocial(socialGroup, groupIndex, itemIndex, false); }}><CaretUp /></ButtonTiny>
-								<ButtonTiny $colorTag='red' $border={true} disabled={itemIndex >= itemArray.length - 1} onClick={() => { moveSocial(socialGroup, groupIndex, itemIndex, true); }}><CaretDown /></ButtonTiny>
+								<ButtonTiny $colorTag='blue' $border={true} disabled={groupIndex <= 0} onClick={() => { moveGroup(groupIndex, false); }}><CaretUp weight='bold' /></ButtonTiny>
+								<ButtonTiny $colorTag='red' $border={true} disabled={groupIndex >= groupArray.length - 1} onClick={() => { moveGroup(groupIndex, true); }}><CaretDown weight='bold' /></ButtonTiny>
 							</Column>
-							<Select value={socialItem.platform} onChange={(event) => { changeDashboardSocial(socialGroup, { ...socialItem, platform: event.target.value as Platform }, groupIndex, itemIndex);}}>
-								{Object.keys(Platform).map((platform, index) => 
-									<option key={index} value={platform}>{platform}</option>
-								)}
-							</Select>
-							<NewInput type="text" value={socialItem.social} onChange={(event) => { changeDashboardSocial(socialGroup, { ...socialItem, social: event.target.value }, groupIndex, itemIndex);  }} />
-							<ButtonSmall $colorTag='red' onClick={() => { deleteDashboardSocial(socialGroup, groupIndex, itemIndex); }}>
-								<X weight="bold" />
-							</ButtonSmall>
+							{socialGroup.name}
+							{socialGroup.items.length > 0 && (<Badge $colorTag='purple'>{socialGroup.items.length} Socials</Badge>)}
+						</>
+					)} key={groupIndex}>
+						<Row $align='flex-end' $height='4rem'>
+							<Fieldset>
+								<legend><Text>Group Name</Text></legend>
+								<input type="text" value={socialGroup.name} onChange={(event) => { changeGroup({ ...socialGroup, name: event.target.value }, groupIndex); }} />
+							</Fieldset>
+							<ButtonLarge $colorTag={ confirm ? 'dark-red' : 'red' } $expand={true} onClick={() => { confirm ? deleteGroup(groupIndex) : startConfirmTime(); }}>{ confirm ? 'Confirm?' : 'Delete Group' }</ButtonLarge>
 						</Row>
-						))
-						}
-					</Fieldset>
-				</CollapseContainer>
-			))}
+						<Fieldset $maxHeight={350}>
+							<legend>
+								<Row>
+									<Text>Socials</Text>
+									<ButtonFieldset $colorTag='green' onClick={() => { addDashboardSocial(socialGroup, groupIndex); }}>
+										<Plus weight="bold" />
+									</ButtonFieldset>
+								</Row>
+							</legend>
+							{socialGroup.items.length <= 0 && (
+								<Row $justify='center'>
+									<Text>Empty! Click the + to add items here.</Text>
+								</Row>
+							)}
+							{socialGroup.items.map((socialItem, itemIndex, itemArray) => (
+							<Row key={itemIndex}>
+								<Column>
+									<ButtonTiny $colorTag='blue' $border={true} disabled={itemIndex <= 0} onClick={() => { moveSocial(socialGroup, groupIndex, itemIndex, false); }}><CaretUp /></ButtonTiny>
+									<ButtonTiny $colorTag='red' $border={true} disabled={itemIndex >= itemArray.length - 1} onClick={() => { moveSocial(socialGroup, groupIndex, itemIndex, true); }}><CaretDown /></ButtonTiny>
+								</Column>
+								<select value={socialItem.platform} onChange={(event) => { changeDashboardSocial(socialGroup, { ...socialItem, platform: event.target.value as Platform }, groupIndex, itemIndex);}}>
+									{Object.keys(Platform).map((platform, index) => 
+										<option key={index} value={platform}>{platform}</option>
+									)}
+								</select>
+								<input type="text" value={socialItem.social} onChange={(event) => { changeDashboardSocial(socialGroup, { ...socialItem, social: event.target.value }, groupIndex, itemIndex);  }} />
+								<ButtonSmall $colorTag='red' onClick={() => { deleteDashboardSocial(socialGroup, groupIndex, itemIndex); }}>
+									<X weight="bold" />
+								</ButtonSmall>
+							</Row>
+							))
+							}
+						</Fieldset>
+					</CollapseContainer>
+				))}
+			</ScrollContainer>
 			<GridRow $height='3rem'>
 				<ButtonWide $expand={true} $colorTag='green' onClick={() => { addGroup(); }}>New Group</ButtonWide>
 				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { updateSocials(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='orange' onClick={() => { open(); }}>Import</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { handleExport(); }}>Export</ButtonWide>
 			</GridRow>
-			{importError !== "" && (
-				<Row><InputLabel>ERROR: {importError}</InputLabel></Row>
+			{error && (
+				<Row $height='1.5rem' $align='flex-end'><Text $colorTag='red'>ERROR: {importError}</Text></Row>
 			)}
 		</PanelContainer>
 	)
@@ -263,6 +262,26 @@ const PanelContainer = styled.div`
 	align-items: center;
 	gap: 5px;
 	padding: 5px 10px 12px;
+`;
+
+const ScrollContainer = styled.div<{ $maxHeight?: number }>`
+	position: relative;
+	width: 100%;
+	padding-right: 8px;
+
+	& > div {
+		margin-bottom: 5px;
+	}
+
+	& > div:last-of-type {
+		margin-bottom: 0;
+	}
+
+	${({ $maxHeight }) => $maxHeight ? 
+	css`
+	overflow: auto;
+	max-height: ${$maxHeight}px;
+	` : css``}
 `;
 
 const Row = styled.div<{ $align?: string, $justify?: string, $height?: string }>`
@@ -306,7 +325,7 @@ const Column = styled.div`
 
 const Fieldset = styled.fieldset<{ $maxHeight?: number }>`
 	position: relative;
-	padding: 5px 5px;	
+	padding: 3px;	
 	margin: 0;
 	border-radius: 0.5rem;
 	border: 2px solid white;
@@ -329,16 +348,6 @@ const Badge = styled.div<{ $colorTag?: string }>`
 	border-radius: 0.5rem;
 	color: var(--text);
 	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`});
-`;
-
-const NewInput = styled.input`
-`;
-
-const InputLabel = styled.div`
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	font-weight: 700;
 `;
 
 const ButtonSmall = styled.button<{ $colorTag?: string, $expand?: boolean, $border?: boolean }>`
@@ -379,7 +388,7 @@ const ButtonWide = styled(ButtonSmall)`
 `;
 
 const ButtonLarge = styled(ButtonSmall)`
-	padding: 6px 10px;
+	padding: 3px 10px;
 	border-width: 3px;
 	font-size: 1.3rem;
 `;
@@ -392,32 +401,6 @@ const ButtonFieldset = styled(ButtonSmall)`
 const ButtonTiny = styled(ButtonSmall)`
 	padding: 0;
 	font-size: 1.25rem;
-`;
-
-const Select = styled.select`
-`;
-
-const InputButton = styled.button`
-	margin: 10px;
-	padding: 5px 25px;
-	font-size: 1.5rem;
-	font-weight: bold;
-	border: none;
-	border-radius: 0.5rem;
-	color: #ffffff;
-	background-color: #d346fe; //#9746fe
-
-	&:not(:disabled):hover {
-		background-color: #5f2573;
-	}
-
-	&:not(:disabled):active {
-		background-color: #4c1d5c;
-	}
-
-	&:disabled {
-		opacity: 0.5;
-	}
 `;
 
 const root = createRoot(document.getElementById('root')!);

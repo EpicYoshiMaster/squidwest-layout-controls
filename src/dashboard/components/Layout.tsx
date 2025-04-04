@@ -139,3 +139,20 @@ export const InputButtonSmall = styled(InputButton)`
     padding: 5px 25px;
 	font-family: 'Courier New', Courier, Consolas, monospace;
 `;
+
+/**
+ * New Layout Items
+ */
+export const Text = styled.p<{ $colorTag?: string, $textAlign?: string, $fontWeight?: string }>`
+	position: relative;
+	padding: 0;
+	margin: 0;
+	font-weight: ${({ $fontWeight }) => $fontWeight ? `${$fontWeight}` : `700`};
+	color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `text`});
+	text-align: ${({ $textAlign }) => $textAlign ? `${$textAlign}` : `center`};
+`;
+
+export const ColorSpan = styled.span<{ $colorTag?: string, $fontWeight?: string }>`
+	color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `text`});
+	font-weight: ${({ $fontWeight }) => $fontWeight ? `${$fontWeight}` : `unset`};
+`;

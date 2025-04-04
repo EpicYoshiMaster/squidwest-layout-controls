@@ -1,5 +1,5 @@
 import NodeCG from '@nodecg/types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 
 type ConnectionOptions = { onConnect?: () => void, onDisconnect?: () => void}
 
@@ -29,4 +29,33 @@ export const useObsConnectionStatus = (nodecg: NodeCG.ClientAPI, options?: Conne
 	}, []);
 
 	return connected;
+}
+
+export const useTimedActive = (time: number, onTimeEnd?: () => void): [boolean, () => void] => {
+	const [active, setActive] = useState(false);
+	const timeoutId = useRef<number | null>(null);
+
+	const startTime = useCallback(() => {
+		setActive(true);
+	}, []);
+
+	useEffect(() => {
+		if(active) {
+			timeoutId.current = window.setTimeout(() => { 
+				setActive(false); 
+
+				if(onTimeEnd) {
+					onTimeEnd();
+				}
+			}, time);
+		}
+
+		return () => {
+			if(timeoutId.current) {
+				clearInterval(timeoutId.current);
+			}
+		}
+	}, [active]);
+
+	return [active, startTime];
 }
