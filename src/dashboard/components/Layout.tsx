@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const InputSection = styled.div`
 	padding: 10px 20px;
@@ -143,6 +143,125 @@ export const InputButtonSmall = styled(InputButton)`
 /**
  * New Layout Items
  */
+export const Row = styled.div<{ $align?: string, $justify?: string, $height?: string }>`
+	position: relative;
+	margin: 2px 0;
+	display: flex;
+	flex-direction: row;
+	align-items: ${({ $align }) => $align ? $align : 'center'};
+	justify-content: ${({ $justify }) => $justify ? $justify : 'flex-start'};
+	gap: 5px;
+	height: ${({ $height }) => $height ? $height : 'auto'};
+
+	& input, textarea, select {
+		height: 2.25rem;
+		font-size: 1rem;
+	}
+
+	& input {
+		flex-grow: 1;
+	}
+`;
+
+export const GridRow = styled.div<{ $height?: string }>`
+	position: relative;
+	margin: 2px 0;
+	display: grid;
+	width: 100%;
+	gap: 5px;
+	height: ${({ $height }) => $height ? $height : 'auto'};
+	grid-auto-columns: 1fr;
+	grid-auto-flow: column;
+`;
+
+export const Column = styled.div`
+	position: relative;
+	display: flex;	
+	flex-direction: column;
+	justify-content: center;
+	gap: 3px;
+`;
+
+export const Fieldset = styled.fieldset<{ $maxHeight?: number }>`
+	position: relative;
+	padding: 3px;	
+	margin: 0;
+	border-radius: 0.5rem;
+	border: 2px solid white;
+
+	${({ $maxHeight }) => $maxHeight ? 
+	css`
+	overflow: auto;
+	max-height: ${$maxHeight}px;
+	` : css``}
+`;
+
+export const Badge = styled.div<{ $colorTag?: string }>`
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2px 4px;
+
+	font-size: 1rem;
+	border-radius: 0.5rem;
+	color: var(--text);
+	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`});
+`;
+
+export const ButtonSmall = styled.button<{ $colorTag?: string, $expand?: boolean, $border?: boolean }>`
+	position: relative;
+	padding: 6px 6px;
+	font-size: 1.1rem;
+	font-weight: bold;
+	
+	border-radius: 0.25rem;
+	margin: 0;
+	color: var(--text);
+	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`});
+	border: ${({ $border, $colorTag }) => $border ? ($colorTag ? `2px solid var(--${$colorTag}-border)` : `2px solid var(--button-border)`) : `none`};
+
+	height: ${({ $expand }) => $expand ? '100%' : 'auto'};
+	width: ${({ $expand }) => $expand ? '100%' : 'auto'};
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	&:not(:disabled):hover {
+		background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`}-hover);
+	}
+
+	&:not(:disabled):active {
+		background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`}-active);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+	}
+`;
+
+export const ButtonWide = styled(ButtonSmall)`
+	padding: 6px 10px;
+	border-width: 3px;
+`;
+
+export const ButtonLarge = styled(ButtonSmall)`
+	padding: 3px 10px;
+	border-width: 3px;
+	font-size: 1.3rem;
+`;
+
+export const ButtonFieldset = styled(ButtonSmall)`
+	padding: 3px;	
+	font-size: 1.1rem;
+`;
+
+export const ButtonTiny = styled(ButtonSmall)`
+	padding: 0;
+	font-size: 1.25rem;
+`;
+
 export const Text = styled.p<{ $colorTag?: string, $textAlign?: string, $fontWeight?: string }>`
 	position: relative;
 	padding: 0;
