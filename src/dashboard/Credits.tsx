@@ -12,8 +12,13 @@ import { CollapseContainerItemList } from './components/CollapseContainerItemLis
 import { FieldsetItemList } from './components/FieldsetItemList';
 import { BundleImages } from 'schemas/bundleImages';
 
-const DefaultCreditsRow = { name: "Credit Name", image: "", imageBundle: "", items: [] };
-const DefaultCredits: CreditsData = [{ name: "Credit Name", image: "", imageBundle: "", items: [] }];
+const defaultCreditsRow = { name: "Credit Name", image: "", imageBundle: "", items: [] };
+const defaultCredits: CreditsData = [{ name: "Credit Name", image: "", imageBundle: "", items: [] }];
+
+const specialCreditsRows = [
+	{ name: "YOSHI", colorTag: "yoshi" },
+	{ name: "NEXTEVENT", colorTag: "next-event" }
+]
 
 const isCredits = (object: unknown): object is CreditsData => {
 	if(!Array.isArray(object)) {
@@ -29,13 +34,13 @@ const isCredits = (object: unknown): object is CreditsData => {
 }
 
 export function Credits() {
-	const [credits, setCredits] = useReplicant<CreditsData>('creditsData', { bundle: 'squidwest-layout-controls', defaultValue: DefaultCredits });
+	const [credits, setCredits] = useReplicant<CreditsData>('creditsData', { bundle: 'squidwest-layout-controls', defaultValue: defaultCredits });
 
 	const [bundleImages] = useReplicant<BundleImages>('bundleImages', { defaultValue: { bundles: [], selectedBundle: "", images: [] }});
 
 	const [selectedBundle, setSelectedBundle] = useState("");
 
-	const [dashboardCredits, setDashboardCredits] = useState(DefaultCredits);
+	const [dashboardCredits, setDashboardCredits] = useState(defaultCredits);
 
 	useEffect(() => {
 		if(!bundleImages) return;
@@ -97,7 +102,7 @@ export function Credits() {
 	}, [onCommsCredits]);*/
 
 	const addRow = useCallback(() => {
-			setDashboardCredits([...dashboardCredits, cloneDeep(DefaultCreditsRow)]);
+			setDashboardCredits([...dashboardCredits, cloneDeep(defaultCreditsRow)]);
 		}, [dashboardCredits]);
 	
 	const deleteRow = useCallback((groupIndex: number) => {
@@ -145,13 +150,19 @@ export function Credits() {
 				maxHeight={600}
 				list={dashboardCredits}
 				setList={setDashboardCredits}
-				renderTitle={(creditsRow) => (
+				getColorTag={(creditsRow) => { 
+					const specialRow = specialCreditsRows.find((value) => value.name === creditsRow.name);
+
+					return specialRow ? specialRow.colorTag : undefined; } }
+				renderTitle={(creditsRow, colorTag) => (
 					<>
 						{creditsRow.name}
-						{creditsRow.items.length > 0 && (<Badge $colorTag='purple'>{creditsRow.items.length} Entries</Badge>)}
+						{(creditsRow.items.length > 0 || colorTag) && (
+							<Badge $colorTag='purple'>{colorTag ? `Special Row` : `${creditsRow.items.length} Entries` }</Badge>
+						)}
 					</>
 				)}
-				renderItem={(creditsRow, changeRow, index) => (
+				renderItem={(creditsRow, changeRow, index, colorTag) => (
 					<>
 						<Row $align='flex-end' $height='4rem'>
 							<Fieldset>
@@ -165,40 +176,45 @@ export function Credits() {
 								{ confirm ? 'Confirm?' : 'Delete Row' }
 							</ButtonLarge>
 						</Row>
-						<Row>
-							<Fieldset $height="100px" $expand={true}>
-								<legend><Text>Image</Text></legend>
-								<Row $height='100%' $expand>
-									<Select 
-										$width={creditsRow.image !== "" ? `275px` : `100%`} 
-										value={creditsRow.image} 
-										onChange={(event) => { changeRow({ image: event.target.value, imageBundle: event.target.value !== "" ? selectedBundle : "" }); } }>
-										<optgroup label={`Selected (${creditsRow.imageBundle !== "" ? creditsRow.imageBundle : "N/A"})`}>
-											<option selected value={creditsRow.image}>{creditsRow.image !== "" ? creditsRow.image : "None"}</option>
-										</optgroup>
-										<optgroup label={selectedBundle}>
-											<option value="">None</option>
-											{bundleImages && bundleImages.images.map((imagePath, index) => (
-												<option key={index} value={imagePath}>{imagePath}</option>
-											))}
-										</optgroup>
-									</Select>
-									{creditsRow.image !== "" && creditsRow.imageBundle !== "" && ( <Image $maxWidth='75px' height={75} src={getImagePath(creditsRow.imageBundle, creditsRow.image)} /> )}
-								</Row>
-							</Fieldset>
-						</Row>
-						<FieldsetItemList
-							list={creditsRow.items}
-							setList={(newList) => { changeRow({ items: newList }); }}
-							renderItem={(item, changeItem) => (
-							<>
-								<Input $expand type="text" value={item} onChange={(event) => { changeItem(event.target.value); }} />
-							</>
-							)}
-							defaultItem={""}
-							title="Entries"
-							maxHeight={350}
-						/>
+						{!colorTag && (
+						<>
+							<Row>
+								<Fieldset $height="100px" $expand={true}>
+									<legend><Text>Image</Text></legend>
+									<Row $height='100%' $expand>
+										<Select 
+											$width={creditsRow.image !== "" ? `275px` : `100%`} 
+											value={creditsRow.image} 
+											onChange={(event) => { changeRow({ image: event.target.value, imageBundle: event.target.value !== "" ? selectedBundle : "" }); } }>
+											<optgroup label={`Selected (${creditsRow.imageBundle !== "" ? creditsRow.imageBundle : "N/A"})`}>
+												<option value={creditsRow.image}>{creditsRow.image !== "" ? creditsRow.image : "None"}</option>
+											</optgroup>
+											<optgroup label={selectedBundle}>
+												<option value="">None</option>
+												{bundleImages && bundleImages.images.map((imagePath, index) => (
+													<option key={index} value={imagePath}>{imagePath}</option>
+												))}
+											</optgroup>
+										</Select>
+										{creditsRow.image !== "" && creditsRow.imageBundle !== "" && ( <Image $maxWidth='75px' height={75} src={getImagePath(creditsRow.imageBundle, creditsRow.image)} /> )}
+									</Row>
+								</Fieldset>
+							</Row>
+							<FieldsetItemList
+								list={creditsRow.items}
+								setList={(newList) => { changeRow({ items: newList }); }}
+								renderItem={(item, changeItem) => (
+								<>
+									<Input $expand type="text" value={item} onChange={(event) => { changeItem(event.target.value); }} />
+								</>
+								)}
+								defaultItem={""}
+								title="Entries"
+								maxHeight={350}
+							/>
+						</>
+						)}
+						
 					</>
 				)}
 			/>

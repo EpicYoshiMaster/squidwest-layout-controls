@@ -32,7 +32,7 @@ const Container = styled.div<{ $colorTag?: string }>`
 
 	width: 100%;
 	border-radius: 0.5rem;
-	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `collapse`});
+	background-color: var(--collapse${({ $colorTag }) => $colorTag ? `-${$colorTag}` : ``});
 `;
 
 const Header = styled.div<{ $colorTag?: string }>`
@@ -43,8 +43,8 @@ const Header = styled.div<{ $colorTag?: string }>`
 	align-items: center;
 	padding: 3px 8px;
 	border-radius: 0.5rem;
-	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `collapse`});
-	border: 3px solid var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `collapse-border`});
+	background-color: var(--collapse${({ $colorTag }) => $colorTag ? `-${$colorTag}` : ``});
+	border: 3px solid var(--collapse-${({ $colorTag }) => $colorTag ? `${$colorTag}-` : ``}border);
 `;
 
 const Front = styled.div`
@@ -62,7 +62,7 @@ const Content = styled.div<{ $colorTag?: string }>`
 	position: relative;	
 	margin-top: -8px;
 	padding: 10px 8px 5px;
-	border: 3px solid var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `collapse-border`});
+	border: 3px solid var(--collapse-${({ $colorTag }) => $colorTag ? `${$colorTag}-` : ``}border);
 	border-top: none;
 	border-radius: 0 0 0.5rem 0.5rem;
 `;

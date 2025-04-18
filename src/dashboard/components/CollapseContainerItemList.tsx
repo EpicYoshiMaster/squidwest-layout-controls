@@ -7,14 +7,15 @@ import { CaretUp, CaretDown } from "@phosphor-icons/react";
 interface CollapseContainerItemListProps<T> {
 	list: T[];
 	setList: (newList: T[]) => void;
-	renderTitle: (item: T) => React.ReactElement;
-	renderItem: (item: T, changeItem: (partial: Partial<T>) => void, index: number) => React.ReactElement;
+	renderTitle: (item: T, colorTag?: string | undefined) => React.ReactElement;
+	renderItem: (item: T, changeItem: (partial: Partial<T>) => void, index: number, colorTag?: string | undefined) => React.ReactElement;
+	getColorTag?: (item: T) => string | undefined;
 
 	maxHeight?: number;
 	canSwapItems?: boolean;
 }
 
-export const CollapseContainerItemList = <T,>({ list, setList, renderTitle, renderItem, maxHeight, canSwapItems = true }: CollapseContainerItemListProps<T>) => {
+export const CollapseContainerItemList = <T,>({ list, setList, renderTitle, renderItem, maxHeight, canSwapItems = true, getColorTag = () => undefined }: CollapseContainerItemListProps<T>) => {
 
 	const moveItem = useCallback((itemIndex: number, moveForward: boolean) => {
 		if((itemIndex <= 0 && !moveForward) || (itemIndex >= list.length - 1 && moveForward)) return;
@@ -53,11 +54,14 @@ export const CollapseContainerItemList = <T,>({ list, setList, renderTitle, rend
 				</>
 			)}
 			{list.map((listItem, index, array) => {
-				const title = renderTitle(listItem);
-				const item = renderItem(listItem, (partialItem: Partial<T>) => { changeItem(partialItem, index); }, index);
+				const colorTag = getColorTag(listItem);
+				const title = renderTitle(listItem, colorTag);
+				const item = renderItem(listItem, (partialItem: Partial<T>) => { changeItem(partialItem, index); }, index, colorTag);
 
 				return (
-					<CollapseContainer key={index}
+					<CollapseContainer 
+					key={index}
+					colorTag={colorTag}
 					title={(
 						<>
 							{canSwapItems && (
