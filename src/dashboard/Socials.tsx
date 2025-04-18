@@ -5,10 +5,8 @@ import { createRoot } from 'react-dom/client';
 import { useReplicant } from '@nodecg/react-hooks';
 import { Platform } from '../types/types';
 import { Text, Row, GridRow, Fieldset, ButtonWide, ButtonLarge, Badge } from './components/Layout';
-import { useDropzone } from 'react-dropzone';
 import { isEqual, cloneDeep } from 'lodash';
-import { exportJSON, fileToJSON } from '../helpers/utils';
-import { useTimedActive } from '../helpers/hooks';
+import { useListControl } from '../helpers/hooks';
 import { FieldsetItemList } from './components/FieldsetItemList';
 import { CollapseContainerItemList } from './components/CollapseContainerItemList';
 
@@ -25,17 +23,12 @@ const DefaultSocials: Socials = [{
 	]
 }]
 
-const isSocials = (object: unknown): object is Socials => {
-	if(!Array.isArray(object)) {
-		return false;
-	}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isSocialsGroup = (object: any): object is SocialsGroup => {
+	if(!object) return false;
 
-	//Technically only validates for presence of name and items but should be fine enough
-	if(object.some((value) => { return value.name === undefined || !Array.isArray(value.items); })) {
-		return false;
-	}
-
-	return true;
+	return object.name !== undefined 
+	&& Array.isArray(object.items);
 }
 
 export function SocialsInformation() {
@@ -46,9 +39,15 @@ export function SocialsInformation() {
 
 	const [dashboardSocials, setDashboardSocials] = useState(DefaultSocials);
 
-	const [importError, setImportError] = useState("");
-	const [error, startErrorTime] = useTimedActive(5000, () => { setImportError(""); });
-	const [confirm, startConfirmTime] = useTimedActive(2000);
+	const { 
+		addItem, 
+		delete: {
+			deleteItem,
+			deleteConfirmIndex
+		}, 
+		importList: { getRootProps, getInputProps, open, importError }, 
+		exportList 
+	} = useListControl(dashboardSocials, setDashboardSocials, DefaultGroup, isSocialsGroup, 'socials.json');
 
 	const hasUnsavedChanges = useMemo(() => {
 		return !isEqual(socials, dashboardSocials);
@@ -59,46 +58,10 @@ export function SocialsInformation() {
 		
 		setDashboardSocials(cloneDeep(socials));
 	}, [socials]);
-
-	const showImportError = useCallback((error: string) => {
-		setImportError(error);
-
-		if(error !== "") {
-			startErrorTime();
-		}
-	}, [startErrorTime]);
-
-	const addGroup = useCallback(() => {
-		setDashboardSocials([...dashboardSocials, cloneDeep(DefaultGroup)]);
-	}, [dashboardSocials]);
-
-	const deleteGroup = useCallback((groupIndex: number) => {
-		setDashboardSocials(dashboardSocials.filter((group, index) => index !== groupIndex));
-	}, [dashboardSocials]);
 	
 	const updateSocials = useCallback(() => {
 		setSocials(dashboardSocials);
 	}, [setSocials, dashboardSocials]);
-
-	const onImportJSON = useCallback((json: unknown) => {
-		if(json && isSocials(json)) {
-			setDashboardSocials(json);
-			showImportError("");
-		}
-		else {
-			showImportError("The file provided failed to be matched.");
-		}
-	}, [showImportError]);
-
-	const { getRootProps, getInputProps, open } = useDropzone({ 
-		onDrop:  (acceptedFiles: File[]) => { fileToJSON(acceptedFiles, onImportJSON, showImportError); }, 
-		accept: { 'application/json': ['.json'] } , 
-		noClick: true, noDrag: true, noKeyboard: true, multiple: false 
-	});
-
-	const handleExport = useCallback(() => {
-		exportJSON(dashboardSocials, 'socials.json');
-	}, [dashboardSocials]);
 
 	return (
 		<PanelContainer {...getRootProps()}>
@@ -119,7 +82,11 @@ export function SocialsInformation() {
 								<legend><Text>Group Name</Text></legend>
 								<input type="text" value={group.name} onChange={(event) => { changeGroup({ name: event.target.value }); }} />
 							</Fieldset>
-							<ButtonLarge $colorTag={ confirm ? 'dark-red' : 'red' } $expand={true} onClick={() => confirm ? deleteGroup(index) : startConfirmTime()}>{ confirm ? 'Confirm?' : 'Delete Group' }</ButtonLarge>
+							<ButtonLarge 
+							$colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } 
+							$expand={true} onClick={() => deleteItem(index)}>
+								{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete Group' }
+							</ButtonLarge>
 						</Row>
 						<FieldsetItemList
 							list={group.items}
@@ -143,12 +110,12 @@ export function SocialsInformation() {
 				maxHeight={600}
 			/>
 			<GridRow $height='3rem'>
-				<ButtonWide $expand={true} $colorTag='green' onClick={() => { addGroup(); }}>New Group</ButtonWide>
+				<ButtonWide $expand={true} $colorTag='green' onClick={() => { addItem(); }}>New Group</ButtonWide>
 				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { updateSocials(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='orange' onClick={() => { open(); }}>Import</ButtonWide>
-				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { handleExport(); }}>Export</ButtonWide>
+				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { exportList(); }}>Export</ButtonWide>
 			</GridRow>
-			{error && (
+			{importError !== "" && (
 				<Row $height='1.5rem' $align='flex-end'><Text $colorTag='red'>ERROR: {importError}</Text></Row>
 			)}
 		</PanelContainer>

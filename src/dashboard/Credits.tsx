@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components'
-import { CreditsData } from 'schemas/creditsData';
+import { CreditsData, CreditsRow } from 'schemas/creditsData';
 import { createRoot } from 'react-dom/client';
 import { Badge, ButtonLarge, ButtonWide, Fieldset, GridRow, Image, Input, Row, Select, Text } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks';
 import { cloneDeep, isEqual } from 'lodash';
-import { useTimedActive } from '../helpers/hooks';
-import { useDropzone } from 'react-dropzone/.';
-import { exportJSON, fileToJSON, getImagePath } from '../helpers/utils';
+import { useListControl } from '../helpers/hooks';
+import { getImagePath } from '../helpers/utils';
 import { CollapseContainerItemList } from './components/CollapseContainerItemList';
 import { FieldsetItemList } from './components/FieldsetItemList';
 import { BundleImages } from 'schemas/bundleImages';
@@ -17,36 +16,30 @@ const defaultCredits: CreditsData = [{ name: "Credit Name", image: "", imageBund
 
 const specialCreditsRows = [
 	{ name: "YOSHI", colorTag: "yoshi" },
-	{ name: "NEXTEVENT", colorTag: "next-event" }
+	{ name: "CURRENTEVENT", colorTag: "event" },
+	{ name: "NEXTEVENT", colorTag: "event" }
 ]
 
-const isCredits = (object: unknown): object is CreditsData => {
-	if(!Array.isArray(object)) {
-		return false;
-	}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isCreditsRow = (item: any): item is CreditsRow => {
+	if(!item) return false;
 
-	//Technically only validates for presence of name and items but should be fine enough
-	if(object.some((value) => { return value.name === undefined || value.image === undefined || !Array.isArray(value.items); })) {
-		return false;
-	}
-
-	return true;
+	return item.name !== undefined 
+	&& item.image !== undefined 
+	&& Array.isArray(item.items);
 }
 
 export function Credits() {
 	const [credits, setCredits] = useReplicant<CreditsData>('creditsData', { bundle: 'squidwest-layout-controls', defaultValue: defaultCredits });
-
 	const [bundleImages] = useReplicant<BundleImages>('bundleImages', { defaultValue: { bundles: [], selectedBundle: "", images: [] }});
-
 	const [selectedBundle, setSelectedBundle] = useState("");
-
 	const [dashboardCredits, setDashboardCredits] = useState(defaultCredits);
 
 	useEffect(() => {
 		if(!bundleImages) return;
 
 		setSelectedBundle(bundleImages.selectedBundle);
-	}, [bundleImages])
+	}, [bundleImages]);
 
 	useEffect(() => {
 		if(!credits) return;
@@ -54,17 +47,15 @@ export function Credits() {
 		setDashboardCredits(cloneDeep(credits));
 	}, [credits]);
 
-	const [importError, setImportError] = useState("");
-	const [error, startErrorTime] = useTimedActive(5000, () => { setImportError(""); });
-	const [confirm, startConfirmTime] = useTimedActive(2000);
-
-	const showImportError = useCallback((error: string) => {
-		setImportError(error);
-
-		if(error !== "") {
-			startErrorTime();
-		}
-	}, [startErrorTime]);
+	const { 
+		addItem, 
+		delete: {
+			deleteItem,
+			deleteConfirmIndex
+		}, 
+		importList: { getRootProps, getInputProps, open, importError }, 
+		exportList 
+	} = useListControl(dashboardCredits, setDashboardCredits, defaultCreditsRow, isCreditsRow, 'credits.json');
 
 	const hasUnsavedChanges = useMemo(() => {
 		return !isEqual(credits, dashboardCredits);
@@ -101,37 +92,9 @@ export function Credits() {
 		}
 	}, [onCommsCredits]);*/
 
-	const addRow = useCallback(() => {
-			setDashboardCredits([...dashboardCredits, cloneDeep(defaultCreditsRow)]);
-		}, [dashboardCredits]);
-	
-	const deleteRow = useCallback((groupIndex: number) => {
-		setDashboardCredits(dashboardCredits.filter((group, index) => index !== groupIndex));
-	}, [dashboardCredits]);
-
 	const updateCredits = useCallback(() => {
 		setCredits(dashboardCredits);
 	}, [setCredits, dashboardCredits]);
-
-	const onImportJSON = useCallback((json: unknown) => {
-		if(json && isCredits(json)) {
-			setDashboardCredits(json);
-			showImportError("");
-		}
-		else {
-			showImportError("The file provided failed to be matched.");
-		}
-	}, [showImportError]);
-	
-	const { getRootProps, getInputProps, open } = useDropzone({ 
-		onDrop:  (acceptedFiles: File[]) => { fileToJSON(acceptedFiles, onImportJSON, showImportError); }, 
-		accept: { 'application/json': ['.json'] } , 
-		noClick: true, noDrag: true, noKeyboard: true, multiple: false 
-	});
-
-	const handleExport = useCallback(() => {
-		exportJSON(dashboardCredits, 'credits.json');
-	}, [dashboardCredits]);
 
 	return (
 		<PanelContainer {...getRootProps()}>
@@ -170,10 +133,10 @@ export function Credits() {
 								<input type="text" value={creditsRow.name} onChange={(event) => { changeRow({ name: event.target.value }); }} />
 							</Fieldset>
 							<ButtonLarge 
-								$colorTag={ confirm ? 'dark-red' : 'red' } 
+								$colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } 
 								$expand={true} 
-								onClick={() => confirm ? deleteRow(index) : startConfirmTime()}>
-								{ confirm ? 'Confirm?' : 'Delete Row' }
+								onClick={() => deleteItem(index) }>
+								{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete Row' }
 							</ButtonLarge>
 						</Row>
 						{!colorTag && (
@@ -219,12 +182,12 @@ export function Credits() {
 				)}
 			/>
 			<GridRow $height='3rem'>
-				<ButtonWide $expand={true} $colorTag='green' onClick={() => { addRow(); }}>New Row</ButtonWide>
+				<ButtonWide $expand={true} $colorTag='green' onClick={() => { addItem(); }}>New Row</ButtonWide>
 				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { updateCredits(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='orange' onClick={() => { open(); }}>Import</ButtonWide>
-				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { handleExport(); }}>Export</ButtonWide>
+				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { exportList(); }}>Export</ButtonWide>
 			</GridRow>
-			{error && (
+			{importError !== "" && (
 				<Row $height='1.5rem' $align='flex-end'><Text $colorTag='red'>ERROR: {importError}</Text></Row>
 			)}
 		</PanelContainer>

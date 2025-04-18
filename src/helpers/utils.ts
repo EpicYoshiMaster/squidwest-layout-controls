@@ -74,7 +74,7 @@ export const fileToJSON = (acceptedFiles: File[], onImport: (json: unknown) => v
 export const exportJSON = (json: unknown, fileName: string) => {
 	const a = document.createElement('a');
 
-	a.href = URL.createObjectURL(new Blob([JSON.stringify(json, null, 2)], { type: 'text/plain' }));
+	a.href = URL.createObjectURL(new Blob([JSON.stringify(json)], { type: 'text/plain' }));
 
 	a.setAttribute('download', fileName);
 
