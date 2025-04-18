@@ -1,4 +1,7 @@
 import { ColorInfo } from 'schemas/matchData';
+import fs from 'fs';
+import path from 'path';
+import { BundleImages } from 'schemas/bundleImages';
 
 export const formatTimeHMSC = (ms: number): string => {
 	ms = ms > 0 ? ms : 0;
@@ -40,7 +43,7 @@ export const clamp = (value: number, min: number, max: number) => { return Math.
 /**
  * acceptedFiles can only be 1 file, it is an array to facilitate easy use of react-dropzone
  */
-export const fileToJSON = (acceptedFiles: File[], onImport: (json: any) => void, onError: (error: string) => void) => {
+export const fileToJSON = (acceptedFiles: File[], onImport: (json: unknown) => void, onError: (error: string) => void) => {
 	if(acceptedFiles.length > 1)
 	{
 		onError("Only one file can be imported at a time.");
@@ -68,7 +71,7 @@ export const fileToJSON = (acceptedFiles: File[], onImport: (json: any) => void,
 	});
 }
 
-export const exportJSON = (json: any, fileName: string) => {
+export const exportJSON = (json: unknown, fileName: string) => {
 	const a = document.createElement('a');
 
 	a.href = URL.createObjectURL(new Blob([JSON.stringify(json, null, 2)], { type: 'text/plain' }));
@@ -80,4 +83,61 @@ export const exportJSON = (json: any, fileName: string) => {
 	a.click();
 
 	document.body.removeChild(a);
+}
+
+export const getImagePath = (bundle: string, imagePath: string) => {
+	return `\\bundles\\${bundle}\\images\\${imagePath}`;
+}
+
+//
+// Server-side Only
+//
+
+const imageExtensions = new Set([ 'png', 'jpg', 'jpeg', 'gif' ]);
+
+const isFileExtensionImage = (name: string) => {
+	return imageExtensions.has(path.extname(name).slice(1).toLowerCase());
+}
+
+export const getItems = (filePath: string, filter: (value: fs.Dirent) => boolean, recursive?: boolean) => {
+	const files = fs.readdirSync(filePath, { withFileTypes: true, recursive });
+
+	return files.filter(filter).map(value => {
+		return path.relative(filePath, path.join(value.parentPath || value.path, value.name));
+	});
+}
+
+export const getDirectories = (filePath: string, recursive?: boolean) => {
+	return getItems(filePath, (value) => value.isDirectory(), recursive);
+}
+
+export const getFiles = (path: string, recursive?: boolean) => {
+	return getItems(path, (value) => value.isFile(), recursive);
+}
+
+export const getImages = (filePath: string, recursive?: boolean) => {
+	return getItems(filePath, (value) => { 
+		return value.isFile() && isFileExtensionImage(value.name); } , recursive);
+}
+
+export const updateBundleImages = (bundleImages: BundleImages) => {
+	bundleImages.bundles = getDirectories('bundles');
+
+	if(!bundleImages.bundles.includes(bundleImages.selectedBundle)) {
+		bundleImages.selectedBundle = bundleImages.bundles[0];
+	}
+
+	const bundlePath = path.join('bundles', path.join(bundleImages.selectedBundle));
+
+	const imagePath = path.join(bundlePath, 'images');
+
+	if(fs.existsSync(imagePath)) {
+		bundleImages.images = getImages(imagePath, true);
+	}
+	else {
+		console.log(`No Images directory found!`);
+		bundleImages.images = [];
+	}
+
+	return bundleImages;
 }

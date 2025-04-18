@@ -40,11 +40,3 @@ const HeadRow = styled.div`
     justify-content: space-between;
     align-items: center;
 `;
-
-const AddRemoveList = styled.div`
-    grid-column: 2;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
-`;

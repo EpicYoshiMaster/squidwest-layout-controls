@@ -2,19 +2,26 @@ import NodeCG from '@nodecg/types';
 import Package from '../../package.json'
 import { OBSControl } from './OBSControl';
 import { ObsData } from 'schemas/obsData';
-import { Logger, TimeLogger } from './Logger';
+import { BundleImages } from 'schemas/bundleImages'; 
+import { TimeLogger } from './Logger';
+import { updateBundleImages } from '../helpers/utils';
 
 export = async (nodecg: NodeCG.ServerAPI) => {
 
 	console.log(`You're using ${Package.name} Version ${Package.version} (${Package.squidwest.month})`);
 
+	const bundleImages = nodecg.Replicant<BundleImages>('bundleImages', { defaultValue: { bundles: [], selectedBundle: "", images: [] }});
+
+	bundleImages.value = updateBundleImages(bundleImages.value);
+
 	const timeLogger = new TimeLogger(`${Package.name}-Time`, true);
 	
-
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onConnect = (obs: OBSControl) => {
 		nodecg.sendMessage('obsConnectionStatus', { isConnected: true });
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onDisconnect = (obs: OBSControl) => {
 		nodecg.sendMessage('obsConnectionStatus', { isConnected: false });
 	}
@@ -52,6 +59,11 @@ export = async (nodecg: NodeCG.ServerAPI) => {
 			})
 		}
 		
+	})
+
+	nodecg.listenFor('updateBundleImages', (oldValue: BundleImages) => {
+		bundleImages.value = updateBundleImages(oldValue);
+		console.log(bundleImages.value);
 	})
 
 	/*

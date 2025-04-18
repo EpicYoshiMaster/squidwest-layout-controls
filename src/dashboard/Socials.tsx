@@ -25,7 +25,7 @@ const DefaultSocials: Socials = [{
 	]
 }]
 
-const isSocials = (object: any): object is Socials => {
+const isSocials = (object: unknown): object is Socials => {
 	if(!Array.isArray(object)) {
 		return false;
 	}
@@ -78,9 +78,9 @@ export function SocialsInformation() {
 	
 	const updateSocials = useCallback(() => {
 		setSocials(dashboardSocials);
-	}, [dashboardSocials]);
+	}, [setSocials, dashboardSocials]);
 
-	const onImportJSON = useCallback((json: any) => {
+	const onImportJSON = useCallback((json: unknown) => {
 		if(json && isSocials(json)) {
 			setDashboardSocials(json);
 			showImportError("");
@@ -88,7 +88,7 @@ export function SocialsInformation() {
 		else {
 			showImportError("The file provided failed to be matched.");
 		}
-	}, []);
+	}, [showImportError]);
 
 	const { getRootProps, getInputProps, open } = useDropzone({ 
 		onDrop:  (acceptedFiles: File[]) => { fileToJSON(acceptedFiles, onImportJSON, showImportError); }, 
@@ -119,7 +119,7 @@ export function SocialsInformation() {
 								<legend><Text>Group Name</Text></legend>
 								<input type="text" value={group.name} onChange={(event) => { changeGroup({ name: event.target.value }); }} />
 							</Fieldset>
-							<ButtonLarge $colorTag={ confirm ? 'dark-red' : 'red' } $expand={true} onClick={() => { confirm ? deleteGroup(index) : startConfirmTime(); }}>{ confirm ? 'Confirm?' : 'Delete Group' }</ButtonLarge>
+							<ButtonLarge $colorTag={ confirm ? 'dark-red' : 'red' } $expand={true} onClick={() => confirm ? deleteGroup(index) : startConfirmTime()}>{ confirm ? 'Confirm?' : 'Delete Group' }</ButtonLarge>
 						</Row>
 						<FieldsetItemList
 							list={group.items}

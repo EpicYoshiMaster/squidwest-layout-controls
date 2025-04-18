@@ -26,7 +26,7 @@ export const useObsConnectionStatus = (nodecg: NodeCG.ClientAPI, options?: Conne
 		return () => {
 			nodecg.unlisten('obsConnectionStatus', onConnectionStatus);
 		}
-	}, []);
+	});
 
 	return connected;
 }
@@ -55,7 +55,7 @@ export const useTimedActive = (time: number, onTimeEnd?: () => void): [boolean, 
 				clearInterval(timeoutId.current);
 			}
 		}
-	}, [active]);
+	}, [active, onTimeEnd, time]);
 
 	return [active, startTime];
 }

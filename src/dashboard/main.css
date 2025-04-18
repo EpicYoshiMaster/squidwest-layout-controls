@@ -1,6 +1,9 @@
 :root {
 	--text: #ffffff;
 
+	--collapse: #4d4e8f;
+	--collapse-border: #7967dd;
+
 	--button: #d346fe;
 	--button-hover: #5f2573;
 	--button-active: #4c1d5c;

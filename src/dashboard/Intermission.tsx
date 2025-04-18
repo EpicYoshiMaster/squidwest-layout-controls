@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components'
-import NodeCG from '@nodecg/types';
 import { createRoot } from 'react-dom/client';
-import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader } from './components/Layout';
+import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { IntermissionData } from 'schemas/intermissionData';
 import { CollapseContainer } from './components/CollapseContainer';
@@ -27,7 +26,7 @@ export function Intermission() {
 	}, [intermissionData]);
 	
 	const updateIntermissionData = () => {
-		let newIntermissionData: IntermissionData = {
+		const newIntermissionData: IntermissionData = {
 			showTime: showTime,
 			showEvent: showEvent,
 			showLocation: showLocation,

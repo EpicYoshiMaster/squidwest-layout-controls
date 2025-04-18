@@ -143,7 +143,7 @@ export const InputButtonSmall = styled(InputButton)`
 /**
  * New Layout Items
  */
-export const Row = styled.div<{ $align?: string, $justify?: string, $height?: string }>`
+export const Row = styled.div<{ $align?: string, $justify?: string, $height?: string, $expand?: boolean }>`
 	position: relative;
 	margin: 2px 0;
 	display: flex;
@@ -152,14 +152,11 @@ export const Row = styled.div<{ $align?: string, $justify?: string, $height?: st
 	justify-content: ${({ $justify }) => $justify ? $justify : 'flex-start'};
 	gap: 5px;
 	height: ${({ $height }) => $height ? $height : 'auto'};
+	${({ $expand }) => $expand ? css`width: 100%;` : css``}	
 
 	& input, textarea, select {
 		height: 2.25rem;
 		font-size: 1rem;
-	}
-
-	& input {
-		flex-grow: 1;
 	}
 `;
 
@@ -182,12 +179,44 @@ export const Column = styled.div`
 	gap: 3px;
 `;
 
-export const Fieldset = styled.fieldset<{ $maxHeight?: number }>`
+export const Image = styled.img<{ $maxWidth?: string, $maxHeight?: string }>`
+	${({ $maxWidth }) => $maxWidth ? css`max-width: ${$maxWidth};` : css``}
+	${({ $maxHeight }) => $maxHeight ? css`max-height: ${$maxHeight};` : css``}
+`;
+
+export const Input = styled.input<{ $expand?: boolean }>`
+	${({ $expand }) => $expand ? css`flex-grow: 1;` : css``}
+
+	height: 2.25rem;
+	font-size: 1rem;
+`;
+
+export const Select = styled.select<{ $expand?: boolean, $width?: string }>`
+	${({ $expand }) => $expand ? css`flex-grow: 1;` : css``}
+
+	height: 2.25rem;
+	font-size: 1rem;
+
+	${({ $width }) => $width ? css`width: ${$width};` : css``}
+
+	& optgroup {
+		font-style: normal;
+	}
+`;
+
+export const Fieldset = styled.fieldset<{ $maxHeight?: number, $column?: boolean, $expand?: boolean, $height?: string }>`
 	position: relative;
+	display: flex;
+	flex-direction: ${({ $column }) => $column ? 'column' : 'row'};
 	padding: 3px;	
 	margin: 0;
 	border-radius: 0.5rem;
 	border: 2px solid white;
+	align-items: center;
+
+	height: ${({ $height }) => $height ? $height : 'auto'};
+
+	${({ $expand }) => $expand ? css`width: 100%;` : css``}
 
 	${({ $maxHeight }) => $maxHeight ? 
 	css`
@@ -207,6 +236,7 @@ export const Badge = styled.div<{ $colorTag?: string }>`
 	border-radius: 0.5rem;
 	color: var(--text);
 	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`});
+	min-width: max-content;
 `;
 
 export const ButtonSmall = styled.button<{ $colorTag?: string, $expand?: boolean, $border?: boolean }>`

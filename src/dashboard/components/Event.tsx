@@ -13,19 +13,19 @@ export const Event: React.FC<EventProps> = ({ event, setEvent, useDate }) => {
 
 	const setName = useCallback((name: string) => {
 		setEvent((oldEvent) => { return { ...oldEvent, name: name }} );
-	}, []);
+	}, [setEvent]);
 
 	const setLocation = useCallback((location: string) => {
 		setEvent((oldEvent) => { return { ...oldEvent, location: location }} );
-	}, []);
+	}, [setEvent]);
 
 	const setNumber = useCallback((number: number) => {
 		setEvent((oldEvent) => { return { ...oldEvent, number: number }} );
-	}, []);
+	}, [setEvent]);
 
 	const setDate = useCallback((date: string) => {
 		setEvent((oldEvent) => { return { ...oldEvent, date: date }} );
-	}, []);
+	}, [setEvent]);
 
 	return (
 		<Container>

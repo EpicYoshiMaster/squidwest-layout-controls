@@ -12,15 +12,15 @@ export const Commentator: React.FC<CommentatorProps> = ({ comm, setCommentator }
 
 	const setName = useCallback((name: string) => {
 		setCommentator((oldComm) => { return { ...oldComm, name: name }} );
-	}, []);
+	}, [setCommentator]);
 
 	const setPronouns = useCallback((pronouns: string) => {
 		setCommentator((oldComm) => { return { ...oldComm, pronouns: pronouns }} );
-	}, []);
+	}, [setCommentator]);
 
 	const setTag = useCallback((tag: string) => {
 		setCommentator((oldComm) => { return { ...oldComm, tag: tag }} );
-	}, []);
+	}, [setCommentator]);
 
 	return (
 		<Container>

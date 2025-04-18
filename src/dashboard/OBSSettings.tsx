@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components'
-import NodeCG from '@nodecg/types';
 import { createRoot } from 'react-dom/client';
 import { InputCheckbox, InputSubheader, InputRow, InputLabel, InputSection, InputText, InputButton, ErrorText } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks';
@@ -9,7 +8,7 @@ import { useObsConnectionStatus } from '../helpers/hooks'
 
 export function OBSSettings() {
 	
-	const [ obsSettings, SetObsSettings ] = useReplicant<ObsData>('obssettings', { 
+	const [ obsSettings, setObsSettings ] = useReplicant<ObsData>('obssettings', { 
 		bundle: 'squidwest-layout-controls',
 		defaultValue: { serverIp: "", serverPort: "", autoConnect: false}
 	});
@@ -66,7 +65,7 @@ export function OBSSettings() {
 				setObsConnection(true, obsData);
 			}
 		})
-	}, []);
+	});
 
 	useEffect(() => {
 		if(!obsSettings) return;
@@ -82,15 +81,15 @@ export function OBSSettings() {
 	}, [obsSettings]);
 
 	const updateObsSettings = useCallback(() => {
-		let newObsSettings: ObsData = {
+		const newObsSettings: ObsData = {
 			serverIp: serverIp,
 			serverPort: serverPort,
 			serverPassword: serverPassword,
 			autoConnect: autoConnect
 		};
 
-		SetObsSettings(newObsSettings);
-	}, [serverIp, serverPort, serverPassword, autoConnect]);
+		setObsSettings(newObsSettings);
+	}, [serverIp, serverPort, serverPassword, autoConnect, setObsSettings]);
 
 	return (
 		<PanelContainer>
@@ -127,7 +126,7 @@ export function OBSSettings() {
 			{statusText && (
 				<ErrorText>{statusText}</ErrorText>
 			)}
-			<InputButton disabled={connected} onClick={() => { obsSettings && setObsConnection(true, obsSettings); }}>{connected ? 'Connected' : 'Connect'}</InputButton>
+			<InputButton disabled={connected} onClick={() => obsSettings && setObsConnection(true, obsSettings)}>{connected ? 'Connected' : 'Connect'}</InputButton>
 		</PanelContainer>
 	)
 }

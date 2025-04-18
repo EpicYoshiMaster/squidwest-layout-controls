@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { InputSubheader, TransparentButton } from './Layout';
+import { TransparentButton } from './Layout';
 import { CaretDown, CaretUp } from '@phosphor-icons/react'
 
 interface CollapseContainerProps {
 	title: string | React.ReactElement;
 	children: React.ReactNode;
+	colorTag?: string;
 }
 
-export const CollapseContainer: React.FC<CollapseContainerProps> = ({ title, children }) => {
+export const CollapseContainer: React.FC<CollapseContainerProps> = ({ title, children, colorTag }) => {
 	const [collapsed, setCollapsed] = useState(true);
 
 	return (
-		<Container>
-			<Header>
+		<Container $colorTag={colorTag}>
+			<Header $colorTag={colorTag}>
 				<Front>
 					{title}
 				</Front>
@@ -21,20 +22,20 @@ export const CollapseContainer: React.FC<CollapseContainerProps> = ({ title, chi
 					{collapsed ? (<CaretDown />) : (<CaretUp />)}
 				</TransparentButton>
 			</Header>
-			{!collapsed && ( <Content> {children} </Content> )}            
+			{!collapsed && ( <Content $colorTag={colorTag}> {children} </Content> )}            
 		</Container>
 	)
 };
 
-const Container = styled.div`
+const Container = styled.div<{ $colorTag?: string }>`
 	position: relative;
 
 	width: 100%;
 	border-radius: 0.5rem;
-	background-color: #4d4e8f;
+	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `collapse`});
 `;
 
-const Header = styled.div`
+const Header = styled.div<{ $colorTag?: string }>`
 	position: relative;
 	display: flex;
 	flex-direction: row;
@@ -42,8 +43,8 @@ const Header = styled.div`
 	align-items: center;
 	padding: 3px 8px;
 	border-radius: 0.5rem;
-	background-color: #4d4e8f;
-	border: 3px solid #7967dd;
+	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `collapse`});
+	border: 3px solid var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `collapse-border`});
 `;
 
 const Front = styled.div`
@@ -57,11 +58,11 @@ const Front = styled.div`
 	font-weight: 700;
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ $colorTag?: string }>`
 	position: relative;	
 	margin-top: -8px;
 	padding: 10px 8px 5px;
-	border: 3px solid #7967dd;
+	border: 3px solid var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `collapse-border`});
 	border-top: none;
 	border-radius: 0 0 0.5rem 0.5rem;
 `;

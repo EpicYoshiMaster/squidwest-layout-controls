@@ -6,11 +6,8 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type CreditsData = CreditsRow[];
-
-export interface CreditsRow {
-	name: string;
-	image: string;
-	imageBundle: string;
-	items: string[];
+export interface BundleImages {
+	bundles: string[];
+	selectedBundle: string;
+	images: string[];
 }

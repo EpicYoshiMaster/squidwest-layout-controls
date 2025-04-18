@@ -56,7 +56,7 @@ export function Time() {
 		return () => {
 			nodecg.unlisten('onSceneChange', onSceneChange);
 		}
-	}, []);
+	});
 
 	return (
 		<PanelContainer>

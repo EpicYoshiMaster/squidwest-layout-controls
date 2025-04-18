@@ -1,64 +1,23 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-        "setupTeam": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "The list of Setup and Teardown volunteers helping with the event.",
-            "default": ["Volunteer #1", "Volunteer #2", "Volunteer #3"]
-        },
-        "commentaryTeam": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "The list of Commentators helping with the event.",
-            "default": ["Commentator #1", "Commentator #2", "Commentator #3"]
-        },
-        "techTeam": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "The list of Stream Technicians helping with the event.",
-            "default": ["Technician #1"]
-        },
-        "staffTeam": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "The list of SquidWest TOs and Staff.",
-            "default": ["Fuchsia", "Carrot", "Chino", "Brandeska", "Kaito", "Froppy"]
-        },
-        "headTO": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "The Head TO for this event.",
-            "default": ["Head TO Name"]
-        },
-        "poolCaptains": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "The list of Staff and Pool Captains for this event.",
-            "default": ["Pool Captain Name"]
-        },
-        "artTeam": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "The list of Artists contributing to the layouts or event.",
-            "default": ["Xolo"]
-        }
+    "type": "array",
+    "items": {
+        "$ref": "#/$defs/creditsRow"
     },
     "$defs": {
         "creditsRow": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "title": { "type": "string", "default": "Position Name" },
+                "name": { "type": "string", "default": "Credit Name" },
 				"image": { "type": "string", "default": "" },
-                "names": { 
+                "imageBundle": { "type": "string", "default": "" },
+                "items": { 
 					"type": "array",
 					"items": { "type" : "string" }
 				}
-            }
+            },
+            "required": [ "name", "image", "imageBundle", "items" ]
         }
-    },
-    "required": ["setupTeam", "commentaryTeam", "techTeam", "staffTeam", "headTO", "poolCaptains", "artTeam"]
+    }
 }

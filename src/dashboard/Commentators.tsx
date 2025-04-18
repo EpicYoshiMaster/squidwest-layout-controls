@@ -1,7 +1,6 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components'
-import NodeCG from '@nodecg/types';
 import { CommentatorData, CommentatorInfo } from 'schemas/commentatorData';
 import { createRoot } from 'react-dom/client';
 import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader } from './components/Layout';
@@ -43,7 +42,7 @@ export function Commentators() {
 	}, [comms]);
 	
 	const updateCommentators = useCallback(() => {
-		let newCommentators: CommentatorData = {
+		const newCommentators: CommentatorData = {
 			commentatorOne: commentatorOne,
 			commentatorTwo: commentatorTwo,
 			autoShow: autoShow,

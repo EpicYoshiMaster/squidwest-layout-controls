@@ -36,26 +36,30 @@ export const FieldsetItemList = <T,>({ list, setList, renderItem, defaultItem, t
 				return item;
 			}
 		}));
-	}, [list]);
+	}, [list, setList]);
 
 	const addItem = useCallback(() => {
 		setList([...list, cloneDeep(defaultItem)])
-	}, [list, defaultItem]);
+	}, [list, defaultItem, setList]);
 
 	const changeItem = useCallback((partialItem: Partial<T>, itemIndex: number) => {
 		setList(list.map((item, index) => {
 			if(index !== itemIndex) return item;
 
-			return { ...item, ...partialItem };
+			if(typeof partialItem === 'object') {
+				return { ...item, ...partialItem };
+			}
+
+			return partialItem;
 		}))
-	}, [list]);
+	}, [list, setList]);
 
 	const deleteItem = useCallback((itemIndex: number) => {
 		setList(list.filter((item, index) => index !== itemIndex))
-	}, [list]);
+	}, [list, setList]);
 
 	return (
-		<Fieldset $maxHeight={maxHeight}>
+		<Fieldset $column $maxHeight={maxHeight}>
 			<legend>
 				<Row>
 					<Text>{title}</Text>
@@ -75,7 +79,7 @@ export const FieldsetItemList = <T,>({ list, setList, renderItem, defaultItem, t
 				const item = renderItem(listItem, (partialItem: Partial<T>) => { changeItem(partialItem, index); });
 
 				return (
-				<Row key={index}>
+				<Row $expand key={index}>
 					{canSwapItems && (
 						<Column>
 							<ButtonTiny $colorTag='blue' $border={true} disabled={index <= 0} onClick={() => { moveItem(index, false); }}><CaretUp /></ButtonTiny>

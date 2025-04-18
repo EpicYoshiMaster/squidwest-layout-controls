@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import styled, { css } from "styled-components";
-import { Text, Column, ButtonTiny, ColorSpan } from "./Layout";
+import { Text, Column, ButtonTiny } from "./Layout";
 import { CollapseContainer } from "./NewCollapseContainer";
 import { CaretUp, CaretDown } from "@phosphor-icons/react";
 
@@ -34,7 +34,7 @@ export const CollapseContainerItemList = <T,>({ list, setList, renderTitle, rend
 				return item;
 			}
 		}));
-	}, [list]);
+	}, [list, setList]);
 
 	const changeItem = useCallback((partialItem: Partial<T>, itemIndex: number) => {
 		setList(list.map((item, index) => {
@@ -42,7 +42,7 @@ export const CollapseContainerItemList = <T,>({ list, setList, renderTitle, rend
 
 			return { ...item, ...partialItem };
 		}))
-	}, [list]);
+	}, [list, setList]);
 
 	return (
 		<ScrollContainer $maxHeight={maxHeight}>
