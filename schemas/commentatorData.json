@@ -3,24 +3,10 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-		"commentatorOne": { "$ref": "#/$defs/commentatorInfo" },
-		"commentatorTwo": { "$ref": "#/$defs/commentatorInfo" },
 		"autoShow": { "type": "boolean", "default": true },
 		"delay": { "type": "number", "default": 4000 },
 		"autoHide": { "type": "boolean", "default": true },
 		"lifetime": { "type": "number", "default": 10000 }
     },
-	"$defs": {
-		"commentatorInfo": {
-			"type": "object",
-			"additionalProperties": false,
-			"properties": {
-				"name": { "type": "string", "default": "Commentator Name" },
-				"pronouns": { "type": "string", "default": "" },
-				"tag": { "type": "string", "default": "@CommentatorTag" }
-			},
-			"required": ["name", "pronouns", "tag"]
-		}
-	},
-    "required": [ "commentatorOne", "commentatorTwo", "autoShow", "delay", "autoHide", "lifetime" ]
+    "required": [ "autoShow", "delay", "autoHide", "lifetime" ]
 }

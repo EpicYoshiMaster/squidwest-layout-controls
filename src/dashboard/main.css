@@ -4,21 +4,34 @@
 	--collapse: #4d4e8f;
 	--collapse-border: #7967dd;
 
-	--collapse-yoshi: #3e741b;
-	--collapse-yoshi-border: #5fb327;
+	--collapse-green: #3e741b;
+	--collapse-green-border: #5fb327;
 
-	--collapse-event: #8b641b;
-	--collapse-event-border: #e2a22a;
+	--collapse-orange: #8b641b;
+	--collapse-orange-border: #e2a22a;
+
+	--collapse-purple: #7c4b9c;
+	--collapse-purple-border: #ae67dd;
+
+	--collapse-teal: #246569;
+	--collapse-teal-border: #3f9ea5;
+
+	--select-primary: #d3d3d3;
+	--select-primary75: #d3d3d3;
+	--select-primary50: #e7e7e7;
+	--select-primary25: #e7e7e7;
+
+	/* 
+	--color: #ffffff;
+	--color-hover: #ffffff;
+	--color-active: #ffffff;
+	--color-border: #ffffff;
+	*/
 
 	--button: #d346fe;
 	--button-hover: #5f2573;
 	--button-active: #4c1d5c;
 	--button-border: #491c52;
-
-	--green: #1ea530;
-	--green-hover: #1b7427;
-	--green-active: #0f4616;
-	--green-border: #114117;
 
 	--red: #fe4674;
 	--red-hover: #be3c63;
@@ -30,22 +43,30 @@
 	--dark-red-active: #571921;
 	--dark-red-border: #3b0f1a;
 
-	/* 
-	--yellow: #f3e17a;
-	--yellow-hover: #96942f;
-	--yellow-active: #666518;
-	--yellow-border: #8d7c33;
-	*/ 
-
 	--orange: #eb9e47;
 	--orange-hover: #ac712e;
 	--orange-active: #815625;
 	--orange-border: #4d3112;
 
-	--pink: #ec3a90;
-	--pink-hover: #a72463;
-	--pink-active: #741844;
-	--pink-border: #5e1437;
+	--yellow: #ddc956;
+	--yellow-hover: #a1923c;
+	--yellow-active: #695f25;
+	--yellow-border: #504718;
+
+	--lime: #8fbe58;
+	--lime-hover: #658d38;
+	--lime-active: #4a6b25;
+	--lime-border: #354d1b;
+
+	--green: #1ea530;
+	--green-hover: #1b7427;
+	--green-active: #14571d;
+	--green-border: #114117;
+
+	--teal: #3f9ea5;
+	--teal-hover: #2c7c81;
+	--teal-active: #174b4e;
+	--teal-border: #10393b;
 
 	--blue: #4976f1;
 	--blue-hover: #3253af;
@@ -58,6 +79,14 @@
 	--light-purple-border: #372d7b;
 
 	--purple: #ae67dd;
+	--purple-hover: #753b9c;
+	--purple-active: #50246d;
+	--purple-border: #341549;
+
+	--pink: #ec3a90;
+	--pink-hover: #a72463;
+	--pink-active: #741844;
+	--pink-border: #5e1437;
 }
 
 body {

@@ -162,7 +162,7 @@ export const Row = styled.div<{ $align?: string, $justify?: string, $height?: st
 
 export const GridRow = styled.div<{ $height?: string }>`
 	position: relative;
-	margin: 2px 0;
+	margin: 4px 0;
 	display: grid;
 	width: 100%;
 	gap: 5px;

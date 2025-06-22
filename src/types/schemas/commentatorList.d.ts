@@ -6,9 +6,10 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface CommentatorData {
-	autoShow: boolean;
-	delay: number;
-	autoHide: boolean;
-	lifetime: number;
+export type CommentatorList = Commentator[];
+
+export interface Commentator {
+	name: string;
+	pronouns: string;
+	tag: string;
 }

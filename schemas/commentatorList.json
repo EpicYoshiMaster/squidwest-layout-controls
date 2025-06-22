@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "array",
+    "items": {
+		"$ref": "#/$defs/commentator"
+	},
+	"$defs": {
+		"commentator": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"name": { "type": "string", "default": "Commentator Name" },
+				"pronouns": { "type": "string", "default": "" },
+				"tag": { "type": "string", "default": "@CommentatorTag" }
+			},
+			"required": ["name", "pronouns", "tag"]
+		}
+	}
+}

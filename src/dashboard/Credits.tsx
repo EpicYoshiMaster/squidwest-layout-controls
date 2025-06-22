@@ -15,9 +15,9 @@ const defaultCreditsRow = { name: "Credit Name", image: "", imageBundle: "", ite
 const defaultCredits: CreditsData = [{ name: "Credit Name", image: "", imageBundle: "", items: [] }];
 
 const specialCreditsRows = [
-	{ name: "YOSHI", colorTag: "yoshi" },
-	{ name: "CURRENTEVENT", colorTag: "event" },
-	{ name: "NEXTEVENT", colorTag: "event" }
+	{ name: "YOSHI", colorTag: "green" },
+	{ name: "CURRENTEVENT", colorTag: "orange" },
+	{ name: "NEXTEVENT", colorTag: "orange" }
 ]
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

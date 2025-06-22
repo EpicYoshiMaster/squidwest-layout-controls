@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import styled, { css } from "styled-components";
 import { Text, Column, ButtonTiny } from "./Layout";
-import { CollapseContainer } from "./NewCollapseContainer";
+import { CollapseContainer } from "./CollapseContainer";
 import { CaretUp, CaretDown } from "@phosphor-icons/react";
 
 interface CollapseContainerItemListProps<T> {

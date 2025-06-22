@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components'
 import { MatchData } from 'schemas/matchData';
 import { createRoot } from 'react-dom/client';
-import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader, InputButtonSmall } from './components/Layout';
+import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader, InputButtonSmall, GridRow, ButtonWide, Text } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { CaretLeft, CaretRight, Swap } from '@phosphor-icons/react';
 import { modulo, getIndexColor, clamp } from '../helpers/utils';
@@ -161,14 +161,14 @@ export function Scores() {
 			</LeftPanelRow>
 			<PanelColumn>
 				<LeftInputSubheader>Controls</LeftInputSubheader>
-				<PanelRow>
-					<InputButton onClick={() => { showScores(); }}>Show Scores</InputButton>
-					<InputButton onClick={() => { hideScores(); }}>Hide Scores</InputButton>
-				</PanelRow>
-				<PanelRow>
-					<InputButton onClick={() => { showCommentators(); }}>Show Comms</InputButton>
-					<InputButton onClick={() => { hideCommentators(); }}>Hide Comms</InputButton>
-				</PanelRow>
+				<GridRow $height='56px'>
+					<ButtonWide $expand={true} $colorTag='purple' onClick={() => { showScores(); }}>Show Scores</ButtonWide>
+					<ButtonWide $expand={true} $colorTag='purple' onClick={() => { hideScores(); }}>Hide Scores</ButtonWide>
+				</GridRow>
+				<GridRow $height='56px'>
+					<ButtonWide $expand={true} $colorTag='purple' onClick={() => { showCommentators(); }}>Show Comms</ButtonWide>
+					<ButtonWide $expand={true} $colorTag='purple' onClick={() => { hideCommentators(); }}>Hide Comms</ButtonWide>
+				</GridRow>
 			</PanelColumn>
 		</PanelColumn>
 	)
@@ -199,6 +199,7 @@ const PanelColumn = styled.div`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	width: 100%;
 `;
 
 const ScoreColumn = styled(PanelColumn)`
