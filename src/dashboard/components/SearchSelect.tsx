@@ -1,7 +1,7 @@
 //Unused currently, might come back to this in the future.
 
-import React from 'react';
-/*import Select, { GroupBase, Props} from 'react-select';
+/*import React from 'react';
+import Select, { GroupBase, Props} from 'react-select';
 
 export function SearchSelect<
   Option,

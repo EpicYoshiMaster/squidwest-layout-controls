@@ -42,6 +42,7 @@ const Header = styled.div<{ $colorTag?: string }>`
 	justify-content: space-between;
 	align-items: center;
 	padding: 3px 8px;
+	gap: 5px;
 	border-radius: 0.5rem;
 	background-color: var(--collapse${({ $colorTag }) => $colorTag ? `-${$colorTag}` : ``});
 	border: 3px solid var(--collapse-${({ $colorTag }) => $colorTag ? `${$colorTag}-` : ``}border);

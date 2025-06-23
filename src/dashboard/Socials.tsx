@@ -4,7 +4,7 @@ import { Socials, SocialsGroup, SocialItem } from 'schemas/socials';
 import { createRoot } from 'react-dom/client';
 import { useReplicant } from '@nodecg/react-hooks';
 import { Platform } from '../types/types';
-import { Text, Row, GridRow, Fieldset, ButtonWide, ButtonLarge, Badge } from './components/Layout';
+import { Text, Row, GridRow, Fieldset, ButtonWide, Badge, Input } from './components/Layout';
 import { isEqual, cloneDeep } from 'lodash';
 import { useListControl } from '../helpers/hooks';
 import { FieldsetItemList } from './components/FieldsetItemList';
@@ -78,15 +78,10 @@ export function SocialsInformation() {
 				renderItem={(group, changeGroup, index) => (
 					<>
 						<Row $align='flex-end' $height='4rem'>
-							<Fieldset>
+							<Fieldset $expand>
 								<legend><Text>Group Name</Text></legend>
-								<input type="text" value={group.name} onChange={(event) => { changeGroup({ name: event.target.value }); }} />
+								<Input $expand type="text" value={group.name} onChange={(event) => { changeGroup({ name: event.target.value }); }} />
 							</Fieldset>
-							<ButtonLarge 
-							$colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } 
-							$expand={true} onClick={() => deleteItem(index)}>
-								{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete Group' }
-							</ButtonLarge>
 						</Row>
 						<FieldsetItemList
 							list={group.items}
@@ -105,12 +100,17 @@ export function SocialsInformation() {
 							title="Socials"
 							maxHeight={350}
 						/>
+						<GridRow $height='2rem'>
+							<div></div>
+							<ButtonWide $colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } onClick={() => deleteItem(index) }>{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete' }</ButtonWide>
+							<div></div>
+						</GridRow>
 					</>
 				)}
 				maxHeight={600}
 			/>
 			<GridRow $height='3rem'>
-				<ButtonWide $expand={true} $colorTag='green' onClick={() => { addItem(); }}>New Group</ButtonWide>
+				<ButtonWide $expand={true} $colorTag='green' onClick={() => { addItem(); }}>New Row</ButtonWide>
 				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { updateSocials(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='orange' onClick={() => { open(); }}>Import</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { exportList(); }}>Export</ButtonWide>

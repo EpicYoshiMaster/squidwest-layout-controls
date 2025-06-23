@@ -2,14 +2,15 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components'
 import { CreditsData, CreditsRow } from 'schemas/creditsData';
 import { createRoot } from 'react-dom/client';
-import { Badge, ButtonLarge, ButtonWide, Fieldset, GridRow, Image, Input, Row, Select, Text } from './components/Layout';
-import { useReplicant } from '@nodecg/react-hooks';
+import { Badge, ButtonWide, Fieldset, GridRow, Image, Input, Row, Select, Text } from './components/Layout';
+import { useListenFor, useReplicant } from '@nodecg/react-hooks';
 import { cloneDeep, isEqual } from 'lodash';
 import { useListControl } from '../helpers/hooks';
 import { getImagePath } from '../helpers/utils';
 import { CollapseContainerItemList } from './components/CollapseContainerItemList';
 import { FieldsetItemList } from './components/FieldsetItemList';
 import { BundleImages } from 'schemas/bundleImages';
+import { Commentator } from 'schemas/commentatorList';
 
 const defaultCreditsRow = { name: "Credit Name", image: "", imageBundle: "", items: [] };
 const defaultCredits: CreditsData = [{ name: "Credit Name", image: "", imageBundle: "", items: [] }];
@@ -19,6 +20,8 @@ const specialCreditsRows = [
 	{ name: "CURRENTEVENT", colorTag: "orange" },
 	{ name: "NEXTEVENT", colorTag: "orange" }
 ]
+
+const commentaryRowName = "Commentary";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isCreditsRow = (item: any): item is CreditsRow => {
@@ -66,31 +69,33 @@ export function Credits() {
 		nodecg.sendMessage('updateBundleImages', { ...bundleImages, selectedBundle: value });
 	}, [bundleImages]);
 
-	/*const onCommsCredits = useCallback(( value: string[] ) => {
-		if(!value) return;
+	const onCommsCredits = useCallback(( addCommentators: Commentator[] ) => {
+		if(!addCommentators) return;
 
-		let newCommentaryTeam = commentaryTeam.slice();
+		const commentaryCreditsIndex = dashboardCredits.findIndex((creditsRow) => creditsRow.name === commentaryRowName);
 
-		value.forEach((name) => {
-			const trimmed = name.trim();
+		if(commentaryCreditsIndex !== -1) {
+			const newCommentaryItems = dashboardCredits[commentaryCreditsIndex].items.slice();
 
-			if(name === "") return;
+			addCommentators.forEach((commentator) => {
+				const trimmed = commentator.name.trim();
 
-			if(!newCommentaryTeam.includes(trimmed)) {
-				newCommentaryTeam.push(trimmed);
-			}
-		})
+				if(trimmed === "") return;
 
-		setCommentaryTeam(newCommentaryTeam);
-	}, [commentaryTeam, setCommentaryTeam]);*/
+				if(!newCommentaryItems.includes(trimmed)) {
+					newCommentaryItems.push(trimmed);
+				}
+			});
 
-	/*useEffect(() => {
-		nodecg.listenFor('commsCredits', onCommsCredits)
+			setDashboardCredits((oldDashboardCredits) => oldDashboardCredits.map((creditsRow) => {
+				if(creditsRow.name !== commentaryRowName) return creditsRow;
 
-		return () => {
-			nodecg.unlisten('commsCredits', onCommsCredits);
+				return { ...creditsRow, items: newCommentaryItems };
+			}))
 		}
-	}, [onCommsCredits]);*/
+	}, [dashboardCredits]);
+
+	useListenFor('commsCredits', onCommsCredits);
 
 	const updateCredits = useCallback(() => {
 		setCredits(dashboardCredits);
@@ -127,17 +132,11 @@ export function Credits() {
 				)}
 				renderItem={(creditsRow, changeRow, index, colorTag) => (
 					<>
-						<Row $align='flex-end' $height='4rem'>
-							<Fieldset>
+						<Row $height='4rem'>
+							<Fieldset $expand>
 								<legend><Text>Credit Name</Text></legend>
-								<input type="text" value={creditsRow.name} onChange={(event) => { changeRow({ name: event.target.value }); }} />
+								<Input $expand type="text" value={creditsRow.name} onChange={(event) => { changeRow({ name: event.target.value }); }} />
 							</Fieldset>
-							<ButtonLarge 
-								$colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } 
-								$expand={true} 
-								onClick={() => deleteItem(index) }>
-								{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete Row' }
-							</ButtonLarge>
 						</Row>
 						{!colorTag && (
 						<>
@@ -159,7 +158,7 @@ export function Credits() {
 												))}
 											</optgroup>
 										</Select>
-										{creditsRow.image !== "" && creditsRow.imageBundle !== "" && ( <Image $maxWidth='75px' height={75} src={getImagePath(creditsRow.imageBundle, creditsRow.image)} /> )}
+										{creditsRow.image !== "" && creditsRow.imageBundle !== "" && ( <Image $maxWidth='70px' height={70} src={getImagePath(creditsRow.imageBundle, creditsRow.image)} /> )}
 									</Row>
 								</Fieldset>
 							</Row>
@@ -175,9 +174,14 @@ export function Credits() {
 								title="Entries"
 								maxHeight={350}
 							/>
+							
 						</>
 						)}
-						
+						<GridRow $height='2rem'>
+							<div></div>
+							<ButtonWide $colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } onClick={() => deleteItem(index) }>{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete' }</ButtonWide>
+							<div></div>
+						</GridRow>
 					</>
 				)}
 			/>

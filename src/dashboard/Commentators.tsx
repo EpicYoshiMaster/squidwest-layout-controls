@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components'
 import { CommentatorData } from 'schemas/commentatorData';
 import { createRoot } from 'react-dom/client';
-import { Badge, ButtonLarge, ButtonWide, Fieldset, GridRow, Input, InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader, Row, Text } from './components/Layout';
+import { Badge, ButtonWide, Fieldset, GridRow, Input, InputCheckbox, Row, Text } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { CollapseContainer } from './components/CollapseContainer';
 import { CommentatorList, Commentator } from 'schemas/commentatorList';
@@ -21,16 +21,6 @@ const defaultCommentatorData: CommentatorData = {
 
 const maxCommentators = 3;
 
-//A replicant that stores a list of past commentators
-
-//Dropdown list that includes "New Commentator"
-//Rest of commentators in alphabetical order
-
-//3 Replicants
-// 1 for the database of all commentators
-// 1 for the active commentator list
-// 1 for all of the commentary dashboard settings
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isCommentator = (item: any): item is Commentator => {
 	if(!item) return false;
@@ -39,13 +29,6 @@ const isCommentator = (item: any): item is Commentator => {
 	&& item.pronouns !== undefined 
 	&& item.tag !== undefined;
 }
-
-const options = [
-	{ value: 'chocolate', label: 'INcredibly long option that just keeps going like oh my god this fucking option' },
-	{ value: 'strawberry', label: 'Strawberry' },
-	{ value: 'vanilla', label: 'Vanilla' },
-	{ value: 'apple', label: 'Apple' }
-  ];
 
 export function Commentators() {
 
@@ -56,11 +39,6 @@ export function Commentators() {
 
 	const [dashboardCommentatorList, setDashboardCommentatorList] = useState<CommentatorList>([]);
 	const [dashboardSettings, setDashboardSettings] = useState<CommentatorData>(defaultCommentatorData);
-
-	//const [ autoShow, setAutoShow ] = useState<boolean>(true);
-	const [ delay, setDelay ] = useState<number>(3000);
-	const [ autoHide, setAutoHide ] = useState<boolean>(true);
-	const [ lifetime, setLifetime ] = useState<number>(5000);
 
 	useEffect(() => {
 		if(!settings) return;
@@ -85,15 +63,15 @@ export function Commentators() {
 	const saveChanges = useCallback(() => {
 		setCommentatorList(dashboardCommentatorList);
 		setSettings(dashboardSettings);
-	}, [dashboardCommentatorList, dashboardSettings]);
+	}, [dashboardCommentatorList, dashboardSettings, setCommentatorList, setSettings]);
 
 	const hasUnsavedChanges = useMemo(() => {
 		return !isEqual(commentatorList, dashboardCommentatorList) || !isEqual(settings, dashboardSettings);
 	}, [commentatorList, dashboardCommentatorList, settings, dashboardSettings]);
 
-	/*const addToCredits = useCallback(() => {
-		nodecg.sendMessage('commsCredits', [commentatorOne.name || "", commentatorTwo.name || ""]);
-	}, [commentatorOne, commentatorTwo]);*/
+	const addToCredits = useCallback(() => {
+		nodecg.sendMessage('commsCredits', dashboardCommentatorList);
+	}, [dashboardCommentatorList]);
 
 	const showCommentators = useCallback(() => {
 		nodecg.sendMessage('commsControl', true);
@@ -145,9 +123,6 @@ export function Commentators() {
 				)}
 				renderItem={(commentator, changeCommentator, index) => (
 					<>
-						<GridRow $height='3rem'>
-							<ButtonWide $colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } onClick={() => deleteItem(index) }>{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete Comm' }</ButtonWide>
-						</GridRow>
 						<Row $expand>
 							<Fieldset $expand>
 								<legend><Text>Name</Text></legend>
@@ -166,13 +141,18 @@ export function Commentators() {
 								<Input $expand type="text" value={commentator.tag} onChange={(event) => { changeCommentator({ tag: event.target.value }); }} />
 							</Fieldset>
 						</Row>
+						<GridRow $height='2rem'>
+							<div></div>
+							<ButtonWide $colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } onClick={() => deleteItem(index) }>{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete' }</ButtonWide>
+							<div></div>
+						</GridRow>
 					</>
 				)}
 			/>
 			<GridRow $height='3rem'>
 				<ButtonWide $expand={true} disabled={dashboardCommentatorList.length >= maxCommentators} $colorTag='green' onClick={() => { addItem(); }}>New Row</ButtonWide>
 				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { saveChanges(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
-				<ButtonWide $expand={true} $colorTag='teal' onClick={() => {  }}>Add to Credits</ButtonWide>
+				<ButtonWide $expand={true} $colorTag='teal' onClick={() => { addToCredits(); }}>Add to Credits</ButtonWide>
 			</GridRow>
 			<Text>Manual Controls</Text>
 			<GridRow $height='3rem'>	

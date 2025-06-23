@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components'
 import { MatchData } from 'schemas/matchData';
 import { createRoot } from 'react-dom/client';
-import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader, InputButtonSmall, GridRow, ButtonWide, Text } from './components/Layout';
+import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader, InputButtonSmall, GridRow, ButtonWide } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { CaretLeft, CaretRight, Swap } from '@phosphor-icons/react';
 import { modulo, getIndexColor, clamp } from '../helpers/utils';

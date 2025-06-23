@@ -16,7 +16,7 @@ const defaultIntermissionSettings: IntermissionData = {
 }
 
 export function Intermission() {
-	const [intermissionSettings, setIntermissionSsettings] = useReplicant<IntermissionData>('intermission', { bundle: 'squidwest-layout-controls'});
+	const [intermissionSettings, setIntermissionSettings] = useReplicant<IntermissionData>('intermission', { bundle: 'squidwest-layout-controls'});
 	const [dashboardIntermissionSettings, setDashboardIntermissionSettings] = useState<IntermissionData>(defaultIntermissionSettings);
 
 	useEffect(() => {
@@ -26,8 +26,8 @@ export function Intermission() {
 	}, [intermissionSettings]);
 
 	const saveChanges = useCallback(() => {
-		setIntermissionSsettings(dashboardIntermissionSettings);
-	}, [dashboardIntermissionSettings]);
+		setIntermissionSettings(dashboardIntermissionSettings);
+	}, [dashboardIntermissionSettings, setIntermissionSettings]);
 
 	const hasUnsavedChanges = useMemo(() => {
 		return !isEqual(intermissionSettings, dashboardIntermissionSettings);
