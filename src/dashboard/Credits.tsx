@@ -16,9 +16,10 @@ const defaultCreditsRow = { name: "Credit Name", image: "", imageBundle: "", ite
 const defaultCredits: CreditsData = [{ name: "Credit Name", image: "", imageBundle: "", items: [] }];
 
 const specialCreditsRows = [
-	{ name: "YOSHI", colorTag: "green" },
-	{ name: "CURRENTEVENT", colorTag: "orange" },
-	{ name: "NEXTEVENT", colorTag: "orange" }
+	{ name: "YOSHI", colorTag: "green", disableFeatures: true },
+	{ name: "CURRENTEVENT", colorTag: "orange", disableFeatures: true },
+	{ name: "NEXTEVENT", colorTag: "orange", disableFeatures: true },
+	{ name: "Commentary", colorTag: "teal", disableFeatures: false }
 ]
 
 const commentaryRowName = "Commentary";
@@ -30,6 +31,10 @@ const isCreditsRow = (item: any): item is CreditsRow => {
 	return item.name !== undefined 
 	&& item.image !== undefined 
 	&& Array.isArray(item.items);
+}
+
+const shouldDisableRowFeatures = (creditsRow: CreditsRow) => {
+	return specialCreditsRows.find((value) => value.name === creditsRow.name && value.disableFeatures);
 }
 
 export function Credits() {
@@ -126,7 +131,7 @@ export function Credits() {
 					<>
 						{creditsRow.name}
 						{(creditsRow.items.length > 0 || colorTag) && (
-							<Badge $colorTag='purple'>{colorTag ? `Special Row` : `${creditsRow.items.length} Entries` }</Badge>
+							<Badge $colorTag='purple'>{shouldDisableRowFeatures(creditsRow) ? `Special Row` : `${creditsRow.items.length} Entries` }</Badge>
 						)}
 					</>
 				)}
@@ -138,7 +143,7 @@ export function Credits() {
 								<Input $expand type="text" value={creditsRow.name} onChange={(event) => { changeRow({ name: event.target.value }); }} />
 							</Fieldset>
 						</Row>
-						{!colorTag && (
+						{!shouldDisableRowFeatures(creditsRow) && (
 						<>
 							<Row>
 								<Fieldset $height="100px" $expand={true}>
