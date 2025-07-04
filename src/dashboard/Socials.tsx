@@ -116,7 +116,7 @@ export function SocialsInformation() {
 				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { exportList(); }}>Export</ButtonWide>
 			</GridRow>
 			{importError !== "" && (
-				<Row $height='1.5rem' $align='flex-end'><Text $colorTag='red'>ERROR: {importError}</Text></Row>
+				<Row $align='flex-end'><Text $colorTag='red'>ERROR: {importError}</Text></Row>
 			)}
 		</PanelContainer>
 	)

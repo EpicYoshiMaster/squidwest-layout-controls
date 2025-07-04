@@ -160,7 +160,7 @@ export const Row = styled.div<{ $align?: string, $justify?: string, $height?: st
 	}
 `;
 
-export const GridRow = styled.div<{ $height?: string }>`
+export const GridRow = styled.div<{ $height?: string, $templateColumns?: string }>`
 	position: relative;
 	margin: 5px 0;
 	display: grid;
@@ -169,6 +169,8 @@ export const GridRow = styled.div<{ $height?: string }>`
 	height: ${({ $height }) => $height ? $height : 'auto'};
 	grid-auto-columns: 1fr;
 	grid-auto-flow: column;
+	
+	${({ $templateColumns }) => $templateColumns ? css`grid-template-columns: ${$templateColumns};` : css``}
 `;
 
 export const Column = styled.div`
@@ -189,6 +191,7 @@ export const Input = styled.input<{ $expand?: boolean }>`
 
 	height: 2.25rem;
 	font-size: 1rem;
+	min-width: 0;
 `;
 
 export const Select = styled.select<{ $expand?: boolean, $width?: string }>`
@@ -213,6 +216,7 @@ export const Fieldset = styled.fieldset<{ $maxHeight?: number, $column?: boolean
 	border-radius: 0.5rem;
 	border: 2px solid white;
 	align-items: center;
+	min-width: 0;
 
 	height: ${({ $height }) => $height ? $height : 'auto'};
 

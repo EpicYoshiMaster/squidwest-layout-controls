@@ -135,7 +135,7 @@ export function Credits() {
 						)}
 					</>
 				)}
-				renderItem={(creditsRow, changeRow, index, colorTag) => (
+				renderItem={(creditsRow, changeRow, index) => (
 					<>
 						<Row $height='4rem'>
 							<Fieldset $expand>
@@ -197,7 +197,7 @@ export function Credits() {
 				<ButtonWide $expand={true} $colorTag='blue' onClick={() => { exportList(); }}>Export</ButtonWide>
 			</GridRow>
 			{importError !== "" && (
-				<Row $height='1.5rem' $align='flex-end'><Text $colorTag='red'>ERROR: {importError}</Text></Row>
+				<Row $align='flex-end'><Text $colorTag='red'>ERROR: {importError}</Text></Row>
 			)}
 		</PanelContainer>
 	)

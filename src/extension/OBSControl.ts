@@ -47,7 +47,7 @@ export class OBSControl {
                 .on('StreamStateChanged', this.onStreamStateChanged.bind(this));
         }
         catch(e) {
-            throw new Error(`OBS Connection Failed: ${e instanceof Error ? e.message : String(e)}`);
+            throw new Error(`${e instanceof Error ? e.message : String(e)}`);
         }
     }
 

@@ -84,30 +84,36 @@ export function Commentators() {
 	return (
 		<PanelContainer>
 			<CollapseContainer title="Configuration">
-				<Row $height='4.5rem'>
-					<Text>Show Automatically</Text>
-					<InputCheckbox 
-						$checked={dashboardSettings.autoShow} 
-						onClick={() => setDashboardSettings((currentSettings) => { return { ...currentSettings, autoShow: !currentSettings.autoShow }; }) } />
-					<Fieldset>
+				<GridRow $height='4.5rem'>
+					<Row>
+						<Text>Show Automatically</Text>
+						<InputCheckbox 
+							$checked={dashboardSettings.autoShow} 
+							onClick={() => setDashboardSettings((currentSettings) => { return { ...currentSettings, autoShow: !currentSettings.autoShow }; }) } />
+					</Row>
+					<Fieldset $expand>
 						<legend><Text>Show Delay Time (ms)</Text></legend>
-						<input type="number" 
+						<Input type="number"
+							$expand
 							value={dashboardSettings.delay} 
 							onChange={(event) => { setDashboardSettings((currentSettings) => { return { ...currentSettings, delay: Number(event.target.value) }; })  }}/>
 					</Fieldset>
-				</Row>
-				<Row $height='4.5rem'>
-					<Text>Hide Automatically</Text>
-					<InputCheckbox 
-						$checked={dashboardSettings.autoHide} 
-						onClick={() => setDashboardSettings((currentSettings) => { return { ...currentSettings, autoHide: !currentSettings.autoHide }; }) } />
-					<Fieldset>
+				</GridRow>
+				<GridRow $height='4.5rem'>
+					<Row>
+						<Text>Hide Automatically</Text>
+						<InputCheckbox 
+							$checked={dashboardSettings.autoHide} 
+							onClick={() => setDashboardSettings((currentSettings) => { return { ...currentSettings, autoHide: !currentSettings.autoHide }; }) } />
+					</Row>
+					<Fieldset $expand>
 						<legend><Text>Lifetime (ms)</Text></legend>
-						<input type="number" 
+						<Input type="number" 
+							$expand
 							value={dashboardSettings.lifetime} 
 							onChange={(event) => { setDashboardSettings((currentSettings) => { return { ...currentSettings, lifetime: Number(event.target.value) }; }) }}/>
 					</Fieldset>
-				</Row>
+				</GridRow>
 			</CollapseContainer>
 			<CollapseContainerItemList
 				maxHeight={500}
@@ -149,13 +155,13 @@ export function Commentators() {
 					</>
 				)}
 			/>
-			<GridRow $height='3rem'>
+			<GridRow $height='56px'>
 				<ButtonWide $expand={true} disabled={dashboardCommentatorList.length >= maxCommentators} $colorTag='green' onClick={() => { addItem(); }}>New Row</ButtonWide>
 				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { saveChanges(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='teal' onClick={() => { addToCredits(); }}>Add to Credits</ButtonWide>
 			</GridRow>
 			<Text>Manual Controls</Text>
-			<GridRow $height='3rem'>	
+			<GridRow $height='56px'>	
 				<ButtonWide $expand={true} $colorTag='purple' onClick={() => { showCommentators(); }}>Show Comms</ButtonWide>
 				<ButtonWide $expand={true} $colorTag='purple' onClick={() => { hideCommentators(); }}>Hide Comms</ButtonWide>
 			</GridRow>
