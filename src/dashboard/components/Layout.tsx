@@ -169,6 +169,7 @@ export const GridRow = styled.div<{ $height?: string, $templateColumns?: string 
 	height: ${({ $height }) => $height ? $height : 'auto'};
 	grid-auto-columns: 1fr;
 	grid-auto-flow: column;
+	align-items: center;
 	
 	${({ $templateColumns }) => $templateColumns ? css`grid-template-columns: ${$templateColumns};` : css``}
 `;
@@ -186,12 +187,14 @@ export const Image = styled.img<{ $maxWidth?: string, $maxHeight?: string }>`
 	${({ $maxHeight }) => $maxHeight ? css`max-height: ${$maxHeight};` : css``}
 `;
 
-export const Input = styled.input<{ $expand?: boolean }>`
+export const Input = styled.input<{ $expand?: boolean, $height?: string }>`
 	${({ $expand }) => $expand ? css`flex-grow: 1;` : css``}
 
 	height: 2.25rem;
 	font-size: 1rem;
 	min-width: 0;
+
+	${({ $height}) => $height ? css`height: ${$height}` : css``};
 `;
 
 export const Select = styled.select<{ $expand?: boolean, $width?: string }>`
