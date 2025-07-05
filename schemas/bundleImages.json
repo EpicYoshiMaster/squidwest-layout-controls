@@ -1,0 +1,11 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+		"bundles": { "type": "array", "items": { "type": "string" }},
+		"selectedBundle": { "type": "string" },
+		"images": { "type": "array", "items": { "type": "string" }}
+    },
+    "required": [ "bundles", "selectedBundle", "images" ]
+}

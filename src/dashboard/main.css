@@ -1,0 +1,115 @@
+:root {
+	--text: #ffffff;
+
+	--collapse: #4d4e8f;
+	--collapse-border: #7967dd;
+
+	--collapse-green: #3e741b;
+	--collapse-green-border: #5fb327;
+
+	--collapse-orange: #8b641b;
+	--collapse-orange-border: #e2a22a;
+
+	--collapse-purple: #7c4b9c;
+	--collapse-purple-border: #ae67dd;
+
+	--collapse-teal: #336f72;
+	--collapse-teal-border: #4fb8c0;
+
+	--collapse-white: #aaaaaa;
+	--collapse-white-border: #ffffff;
+
+	--collapse-black: #333333;
+	--collapse-black-border: #5f5f5f;
+
+	--select-primary: #d3d3d3;
+	--select-primary75: #d3d3d3;
+	--select-primary50: #e7e7e7;
+	--select-primary25: #e7e7e7;
+
+	/* 
+	--color: #ffffff;
+	--color-hover: #ffffff;
+	--color-active: #ffffff;
+	--color-border: #ffffff;
+	*/
+
+	--red: #fe4674;
+	--red-hover: #be3c63;
+	--red-active: #972d3b;
+	--red-border: #6b1b2f;
+
+	--dark-red: #c02b2b;
+	--dark-red-hover: #6d1616;
+	--dark-red-active: #571921;
+	--dark-red-border: #3b0f1a;
+
+	--orange: #eb9e47;
+	--orange-hover: #ac712e;
+	--orange-active: #815625;
+	--orange-border: #4d3112;
+
+	--yellow: #ddc956;
+	--yellow-hover: #a1923c;
+	--yellow-active: #695f25;
+	--yellow-border: #504718;
+
+	--lime: #8fbe58;
+	--lime-hover: #658d38;
+	--lime-active: #4a6b25;
+	--lime-border: #354d1b;
+
+	--green: #1ea530;
+	--green-hover: #1b7427;
+	--green-active: #14571d;
+	--green-border: #114117;
+
+	--teal: #3f9ea5;
+	--teal-hover: #2c7c81;
+	--teal-active: #174b4e;
+	--teal-border: #10393b;
+
+	--blue: #4976f1;
+	--blue-hover: #3253af;
+	--blue-active: #21397a;
+	--blue-border: #1e3679;
+
+	--light-purple: #7967dd;
+	--light-purple-hover: #5548a1;
+	--light-purple-active: #39306e;
+	--light-purple-border: #372d7b;
+
+	--purple: #a25dcf;
+	--purple-hover: #753b9c;
+	--purple-active: #50246d;
+	--purple-border: #341549;
+
+	--pink: #ec3a90;
+	--pink-hover: #a72463;
+	--pink-active: #741844;
+	--pink-border: #5e1437;
+
+	--white: #ffffff;
+	--white-hover: #dadada;
+	--white-active: #d1d1d1;
+	--white-border: #8f8f8f;
+
+	--black: #333333;
+
+	/* Default Colors (Purple) */
+	--button: #a25dcf;
+	--button-hover: #753b9c;
+	--button-active: #50246d;
+	--button-border: #341549;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+	margin: 0;
+}
+
+.monospace {
+	font-family: monospace;
+}
+
+* { box-sizing: border-box; }

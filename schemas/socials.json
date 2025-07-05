@@ -1,28 +1,35 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-        "youtube": {
-            "type": "string",
-            "description": "Youtube Channel",
-            "default": "@SquidWestLANs"
+    "type": "array",
+	"items": {  
+		"$ref": "#/$defs/socialsGroup"
+	},
+	"$defs": {
+		"socialsGroup": {
+			"type": "object",
+        	"additionalProperties": false,
+        	"properties": {
+				"name": { "type": "string", "default": "Group Name" },
+				"items": { 
+					"type": "array", 
+					"items": { 
+						"$ref": "#/$defs/socialItem"
+					}
+				}
+        	},
+			"required": [ "name", "items" ]
 		},
-		"twitter": {
-			"type": "string",
-			"description": "Twitter Username",
-			"default": "@SquidWest"
-		},
-		"bluesky": {
-			"type": "string",
-			"description": "Bluesky Username",
-			"default": "@squidwest.bsky.social"
-		},
-		"discord": {
-			"type": "string",
-			"description": "Discord Link",
-			"default": "discord.gg/trdHY59F2u"
+		"socialItem": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"platform": { 
+					"type": "string",
+					"enum": [ "Bluesky", "Discord", "Twitter", "YouTube" ]
+				},
+				"social": { "type": "string" }
+			},
+			"required": [ "platform", "social" ]
 		}
-    },
-    "required": ["youtube", "twitter", "bluesky", "discord"]
+	}
 }
