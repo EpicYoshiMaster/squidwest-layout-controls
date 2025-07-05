@@ -213,19 +213,19 @@ function Time() {
         return ()=>{
             nodecg.unlisten("onSceneChange", onSceneChange);
         };
-    }, []);
+    });
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelContainer, {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 62,
-            columnNumber: 3
+            lineNumber: 68,
+            columnNumber: 10
         },
         __self: this
     }, connected && /*#__PURE__*/ (0, _reactDefault.default).createElement(Wrapper, {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 64,
-            columnNumber: 4
+            lineNumber: 69,
+            columnNumber: 18
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _timeDisplay.TimeDisplay), {
@@ -233,7 +233,7 @@ function Time() {
         time: calcTime(breakTime),
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 65,
+            lineNumber: 70,
             columnNumber: 5
         },
         __self: this
@@ -242,7 +242,7 @@ function Time() {
         time: calcTime(gameTime),
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 66,
+            lineNumber: 71,
             columnNumber: 5
         },
         __self: this
@@ -251,79 +251,84 @@ function Time() {
         time: calcTime(transitionTime),
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 67,
+            lineNumber: 72,
             columnNumber: 5
         },
         __self: this
     })), !connected && /*#__PURE__*/ (0, _reactDefault.default).createElement(MarginWrapper, {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 72,
-            columnNumber: 4
+            lineNumber: 75,
+            columnNumber: 19
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ErrorText), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 73,
+            lineNumber: 76,
             columnNumber: 5
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 74,
+            lineNumber: 77,
             columnNumber: 6
         },
         __self: this
     }, "OBS is not currently connected!"), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 75,
+            lineNumber: 78,
             columnNumber: 6
         },
         __self: this
     }, "This panel provides information on OBS transitions and break timings."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 76,
+            lineNumber: 79,
             columnNumber: 6
         },
         __self: this
     }, "To use it, go to ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 76,
+            lineNumber: 79,
             columnNumber: 26
         },
         __self: this
     }, "2. Settings"), " and check the ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/Time.tsx",
-            lineNumber: 76,
+            lineNumber: 79,
             columnNumber: 69
         },
         __self: this
     }, "OBS Settings"), " NodeCG Panel to enable websocket support."))));
 }
-const PanelContainer = (0, _styledComponentsDefault.default).div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-`;
-const Wrapper = (0, _styledComponentsDefault.default).div`
-	display: contents;
-`;
-const MarginWrapper = (0, _styledComponentsDefault.default).div`
-	margin: 1.5rem 0;
-`;
+const PanelContainer = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Time__PanelContainer",
+    componentId: "sc-1fnmk3q-0"
+})([
+    "display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;"
+]);
+const Wrapper = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Time__Wrapper",
+    componentId: "sc-1fnmk3q-1"
+})([
+    "display:contents;"
+]);
+const MarginWrapper = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Time__MarginWrapper",
+    componentId: "sc-1fnmk3q-2"
+})([
+    "margin:1.5rem 0.25rem;font-size:1.25rem;"
+]);
 const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement(Time, {
     __source: {
         fileName: "src/dashboard/Time.tsx",
-        lineNumber: 102,
+        lineNumber: 98,
         columnNumber: 13
     },
     __self: undefined
@@ -342,103 +347,45 @@ const TimeDisplay = ({ timingName, time })=>{
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
         __source: {
             fileName: "src/dashboard/components/TimeDisplay.tsx",
-            lineNumber: 14,
-            columnNumber: 9
+            lineNumber: 12,
+            columnNumber: 10
         },
         __self: undefined
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement(TimeHeader, {
         __source: {
             fileName: "src/dashboard/components/TimeDisplay.tsx",
-            lineNumber: 15,
+            lineNumber: 13,
             columnNumber: 13
         },
         __self: undefined
     }, timingName), /*#__PURE__*/ (0, _reactDefault.default).createElement(Time, {
         __source: {
             fileName: "src/dashboard/components/TimeDisplay.tsx",
-            lineNumber: 16,
+            lineNumber: 14,
             columnNumber: 4
         },
         __self: undefined
     }, (0, _utils.formatTimeHMSC)(time)));
 };
-const Container = (0, _styledComponentsDefault.default).div`
-    display: contents;
-`;
-const TimeHeader = (0, _styledComponentsDefault.default).div`
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-top: 0.5rem;
-`;
-const Time = (0, _styledComponentsDefault.default).div`
-	font-size: 4rem;
-	font-weight: 600;
-	font-family: 'Courier New', Courier, Consolas, monospace;
-`;
+const Container = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "TimeDisplay__Container",
+    componentId: "sc-1q15qoh-0"
+})([
+    "display:contents;"
+]);
+const TimeHeader = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "TimeDisplay__TimeHeader",
+    componentId: "sc-1q15qoh-1"
+})([
+    "font-size:1.5rem;font-weight:700;margin-top:0.5rem;"
+]);
+const Time = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "TimeDisplay__Time",
+    componentId: "sc-1q15qoh-2"
+})([
+    "font-size:4rem;font-weight:600;font-family:'Courier New',Courier,Consolas,monospace;"
+]);
 
-},{"react":"bH1AQ","styled-components":"9xpRL","../../helpers/utils":"2gdT3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"2gdT3":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "formatTimeHMSC", ()=>formatTimeHMSC);
-parcelHelpers.export(exports, "formatDateHM", ()=>formatDateHM);
-parcelHelpers.export(exports, "formatDateMDY", ()=>formatDateMDY);
-parcelHelpers.export(exports, "modulo", ()=>modulo);
-parcelHelpers.export(exports, "getIndexColor", ()=>getIndexColor);
-parcelHelpers.export(exports, "lerp", ()=>lerp);
-parcelHelpers.export(exports, "clamp", ()=>clamp);
-const formatTimeHMSC = (ms)=>{
-    ms = ms > 0 ? ms : 0;
-    const hour = Math.floor(ms / 60 / 60 / 1000);
-    ms = ms % 3600000;
-    const minute = Math.floor(ms / 60 / 1000);
-    ms = ms % 60000;
-    const second = Math.floor(ms / 1000);
-    ms = ms % 1000;
-    const centiseconds = Math.floor(ms / 10);
-    return `${hour}:${minute < 10 ? `0${minute}` : minute}:${second < 10 ? `0${second}` : second}.${centiseconds < 10 ? `0${centiseconds}` : centiseconds}`;
-};
-const formatDateHM = (date)=>{
-    return date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
-};
-const formatDateMDY = (date)=>{
-    return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
-};
-const modulo = (dividend, divisor)=>{
-    return (dividend % divisor + divisor) % divisor;
-};
-const getIndexColor = (index, list, swap)=>{
-    return !swap ? list[modulo(index, list.length)].teamA : list[modulo(index, list.length)].teamB;
-};
-const lerp = (a, b, alpha)=>{
-    return a + alpha * (b - a);
-};
-const clamp = (value, min, max)=>{
-    return Math.min(Math.max(value, min), max);
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"2VUsa":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useObsConnectionStatus", ()=>useObsConnectionStatus);
-var _react = require("react");
-const useObsConnectionStatus = (nodecg, options)=>{
-    const [connected, setConnected] = (0, _react.useState)(false);
-    const onConnectionStatus = (value)=>{
-        setConnected(value.isConnected);
-        if (options) {
-            if (options.onConnect && value.isConnected) options.onConnect();
-            if (options.onDisconnect && !value.isConnected) options.onDisconnect();
-        }
-    };
-    (0, _react.useEffect)(()=>{
-        nodecg.listenFor("obsConnectionStatus", onConnectionStatus);
-        return ()=>{
-            nodecg.unlisten("obsConnectionStatus", onConnectionStatus);
-        };
-    }, []);
-    return connected;
-};
-
-},{"react":"bH1AQ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["hfWwA"], "hfWwA", "parcelRequire156b")
+},{"react":"bH1AQ","styled-components":"9xpRL","../../helpers/utils":"2gdT3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["hfWwA"], "hfWwA", "parcelRequire156b")
 
 //# sourceMappingURL=time.6153b083.js.map

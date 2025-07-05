@@ -153,77 +153,71 @@ var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
 var _client = require("react-dom/client");
 var _layout = require("./components/Layout");
 var _reactHooks = require("@nodecg/react-hooks");
-var _commentator = require("./components/Commentator");
 var _collapseContainer = require("./components/CollapseContainer");
+var _lodash = require("lodash");
+var _hooks = require("../helpers/hooks");
+var _collapseContainerItemList = require("./components/CollapseContainerItemList");
 const defaultCommentator = {
     name: "Commentator Name",
     pronouns: "any/all",
     tag: "@TagName"
 };
+const defaultCommentatorData = {
+    autoShow: true,
+    delay: 3000,
+    autoHide: true,
+    lifetime: 10000
+};
+const maxCommentators = 2;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isCommentator = (item)=>{
+    if (!item) return false;
+    return item.name !== undefined && item.pronouns !== undefined && item.tag !== undefined;
+};
 function Commentators() {
-    const [comms, setComms] = (0, _reactHooks.useReplicant)("commentators", {
-        bundle: "squidwest-layout-controls",
-        defaultValue: {
-            commentatorOne: defaultCommentator,
-            commentatorTwo: defaultCommentator,
-            autoShow: true,
-            delay: 3000,
-            autoHide: true,
-            lifetime: 5000
-        }
+    //const [commentatorDatabase, setCommentatorDatabase] = useReplicant<CommentatorList>('commentatorDatabase', { defaultValue: [] });
+    const [commentatorList, setCommentatorList] = (0, _reactHooks.useReplicant)("commentatorList", {
+        defaultValue: []
     });
-    const [commentatorOne, setCommentatorOne] = (0, _react.useState)(defaultCommentator);
-    const [commentatorTwo, setCommentatorTwo] = (0, _react.useState)(defaultCommentator);
-    const [autoShow, setAutoShow] = (0, _react.useState)(true);
-    const [delay, setDelay] = (0, _react.useState)(3000);
-    const [autoHide, setAutoHide] = (0, _react.useState)(true);
-    const [lifetime, setLifetime] = (0, _react.useState)(5000);
+    const [settings, setSettings] = (0, _reactHooks.useReplicant)("commentatorSettings", {
+        defaultValue: defaultCommentatorData
+    });
+    const [dashboardCommentatorList, setDashboardCommentatorList] = (0, _react.useState)([]);
+    const [dashboardSettings, setDashboardSettings] = (0, _react.useState)(defaultCommentatorData);
     (0, _react.useEffect)(()=>{
-        if (!comms) return;
-        setCommentatorOne(comms.commentatorOne);
-        setCommentatorTwo(comms.commentatorTwo);
-        setAutoShow(comms.autoShow);
-        setDelay(comms.delay);
-        setAutoHide(comms.autoHide);
-        setLifetime(comms.lifetime);
+        if (!settings) return;
+        setDashboardSettings((0, _lodash.cloneDeep)(settings));
     }, [
-        comms
+        settings
     ]);
-    const updateCommentators = (0, _react.useCallback)(()=>{
-        let newCommentators = {
-            commentatorOne: commentatorOne,
-            commentatorTwo: commentatorTwo,
-            autoShow: autoShow,
-            delay: delay,
-            autoHide: autoHide,
-            lifetime: lifetime
-        };
-        setComms(newCommentators);
+    (0, _react.useEffect)(()=>{
+        if (!commentatorList) return;
+        setDashboardCommentatorList((0, _lodash.cloneDeep)(commentatorList));
     }, [
-        commentatorOne,
-        commentatorTwo,
-        autoShow,
-        delay,
-        autoHide,
-        lifetime,
-        setComms
+        commentatorList
     ]);
-    const swapCommentators = (0, _react.useCallback)(()=>{
-        const commOne = commentatorOne;
-        setCommentatorOne(commentatorTwo);
-        setCommentatorTwo(commOne);
+    const { addItem, delete: { deleteItem, deleteConfirmIndex } } = (0, _hooks.useListControl)(dashboardCommentatorList, setDashboardCommentatorList, defaultCommentator, isCommentator);
+    const saveChanges = (0, _react.useCallback)(()=>{
+        setCommentatorList(dashboardCommentatorList);
+        setSettings(dashboardSettings);
     }, [
-        commentatorOne,
-        commentatorTwo
+        dashboardCommentatorList,
+        dashboardSettings,
+        setCommentatorList,
+        setSettings
+    ]);
+    const hasUnsavedChanges = (0, _react.useMemo)(()=>{
+        return !(0, _lodash.isEqual)(commentatorList, dashboardCommentatorList) || !(0, _lodash.isEqual)(settings, dashboardSettings);
+    }, [
+        commentatorList,
+        dashboardCommentatorList,
+        settings,
+        dashboardSettings
     ]);
     const addToCredits = (0, _react.useCallback)(()=>{
-        nodecg.sendMessage("commsCredits", [
-            commentatorOne.name || "",
-            commentatorTwo.name || ""
-        ]);
+        nodecg.sendMessage("commsCredits", dashboardCommentatorList);
     }, [
-        commentatorOne,
-        commentatorTwo
+        dashboardCommentatorList
     ]);
     const showCommentators = (0, _react.useCallback)(()=>{
         nodecg.sendMessage("commsControl", true);
@@ -234,484 +228,582 @@ function Commentators() {
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelContainer, {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 78,
-            columnNumber: 3
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 79,
-            columnNumber: 4
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
-        title: "Commentator #1",
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 80,
-            columnNumber: 5
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _commentator.Commentator), {
-        comm: commentatorOne,
-        setCommentator: setCommentatorOne,
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 81,
-            columnNumber: 6
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
-        title: "Commentator #2",
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 83,
-            columnNumber: 5
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _commentator.Commentator), {
-        comm: commentatorTwo,
-        setCommentator: setCommentatorTwo,
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 84,
-            columnNumber: 6
-        },
-        __self: this
-    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
-        onClick: ()=>{
-            swapCommentators();
-        },
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 87,
-            columnNumber: 4
-        },
-        __self: this
-    }, "Swap Commentators"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
-        onClick: ()=>{
-            addToCredits();
-        },
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 88,
-            columnNumber: 4
-        },
-        __self: this
-    }, "Add to Credits"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 89,
-            columnNumber: 4
+            lineNumber: 71,
+            columnNumber: 10
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
         title: "Configuration",
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 90,
+            lineNumber: 72,
+            columnNumber: 4
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "4.5rem",
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 73,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 91,
+            lineNumber: 74,
             columnNumber: 6
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 92,
+            lineNumber: 75,
             columnNumber: 7
         },
         __self: this
-    }, "Show Automatically"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
-        $checked: autoShow,
-        onClick: ()=>setAutoShow(!autoShow),
+    }, "Show Automatically"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
+        $checked: dashboardSettings.autoShow,
+        onClick: ()=>setDashboardSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    autoShow: !currentSettings.autoShow
+                };
+            }),
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 93,
+            lineNumber: 76,
             columnNumber: 7
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 83,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 84,
+            columnNumber: 7
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 84,
+            columnNumber: 15
+        },
+        __self: this
+    }, "Show Delay Time (ms)")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+        type: "number",
+        $expand: true,
+        value: dashboardSettings.delay,
+        onChange: (event)=>{
+            setDashboardSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    delay: Number(event.target.value)
+                };
+            });
+        },
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 85,
+            columnNumber: 7
+        },
+        __self: this
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "4.5rem",
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
             lineNumber: 95,
-            columnNumber: 6
+            columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
             lineNumber: 96,
-            columnNumber: 7
+            columnNumber: 6
         },
         __self: this
-    }, "Show Delay Time (ms)"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "number",
-        value: delay,
-        onChange: (event)=>{
-            setDelay(Number(event.target.value));
-        },
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
             lineNumber: 97,
             columnNumber: 7
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, "Hide Automatically"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
+        $checked: dashboardSettings.autoHide,
+        onClick: ()=>setDashboardSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    autoHide: !currentSettings.autoHide
+                };
+            }),
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 99,
-            columnNumber: 6
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 100,
+            lineNumber: 98,
             columnNumber: 7
         },
         __self: this
-    }, "Hide Automatically"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
-        $checked: autoHide,
-        onClick: ()=>setAutoHide(!autoHide),
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 101,
-            columnNumber: 7
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 103,
-            columnNumber: 6
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 104,
-            columnNumber: 7
-        },
-        __self: this
-    }, "Lifetime (ms)"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "number",
-        value: lifetime,
-        onChange: (event)=>{
-            setLifetime(Number(event.target.value));
-        },
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
             lineNumber: 105,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 106,
             columnNumber: 7
         },
         __self: this
-    })))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 106,
+            columnNumber: 15
+        },
+        __self: this
+    }, "Lifetime (ms)")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+        type: "number",
+        $expand: true,
+        value: dashboardSettings.lifetime,
+        onChange: (event)=>{
+            setDashboardSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    lifetime: Number(event.target.value)
+                };
+            });
+        },
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 107,
+            columnNumber: 7
+        },
+        __self: this
+    })))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainerItemList.CollapseContainerItemList), {
+        maxHeight: 500,
+        list: dashboardCommentatorList,
+        setList: setDashboardCommentatorList,
+        renderTitle: (commentator)=>/*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, commentator.name, commentator.pronouns !== "" && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Badge), {
+                $colorTag: "teal",
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 120,
+                    columnNumber: 39
+                }
+            }, commentator.pronouns)),
+        renderItem: (commentator, changeCommentator, index)=>/*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+                $expand: true,
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 122,
+                    columnNumber: 7
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+                $expand: true,
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 123,
+                    columnNumber: 8
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 124,
+                    columnNumber: 9
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 124,
+                    columnNumber: 17
+                }
+            }, "Name")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+                $expand: true,
+                type: "text",
+                value: commentator.name,
+                onChange: (event)=>{
+                    changeCommentator({
+                        name: event.target.value
+                    });
+                },
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 125,
+                    columnNumber: 9
+                }
+            }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+                $expand: true,
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 132,
+                    columnNumber: 7
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+                $expand: true,
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 133,
+                    columnNumber: 8
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 134,
+                    columnNumber: 9
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 134,
+                    columnNumber: 17
+                }
+            }, "Pronouns")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+                $expand: true,
+                type: "text",
+                value: commentator.pronouns,
+                onChange: (event)=>{
+                    changeCommentator({
+                        pronouns: event.target.value
+                    });
+                },
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 135,
+                    columnNumber: 9
+                }
+            }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+                $expand: true,
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 142,
+                    columnNumber: 7
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+                $expand: true,
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 143,
+                    columnNumber: 8
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 144,
+                    columnNumber: 9
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 144,
+                    columnNumber: 17
+                }
+            }, "Tag")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+                $expand: true,
+                type: "text",
+                value: commentator.tag,
+                onChange: (event)=>{
+                    changeCommentator({
+                        tag: event.target.value
+                    });
+                },
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 145,
+                    columnNumber: 9
+                }
+            }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+                $height: "2rem",
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 152,
+                    columnNumber: 7
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement("div", {
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 153,
+                    columnNumber: 8
+                }
+            }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+                $colorTag: deleteConfirmIndex === index ? "dark-red" : "red",
+                onClick: ()=>deleteItem(index),
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 154,
+                    columnNumber: 8
+                }
+            }, deleteConfirmIndex === index ? "Confirm?" : "Delete"), /*#__PURE__*/ (0, _reactDefault.default).createElement("div", {
+                __source: {
+                    fileName: "src/dashboard/Commentators.tsx",
+                    lineNumber: 155,
+                    columnNumber: 8
+                }
+            }))),
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 118,
+            columnNumber: 4
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "56px",
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 158,
+            columnNumber: 4
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        disabled: dashboardCommentatorList.length >= maxCommentators,
+        $colorTag: "green",
         onClick: ()=>{
-            updateCommentators();
+            addItem();
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 109,
-            columnNumber: 4
-        },
-        __self: this
-    }, "Save"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 110,
-            columnNumber: 4
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
-        __source: {
-            fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 111,
+            lineNumber: 159,
             columnNumber: 5
         },
         __self: this
-    }, "Manual Controls")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, "New Row"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: hasUnsavedChanges ? "dark-red" : "pink",
+        onClick: ()=>{
+            saveChanges();
+        },
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 162,
+            columnNumber: 5
+        },
+        __self: this
+    }, hasUnsavedChanges ? "Save Changes" : "Saved!"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "teal",
+        onClick: ()=>{
+            addToCredits();
+        },
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 165,
+            columnNumber: 5
+        },
+        __self: this
+    }, "Add to Credits")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 169,
+            columnNumber: 4
+        },
+        __self: this
+    }, "Manual Controls"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "56px",
+        __source: {
+            fileName: "src/dashboard/Commentators.tsx",
+            lineNumber: 170,
+            columnNumber: 4
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "purple",
         onClick: ()=>{
             showCommentators();
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 113,
-            columnNumber: 4
+            lineNumber: 171,
+            columnNumber: 5
         },
         __self: this
-    }, "Show Commentators"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, "Show Comms"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "purple",
         onClick: ()=>{
             hideCommentators();
         },
         __source: {
             fileName: "src/dashboard/Commentators.tsx",
-            lineNumber: 114,
-            columnNumber: 4
+            lineNumber: 174,
+            columnNumber: 5
         },
         __self: this
-    }, "Hide Commentators"));
+    }, "Hide Comms")));
 }
-const PanelContainer = (0, _styledComponentsDefault.default).div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-`;
+const PanelContainer = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Commentators__PanelContainer",
+    componentId: "sc-1wc230p-0"
+})([
+    "display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:5px 10px 12px;"
+]);
 const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).StrictMode, {
     __source: {
         fileName: "src/dashboard/Commentators.tsx",
-        lineNumber: 127,
+        lineNumber: 185,
         columnNumber: 13
     },
     __self: undefined
 }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Commentators, {
     __source: {
         fileName: "src/dashboard/Commentators.tsx",
-        lineNumber: 127,
+        lineNumber: 185,
         columnNumber: 31
     },
     __self: undefined
 })));
 
-},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","./components/Commentator":"dOv3o","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","./components/CollapseContainer":"hrG5d"}],"audz3":[function(require,module,exports) {
+},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","lodash":"iyL42","../helpers/hooks":"2VUsa","./components/CollapseContainerItemList":"4TA1m","./components/CollapseContainer":"hrG5d"}],"4TA1m":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _useReplicant = require("./use-replicant");
-parcelHelpers.exportAll(_useReplicant, exports);
-var _useListenFor = require("./use-listen-for");
-parcelHelpers.exportAll(_useListenFor, exports);
-
-},{"./use-replicant":"iySid","./use-listen-for":"ffpLW","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"iySid":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useReplicant", ()=>useReplicant);
-var _react = require("react");
-var _json = require("klona/json");
-const useReplicant = (replicantName, { bundle, defaultValue, persistent } = {})=>{
-    const replicant = (0, _react.useMemo)(()=>{
-        if (typeof bundle === "string") return nodecg.Replicant(replicantName, bundle, {
-            defaultValue,
-            persistent
-        });
-        return nodecg.Replicant(replicantName, {
-            defaultValue,
-            persistent
-        });
-    }, [
-        bundle,
-        defaultValue,
-        persistent,
-        replicantName
-    ]);
-    const [value, setValue] = (0, _react.useState)(replicant.value);
-    (0, _react.useEffect)(()=>{
-        const changeHandler = (newValue)=>{
-            setValue((oldValue)=>{
-                if (newValue !== oldValue) return newValue;
-                return (0, _json.klona)(newValue);
-            });
-        };
-        replicant.on("change", changeHandler);
-        return ()=>{
-            replicant.removeListener("change", changeHandler);
-        };
-    }, [
-        replicant
-    ]);
-    const updateValue = (0, _react.useCallback)((newValue)=>{
-        if (typeof newValue === "function") // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        newValue(replicant.value);
-        else replicant.value = newValue;
-    }, [
-        replicant
-    ]);
-    return [
-        value,
-        updateValue
-    ];
-};
-
-},{"react":"bH1AQ","klona/json":"loHAU","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"loHAU":[function(require,module,exports) {
-function klona(val) {
-    var k, out, tmp;
-    if (Array.isArray(val)) {
-        out = Array(k = val.length);
-        while(k--)out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    if (Object.prototype.toString.call(val) === "[object Object]") {
-        out = {}; // null
-        for(k in val)if (k === "__proto__") Object.defineProperty(out, k, {
-            value: klona(val[k]),
-            configurable: true,
-            enumerable: true,
-            writable: true
-        });
-        else out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    return val;
-}
-exports.klona = klona;
-
-},{}],"ffpLW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useListenFor", ()=>useListenFor);
-var _react = require("react");
-const useListenFor = (messageName, handler, { bundle } = {})=>{
-    (0, _react.useEffect)(()=>{
-        if (bundle) {
-            nodecg.listenFor(messageName, bundle, handler);
-            return ()=>{
-                nodecg.unlisten(messageName, bundle, handler);
-            };
-        }
-        nodecg.listenFor(messageName, handler);
-        return ()=>{
-            nodecg.unlisten(messageName, handler);
-        };
-    }, [
-        handler,
-        messageName,
-        bundle
-    ]);
-};
-
-},{"react":"bH1AQ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"dOv3o":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Commentator", ()=>Commentator);
+parcelHelpers.export(exports, "CollapseContainerItemList", ()=>CollapseContainerItemList);
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _styledComponents = require("styled-components");
 var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
-var _layout = require("../components/Layout");
-const Commentator = ({ comm, setCommentator })=>{
-    const setName = (0, _react.useCallback)((name)=>{
-        setCommentator((oldComm)=>{
+var _layout = require("./Layout");
+var _collapseContainer = require("./CollapseContainer");
+var _react1 = require("@phosphor-icons/react");
+const CollapseContainerItemList = ({ list, setList, renderTitle, renderItem, maxHeight, canSwapItems = true, getColorTag = ()=>undefined })=>{
+    const moveItem = (0, _react.useCallback)((itemIndex, moveForward)=>{
+        if (itemIndex <= 0 && !moveForward || itemIndex >= list.length - 1 && moveForward) return;
+        const currentItem = list[itemIndex];
+        const swapIndex = itemIndex + (moveForward ? 1 : -1);
+        const swapItem = list[swapIndex];
+        setList(list.map((item, index)=>{
+            if (index === itemIndex) return swapItem;
+            else if (index === swapIndex) return currentItem;
+            else return item;
+        }));
+    }, [
+        list,
+        setList
+    ]);
+    const changeItem = (0, _react.useCallback)((partialItem, itemIndex)=>{
+        setList(list.map((item, index)=>{
+            if (index !== itemIndex) return item;
             return {
-                ...oldComm,
-                name: name
+                ...item,
+                ...partialItem
             };
-        });
-    }, []);
-    const setPronouns = (0, _react.useCallback)((pronouns)=>{
-        setCommentator((oldComm)=>{
-            return {
-                ...oldComm,
-                pronouns: pronouns
-            };
-        });
-    }, []);
-    const setTag = (0, _react.useCallback)((tag)=>{
-        setCommentator((oldComm)=>{
-            return {
-                ...oldComm,
-                tag: tag
-            };
-        });
-    }, []);
-    return /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+        }));
+    }, [
+        list,
+        setList
+    ]);
+    return /*#__PURE__*/ (0, _reactDefault.default).createElement(ScrollContainer, {
+        $maxHeight: maxHeight,
         __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 26,
-            columnNumber: 3
+            fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+            lineNumber: 48,
+            columnNumber: 10
         },
         __self: undefined
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, list.length <= 0 && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
         __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 27,
-            columnNumber: 4
+            fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+            lineNumber: 50,
+            columnNumber: 6
         },
         __self: undefined
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
+    }, "There are no entries!"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
         __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 28,
-            columnNumber: 5
+            fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+            lineNumber: 51,
+            columnNumber: 6
         },
         __self: undefined
-    }, "Name"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: comm.name || "",
-        onChange: (event)=>{
-            setName(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 29,
-            columnNumber: 5
-        },
-        __self: undefined
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 31,
-            columnNumber: 4
-        },
-        __self: undefined
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 32,
-            columnNumber: 5
-        },
-        __self: undefined
-    }, "Pronouns (opt.)"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: comm.pronouns || "",
-        onChange: (event)=>{
-            setPronouns(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 33,
-            columnNumber: 5
-        },
-        __self: undefined
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 35,
-            columnNumber: 4
-        },
-        __self: undefined
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 36,
-            columnNumber: 5
-        },
-        __self: undefined
-    }, "Tag (opt.)"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: comm.tag || "",
-        onChange: (event)=>{
-            setTag(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/components/Commentator.tsx",
-            lineNumber: 37,
-            columnNumber: 5
-        },
-        __self: undefined
-    })));
+    }, "...unless you click the button to add one, perhaps!")), list.map((listItem, index, array)=>{
+        const colorTag = getColorTag(listItem);
+        const title = renderTitle(listItem, colorTag);
+        const item = renderItem(listItem, (partialItem)=>{
+            changeItem(partialItem, index);
+        }, index, colorTag);
+        return /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
+            key: index,
+            colorTag: colorTag,
+            title: /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, canSwapItems && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Column), {
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 60,
+                    columnNumber: 25
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonTiny), {
+                $colorTag: "blue",
+                $border: true,
+                disabled: index <= 0,
+                onClick: ()=>{
+                    moveItem(index, false);
+                },
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 61,
+                    columnNumber: 10
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretUp), {
+                weight: "bold",
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 63,
+                    columnNumber: 14
+                }
+            })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonTiny), {
+                $colorTag: "red",
+                $border: true,
+                disabled: index >= array.length - 1,
+                onClick: ()=>{
+                    moveItem(index, true);
+                },
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 64,
+                    columnNumber: 10
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretDown), {
+                weight: "bold",
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 66,
+                    columnNumber: 14
+                }
+            }))), title),
+            __source: {
+                fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                lineNumber: 59,
+                columnNumber: 14
+            },
+            __self: undefined
+        }, item);
+    }));
 };
-const Container = (0, _styledComponentsDefault.default).div`
-    display: contents;
-`;
+const ScrollContainer = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainerItemList__ScrollContainer",
+    componentId: "sc-k7zi8o-0"
+})([
+    "position:relative;width:100%;padding-right:8px;& > div{margin-bottom:5px;}& > div:last-of-type{margin-bottom:0;}",
+    ""
+], ({ $maxHeight })=>$maxHeight ? (0, _styledComponents.css)([
+        "overflow:auto;max-height:",
+        "px;"
+    ], $maxHeight) : (0, _styledComponents.css)([
+        ""
+    ]));
 
-},{"react":"bH1AQ","styled-components":"9xpRL","../components/Layout":"72fYZ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"hrG5d":[function(require,module,exports) {
+},{"react":"bH1AQ","styled-components":"9xpRL","./Layout":"72fYZ","@phosphor-icons/react":"h9z2e","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","./CollapseContainer":"hrG5d"}],"hrG5d":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CollapseContainer", ()=>CollapseContainer);
@@ -721,79 +813,93 @@ var _styledComponents = require("styled-components");
 var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
 var _layout = require("./Layout");
 var _react1 = require("@phosphor-icons/react");
-const CollapseContainer = ({ title, children })=>{
-    const [collapsed, setCollapsed] = (0, _react.useState)(false);
+const CollapseContainer = ({ title, children, colorTag })=>{
+    const [collapsed, setCollapsed] = (0, _react.useState)(true);
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+        $colorTag: colorTag,
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
             lineNumber: 16,
-            columnNumber: 9
+            columnNumber: 10
         },
         __self: undefined
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(HeadRow, {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Header, {
+        $colorTag: colorTag,
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
             lineNumber: 17,
-            columnNumber: 13
+            columnNumber: 4
         },
         __self: undefined
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Front, {
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
             lineNumber: 18,
-            columnNumber: 17
+            columnNumber: 5
         },
         __self: undefined
-    }, title), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.CollapseButton), {
+    }, title), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.TransparentButton), {
         onClick: ()=>{
             setCollapsed(!collapsed);
         },
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
-            lineNumber: 19,
-            columnNumber: 17
+            lineNumber: 21,
+            columnNumber: 5
         },
         __self: undefined
     }, collapsed ? /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretDown), {
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
-            lineNumber: 21,
-            columnNumber: 32
+            lineNumber: 24,
+            columnNumber: 19
         },
         __self: undefined
     }) : /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretUp), {
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
-            lineNumber: 21,
-            columnNumber: 50
+            lineNumber: 24,
+            columnNumber: 35
         },
         __self: undefined
-    }))), !collapsed && /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+    }))), !collapsed && /*#__PURE__*/ (0, _reactDefault.default).createElement(Content, {
+        $colorTag: colorTag,
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
-            lineNumber: 24,
-            columnNumber: 13
+            lineNumber: 27,
+            columnNumber: 19
         },
         __self: undefined
-    }, children));
+    }, " ", children, " "));
 };
-const Container = (0, _styledComponentsDefault.default).div`
-    display: contents;
-`;
-const HeadRow = (0, _styledComponentsDefault.default).div`
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-`;
-const AddRemoveList = (0, _styledComponentsDefault.default).div`
-    grid-column: 2;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
-`;
+const Container = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Container",
+    componentId: "sc-z8wv3n-0"
+})([
+    "position:relative;width:100%;border-radius:0.5rem;background-color:var(--collapse",
+    ");"
+], ({ $colorTag })=>$colorTag ? `-${$colorTag}` : ``);
+const Header = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Header",
+    componentId: "sc-z8wv3n-1"
+})([
+    "position:relative;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding:3px 8px;gap:5px;border-radius:0.5rem;background-color:var(--collapse",
+    ");border:3px solid var(--collapse-",
+    "border);"
+], ({ $colorTag })=>$colorTag ? `-${$colorTag}` : ``, ({ $colorTag })=>$colorTag ? `${$colorTag}-` : ``);
+const Front = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Front",
+    componentId: "sc-z8wv3n-2"
+})([
+    "position:relative;display:flex;flex-direction:row;justify-content:flex-start;align-items:center;gap:5px;font-size:1.3rem;font-weight:700;"
+]);
+const Content = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Content",
+    componentId: "sc-z8wv3n-3"
+})([
+    "position:relative;margin-top:-8px;padding:10px 8px 5px;border:3px solid var(--collapse-",
+    "border);border-top:none;border-radius:0 0 0.5rem 0.5rem;"
+], ({ $colorTag })=>$colorTag ? `${$colorTag}-` : ``);
 
 },{"react":"bH1AQ","styled-components":"9xpRL","./Layout":"72fYZ","@phosphor-icons/react":"h9z2e","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["cGl2D"], "cGl2D", "parcelRequire156b")
 

@@ -148,14 +148,25 @@ var _packageJson = require("../../package.json");
 var _packageJsonDefault = parcelHelpers.interopDefault(_packageJson);
 var _obscontrol = require("./OBSControl");
 var _logger = require("./Logger");
+var _utils = require("../helpers/utils");
 module.exports = async (nodecg)=>{
     console.log(`You're using ${(0, _packageJsonDefault.default).name} Version ${(0, _packageJsonDefault.default).version} (${(0, _packageJsonDefault.default).squidwest.month})`);
+    const bundleImages = nodecg.Replicant("bundleImages", {
+        defaultValue: {
+            bundles: [],
+            selectedBundle: "",
+            images: []
+        }
+    });
+    bundleImages.value = (0, _utils.updateBundleImages)(bundleImages.value);
     const timeLogger = new (0, _logger.TimeLogger)(`${(0, _packageJsonDefault.default).name}-Time`, true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onConnect = (obs)=>{
         nodecg.sendMessage("obsConnectionStatus", {
             isConnected: true
         });
     };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onDisconnect = (obs)=>{
         nodecg.sendMessage("obsConnectionStatus", {
             isConnected: false
@@ -186,25 +197,28 @@ module.exports = async (nodecg)=>{
             if (ack && !ack.handled) ack(e);
         });
     });
+    nodecg.listenFor("updateBundleImages", (oldValue)=>{
+        bundleImages.value = (0, _utils.updateBundleImages)(oldValue);
+    });
 /*
-	const obs = new OBSControl(nodecg);
+  const obs = new OBSControl(nodecg);
+  
+  nodecg.listenFor('Hooray', () => {
+  	const easeInExpo = (alpha: number): number => {
+             return (alpha <= 0) ? 0 : Math.pow(2, 10 * alpha - 10);
+         }
+  
+  	const easeOutExpo = (alpha: number): number => {
+  		return (alpha >= 1) ? 1 : 1 - Math.pow(2, -10 * alpha);
+  	}
+  
+  	obs.setCurrentProgramScene('Game');
+  	obs.transitionInputVolume('Music', 3000, -100, 0, easeInExpo);
+  	obs.transitionInputVolume('Bottom Video Game', 3000, 0, -100, easeOutExpo);
+  });*/ };
 
-	nodecg.listenFor('Hooray', () => {
-		const easeInExpo = (alpha: number): number => {
-            return (alpha <= 0) ? 0 : Math.pow(2, 10 * alpha - 10);
-        }
-
-		const easeOutExpo = (alpha: number): number => {
-			return (alpha >= 1) ? 1 : 1 - Math.pow(2, -10 * alpha);
-		}
-
-		obs.setCurrentProgramScene('Game');
-		obs.transitionInputVolume('Music', 3000, -100, 0, easeInExpo);
-		obs.transitionInputVolume('Bottom Video Game', 3000, 0, -100, easeOutExpo);
-	});*/ };
-
-},{"../../package.json":"jpc7V","./OBSControl":"dZhDB","./Logger":"6o2Jo","@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q"}],"jpc7V":[function(require,module,exports) {
-module.exports = JSON.parse('{"name":"squidwest-layout-controls","version":"1.2.0","squidwest":{"month":"March 2025"},"description":"NodeCG Dashboard system for SquidWest Splatoon events","homepage":"","author":{"name":"EpicYoshiMaster","email":"epicyoshim@gmail.com","url":""},"files":["dashboard","graphics","extension.js","extension"],"keywords":["nodecg-bundle"],"nodecg":{"compatibleRange":"^2.0.0","dashboardPanels":[{"name":"credits","title":"Credits","width":3,"file":"credits.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"intermission","title":"Intermission Screen","width":3,"file":"intermission.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"commentators","title":"Commentators Information","width":3,"file":"commentators.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"time","title":"Time Information","width":3,"file":"time.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"eventinformation","title":"Event Information","width":3,"file":"eventinformation.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"socials","title":"Socials Information","width":3,"file":"socials.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"obs","title":"OBS Settings","width":3,"file":"obssettings.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"scores","title":"Scores","width":4,"file":"scores.html","workspace":"1. Stream Tech","headerColor":"#525F78"}]},"browserslist":{"production":[">0.5%","not dead","not op_mini all"],"development":["last 1 chrome version","last 1 firefox version","last 1 safari version"]},"scripts":{"build":"node scripts/build.mjs --all","build:extension":"node scripts/build.mjs --extension","watch":"node scripts/build.mjs --all --watch","watch:browser":"node scripts/build.mjs --dashboard --graphics --watch","watch:schemas":"node scripts/build.mjs --schemas --watch","dev":"concurrently --kill-others \\"npm run watch:schemas\\" \\"npm run watch:browser\\" \\"nodemon\\"","generate-schema-types":"trash src/types/schemas && nodecg schema-types"},"dependencies":{"@nodecg/react-hooks":"^1.0.3","@phosphor-icons/react":"^2.1.7","@types/react":"*","@types/react-dom":"*","obs-websocket-js":"^5.0.6","react":"*","react-dom":"*","styled-components":"^6.1.13","ts-node":"*"},"devDependencies":{"@nodecg/types":"^2.0.0","@parcel/config-default":"*","@parcel/core":"*","@parcel/reporter-cli":"*","@parcel/validator-typescript":"*","@types/node":"^18","concurrently":"*","glob":"^10.2.7","nodemon":"*","trash-cli":"*","typescript":"^5.1.3"},"license":"MIT"}');
+},{"../../package.json":"jpc7V","./OBSControl":"dZhDB","./Logger":"6o2Jo","@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q","../helpers/utils":"8neMH"}],"jpc7V":[function(require,module,exports) {
+module.exports = JSON.parse('{"name":"squidwest-layout-controls","version":"2.0.0","squidwest":{"month":"July 2025"},"description":"NodeCG Dashboard system for SquidWest Splatoon events","homepage":"","author":{"name":"EpicYoshiMaster","email":"epicyoshim@gmail.com","url":""},"files":["dashboard","graphics","extension.js","extension"],"keywords":["nodecg-bundle"],"nodecg":{"compatibleRange":"^2.0.0","dashboardPanels":[{"name":"credits","title":"Credits","width":3,"file":"credits.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"intermission","title":"Intermission Screen","width":3,"file":"intermission.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"commentators","title":"Commentators Information","width":3,"file":"commentators.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"time","title":"Time Information","width":3,"file":"time.html","workspace":"1. Stream Tech","headerColor":"#525F78"},{"name":"eventinformation","title":"Event Information","width":3,"file":"eventinformation.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"socials","title":"Socials Information","width":3,"file":"socials.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"obs","title":"OBS Settings","width":3,"file":"obssettings.html","workspace":"2. Settings","headerColor":"#525F78"},{"name":"scores","title":"Match Information","width":3,"file":"scores.html","workspace":"1. Stream Tech","headerColor":"#525F78"}]},"browserslist":{"production":[">0.5%","not dead","not op_mini all"],"development":["last 1 chrome version","last 1 firefox version","last 1 safari version"]},"scripts":{"build":"node scripts/build.mjs --all","build:extension":"node scripts/build.mjs --extension","watch":"node scripts/build.mjs --all --watch","watch:browser":"node scripts/build.mjs --dashboard --graphics --watch","watch:schemas":"node scripts/build.mjs --schemas --watch","dev":"concurrently --kill-others \\"npm run watch:schemas\\" \\"npm run watch:browser\\" \\"nodemon\\"","generate-schema-types":"trash src/types/schemas && nodecg schema-types","lint":"npx eslint src"},"dependencies":{"@nodecg/react-hooks":"^1.0.3","@phosphor-icons/react":"^2.1.7","@types/react":"*","@types/react-dom":"*","is-image":"^4.0.0","lodash":"^4.17.21","obs-websocket-js":"^5.0.6","path-browserify":"^1.0.1","react":"*","react-dom":"*","react-dropzone":"^14.3.8","styled-components":"^6.1.13","ts-node":"*"},"devDependencies":{"@babel/cli":"^7.26.4","@babel/core":"^7.26.10","@eslint/compat":"^1.2.8","@eslint/css":"^0.7.0","@eslint/eslintrc":"^3.3.1","@eslint/js":"^9.24.0","@nodecg/types":"^2.0.0","@parcel/config-default":"*","@parcel/core":"*","@parcel/reporter-cli":"*","@parcel/validator-typescript":"*","@types/node":"^18","babel-plugin-styled-components":"^2.1.4","concurrently":"*","eslint":"^9.24.0","eslint-plugin-react":"^7.37.5","eslint-plugin-react-hooks":"^5.2.0","glob":"^10.2.7","globals":"^16.0.0","nodemon":"*","trash-cli":"*","typescript":"^5.1.3","typescript-eslint":"^8.30.1"},"license":"MIT"}');
 
 },{}],"dZhDB":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -226,7 +240,7 @@ class OBSControl {
             };
             this.socket.on("ExitStarted", onExitStarted).on("CurrentProgramSceneChanged", this.onCurrentProgramSceneChanged.bind(this)).on("StreamStateChanged", this.onStreamStateChanged.bind(this));
         } catch (e) {
-            throw new Error(`OBS Connection Failed: ${e instanceof Error ? e.message : String(e)}`);
+            throw new Error(`${e instanceof Error ? e.message : String(e)}`);
         }
     }
     //
@@ -249,8 +263,8 @@ class OBSControl {
     async transitionInputVolume(input, transitionTime, targetDb, startDb, interpFunc) {
         if (startDb) await this.setInputVolume(input, startDb);
         const { inputVolumeDb } = await this.getInputVolume(input);
-        let startTime = new Date().getTime();
-        let setVolumeInterval = setInterval(()=>{
+        const startTime = new Date().getTime();
+        const setVolumeInterval = setInterval(()=>{
             const alpha = (new Date().getTime() - startTime) / transitionTime;
             this.setInputVolume(input, (0, _utils.lerp)(inputVolumeDb, targetDb, (0, _utils.clamp)(interpFunc ? interpFunc(alpha) : alpha, 0, 1)));
             console.log(`${input} - alpha: ${alpha}, dB: ${(0, _utils.lerp)(inputVolumeDb, targetDb, (0, _utils.clamp)(interpFunc ? interpFunc(alpha) : alpha, 0, 1))}`);
@@ -318,6 +332,18 @@ parcelHelpers.export(exports, "modulo", ()=>modulo);
 parcelHelpers.export(exports, "getIndexColor", ()=>getIndexColor);
 parcelHelpers.export(exports, "lerp", ()=>lerp);
 parcelHelpers.export(exports, "clamp", ()=>clamp);
+parcelHelpers.export(exports, "fileToJSON", ()=>fileToJSON);
+parcelHelpers.export(exports, "exportJSON", ()=>exportJSON);
+parcelHelpers.export(exports, "getImagePath", ()=>getImagePath);
+parcelHelpers.export(exports, "getItems", ()=>getItems);
+parcelHelpers.export(exports, "getDirectories", ()=>getDirectories);
+parcelHelpers.export(exports, "getFiles", ()=>getFiles);
+parcelHelpers.export(exports, "getImages", ()=>getImages);
+parcelHelpers.export(exports, "updateBundleImages", ()=>updateBundleImages);
+var _fs = require("fs");
+var _fsDefault = parcelHelpers.interopDefault(_fs);
+var _path = require("path");
+var _pathDefault = parcelHelpers.interopDefault(_path);
 const formatTimeHMSC = (ms)=>{
     ms = ms > 0 ? ms : 0;
     const hour = Math.floor(ms / 60 / 60 / 1000);
@@ -347,8 +373,85 @@ const lerp = (a, b, alpha)=>{
 const clamp = (value, min, max)=>{
     return Math.min(Math.max(value, min), max);
 };
+const fileToJSON = (acceptedFiles, onImport, onError)=>{
+    if (acceptedFiles.length > 1) {
+        onError("Only one file can be imported at a time.");
+        return;
+    }
+    if (acceptedFiles.length == 0) {
+        onError("An unknown issue occurred while trying to load the file. (No files were accepted?)");
+        return;
+    }
+    const [file] = acceptedFiles;
+    file.text().then((value)=>{
+        try {
+            const importedJSON = JSON.parse(value);
+            onImport(importedJSON);
+        } catch (error) {
+            onError(`The file could not be read: ${error}.`);
+        }
+    }).catch((error)=>{
+        onError(`The file could not be read: ${error}`);
+    });
+};
+const exportJSON = (json, fileName)=>{
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([
+        JSON.stringify(json)
+    ], {
+        type: "text/plain"
+    }));
+    a.setAttribute("download", fileName);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+};
+const getImagePath = (bundle, imagePath)=>{
+    return `\\bundles\\${bundle}\\images\\${imagePath}`;
+};
+//
+// Server-side Only
+//
+const imageExtensions = new Set([
+    "png",
+    "jpg",
+    "jpeg",
+    "gif"
+]);
+const isFileExtensionImage = (name)=>{
+    return imageExtensions.has((0, _pathDefault.default).extname(name).slice(1).toLowerCase());
+};
+const getItems = (filePath, filter, recursive)=>{
+    const files = (0, _fsDefault.default).readdirSync(filePath, {
+        withFileTypes: true,
+        recursive
+    });
+    return files.filter(filter).map((value)=>{
+        return (0, _pathDefault.default).relative(filePath, (0, _pathDefault.default).join(value.parentPath || value.path, value.name));
+    });
+};
+const getDirectories = (filePath, recursive)=>{
+    return getItems(filePath, (value)=>value.isDirectory(), recursive);
+};
+const getFiles = (path, recursive)=>{
+    return getItems(path, (value)=>value.isFile(), recursive);
+};
+const getImages = (filePath, recursive)=>{
+    return getItems(filePath, (value)=>{
+        return value.isFile() && isFileExtensionImage(value.name);
+    }, recursive);
+};
+const updateBundleImages = (bundleImages)=>{
+    bundleImages.bundles = getDirectories("bundles");
+    if (!bundleImages.bundles.includes(bundleImages.selectedBundle)) bundleImages.selectedBundle = bundleImages.bundles[0];
+    const bundlePath = (0, _pathDefault.default).join("bundles", (0, _pathDefault.default).join(bundleImages.selectedBundle));
+    const imagePath = (0, _pathDefault.default).join(bundlePath, "images");
+    if ((0, _fsDefault.default).existsSync(imagePath)) bundleImages.images = getImages(imagePath, true);
+    else bundleImages.images = [];
+    return bundleImages;
+};
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q"}],"6o2Jo":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"9VN6q","fs":"fs","path":"path"}],"6o2Jo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Logger", ()=>Logger);

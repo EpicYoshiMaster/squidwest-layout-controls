@@ -151,304 +151,771 @@ var _reactDefault = parcelHelpers.interopDefault(_react);
 var _styledComponents = require("styled-components");
 var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
 var _client = require("react-dom/client");
-var _layout = require("./components/Layout");
 var _reactHooks = require("@nodecg/react-hooks");
+var _types = require("../types/types");
+var _layout = require("./components/Layout");
+var _lodash = require("lodash");
+var _hooks = require("../helpers/hooks");
+var _fieldsetItemList = require("./components/FieldsetItemList");
+var _collapseContainerItemList = require("./components/CollapseContainerItemList");
+const DefaultSocialItem = {
+    platform: (0, _types.Platform).Bluesky,
+    social: ""
+};
+const DefaultGroup = {
+    name: "New Group",
+    items: [
+        DefaultSocialItem
+    ]
+};
+const DefaultSocials = [
+    {
+        name: "SquidWest",
+        items: [
+            {
+                platform: (0, _types.Platform).YouTube,
+                social: "@SquidWestLANs"
+            },
+            {
+                platform: (0, _types.Platform).Twitter,
+                social: "@SquidWest"
+            },
+            {
+                platform: (0, _types.Platform).Bluesky,
+                social: "@squidwest.bsky.social"
+            },
+            {
+                platform: (0, _types.Platform).Discord,
+                social: "discord.gg/Acv9qH6"
+            }
+        ]
+    }
+];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isSocialsGroup = (object)=>{
+    if (!object) return false;
+    return object.name !== undefined && Array.isArray(object.items);
+};
 function SocialsInformation() {
     const [socials, setSocials] = (0, _reactHooks.useReplicant)("socials", {
         bundle: "squidwest-layout-controls",
-        defaultValue: {
-            youtube: "",
-            twitter: "",
-            bluesky: "",
-            discord: ""
-        }
+        defaultValue: DefaultSocials
     });
-    const [youtube, setYoutube] = (0, _react.useState)("mychannel");
-    const [twitter, setTwitter] = (0, _react.useState)("@myaccount");
-    const [bluesky, setBluesky] = (0, _react.useState)("myaccount.bsky.social");
-    const [discord, setDiscord] = (0, _react.useState)("discord.gg/mydiscordlink");
+    const [dashboardSocials, setDashboardSocials] = (0, _react.useState)(DefaultSocials);
+    const { addItem, delete: { deleteItem, deleteConfirmIndex }, importList: { getRootProps, getInputProps, open, importError }, exportList } = (0, _hooks.useListControl)(dashboardSocials, setDashboardSocials, DefaultGroup, isSocialsGroup, "socials.json");
+    const hasUnsavedChanges = (0, _react.useMemo)(()=>{
+        return !(0, _lodash.isEqual)(socials, dashboardSocials);
+    }, [
+        socials,
+        dashboardSocials
+    ]);
     (0, _react.useEffect)(()=>{
         if (!socials) return;
-        setYoutube(socials.youtube);
-        setTwitter(socials.twitter);
-        setBluesky(socials.bluesky);
-        setDiscord(socials.discord);
+        setDashboardSocials((0, _lodash.cloneDeep)(socials));
     }, [
         socials
     ]);
     const updateSocials = (0, _react.useCallback)(()=>{
-        let newSocials = {
-            youtube: youtube,
-            twitter: twitter,
-            bluesky: bluesky,
-            discord: discord
-        };
-        setSocials(newSocials);
+        setSocials(dashboardSocials);
     }, [
-        youtube,
-        twitter,
-        bluesky,
-        discord,
-        setSocials
+        setSocials,
+        dashboardSocials
     ]);
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelContainer, {
+        ...getRootProps(),
         __source: {
             fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 41,
-            columnNumber: 3
+            lineNumber: 72,
+            columnNumber: 10
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
+        ...getInputProps(),
         __source: {
             fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 42,
+            lineNumber: 73,
             columnNumber: 4
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainerItemList.CollapseContainerItemList), {
+        list: dashboardSocials,
+        setList: setDashboardSocials,
+        renderTitle: (group)=>/*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, group.name, group.items.length > 0 && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Badge), {
+                $colorTag: "purple",
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 76,
+                    columnNumber: 34
+                }
+            }, group.items.length, " Socials")),
+        renderItem: (group, changeGroup, index)=>/*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+                $align: "flex-end",
+                $height: "4rem",
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 78,
+                    columnNumber: 7
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+                $expand: true,
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 79,
+                    columnNumber: 8
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 80,
+                    columnNumber: 9
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 80,
+                    columnNumber: 17
+                }
+            }, "Group Name")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+                $expand: true,
+                type: "text",
+                value: group.name,
+                onChange: (event)=>{
+                    changeGroup({
+                        name: event.target.value
+                    });
+                },
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 81,
+                    columnNumber: 9
+                }
+            }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _fieldsetItemList.FieldsetItemList), {
+                list: group.items,
+                setList: (newList)=>{
+                    changeGroup({
+                        items: newList
+                    });
+                },
+                renderItem: (item, changeItem)=>/*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, /*#__PURE__*/ (0, _reactDefault.default).createElement("select", {
+                        value: item.platform,
+                        onChange: (event)=>{
+                            changeItem({
+                                platform: event.target.value
+                            });
+                        },
+                        __source: {
+                            fileName: "src/dashboard/Socials.tsx",
+                            lineNumber: 93,
+                            columnNumber: 9
+                        }
+                    }, Object.keys((0, _types.Platform)).map((platform, index)=>/*#__PURE__*/ (0, _reactDefault.default).createElement("option", {
+                            key: index,
+                            value: platform,
+                            __source: {
+                                fileName: "src/dashboard/Socials.tsx",
+                                lineNumber: 98,
+                                columnNumber: 58
+                            }
+                        }, platform))), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
+                        type: "text",
+                        value: item.social,
+                        onChange: (event)=>{
+                            changeItem({
+                                social: event.target.value
+                            });
+                        },
+                        __source: {
+                            fileName: "src/dashboard/Socials.tsx",
+                            lineNumber: 100,
+                            columnNumber: 9
+                        }
+                    })),
+                defaultItem: DefaultSocialItem,
+                title: "Socials",
+                maxHeight: 350,
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 88,
+                    columnNumber: 7
+                }
+            }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+                $height: "2rem",
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 106,
+                    columnNumber: 7
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement("div", {
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 107,
+                    columnNumber: 8
+                }
+            }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+                $colorTag: deleteConfirmIndex === index ? "dark-red" : "red",
+                onClick: ()=>deleteItem(index),
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 108,
+                    columnNumber: 8
+                }
+            }, deleteConfirmIndex === index ? "Confirm?" : "Delete"), /*#__PURE__*/ (0, _reactDefault.default).createElement("div", {
+                __source: {
+                    fileName: "src/dashboard/Socials.tsx",
+                    lineNumber: 109,
+                    columnNumber: 8
+                }
+            }))),
+        maxHeight: 600,
         __source: {
             fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 43,
+            lineNumber: 74,
+            columnNumber: 4
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "3rem",
+        __source: {
+            fileName: "src/dashboard/Socials.tsx",
+            lineNumber: 112,
+            columnNumber: 4
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "green",
+        onClick: ()=>{
+            addItem();
+        },
+        __source: {
+            fileName: "src/dashboard/Socials.tsx",
+            lineNumber: 113,
             columnNumber: 5
         },
         __self: this
-    }, "Socials"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 44,
-            columnNumber: 5
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 45,
-            columnNumber: 6
-        },
-        __self: this
-    }, "YouTube"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: youtube,
-        onChange: (event)=>{
-            setYoutube(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 46,
-            columnNumber: 6
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 48,
-            columnNumber: 5
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 49,
-            columnNumber: 6
-        },
-        __self: this
-    }, "Twitter"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: twitter,
-        onChange: (event)=>{
-            setTwitter(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 50,
-            columnNumber: 6
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 52,
-            columnNumber: 5
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 53,
-            columnNumber: 6
-        },
-        __self: this
-    }, "Bluesky"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: bluesky,
-        onChange: (event)=>{
-            setBluesky(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 54,
-            columnNumber: 6
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 56,
-            columnNumber: 5
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 57,
-            columnNumber: 6
-        },
-        __self: this
-    }, "Discord"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: discord,
-        onChange: (event)=>{
-            setDiscord(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 58,
-            columnNumber: 6
-        },
-        __self: this
-    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, "New Row"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: hasUnsavedChanges ? "dark-red" : "pink",
         onClick: ()=>{
             updateSocials();
         },
         __source: {
             fileName: "src/dashboard/Socials.tsx",
-            lineNumber: 61,
-            columnNumber: 4
+            lineNumber: 116,
+            columnNumber: 5
         },
         __self: this
-    }, "Save"));
+    }, hasUnsavedChanges ? "Save Changes" : "Saved!"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "orange",
+        onClick: ()=>{
+            open();
+        },
+        __source: {
+            fileName: "src/dashboard/Socials.tsx",
+            lineNumber: 119,
+            columnNumber: 5
+        },
+        __self: this
+    }, "Import"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "blue",
+        onClick: ()=>{
+            exportList();
+        },
+        __source: {
+            fileName: "src/dashboard/Socials.tsx",
+            lineNumber: 122,
+            columnNumber: 5
+        },
+        __self: this
+    }, "Export")), importError !== "" && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $align: "flex-end",
+        __source: {
+            fileName: "src/dashboard/Socials.tsx",
+            lineNumber: 126,
+            columnNumber: 27
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        $colorTag: "red",
+        __source: {
+            fileName: "src/dashboard/Socials.tsx",
+            lineNumber: 126,
+            columnNumber: 50
+        },
+        __self: this
+    }, "ERROR: ", importError)));
 }
-const PanelContainer = (0, _styledComponentsDefault.default).div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-`;
+const PanelContainer = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Socials__PanelContainer",
+    componentId: "sc-g7l6q4-0"
+})([
+    "position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:5px 10px 12px;"
+]);
 const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement(SocialsInformation, {
     __source: {
         fileName: "src/dashboard/Socials.tsx",
-        lineNumber: 74,
+        lineNumber: 134,
         columnNumber: 13
     },
     __self: undefined
 }));
 
-},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"audz3":[function(require,module,exports) {
+},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","@nodecg/react-hooks":"audz3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","../types/types":"2nPdh","lodash":"iyL42","./components/Layout":"72fYZ","../helpers/hooks":"2VUsa","./components/FieldsetItemList":"jlyLQ","./components/CollapseContainerItemList":"4TA1m"}],"2nPdh":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _useReplicant = require("./use-replicant");
-parcelHelpers.exportAll(_useReplicant, exports);
-var _useListenFor = require("./use-listen-for");
-parcelHelpers.exportAll(_useListenFor, exports);
+parcelHelpers.export(exports, "LoadState", ()=>LoadState);
+parcelHelpers.export(exports, "Platform", ()=>Platform);
+var LoadState;
+(function(LoadState) {
+    LoadState[LoadState["LS_NotLoaded"] = 0] = "LS_NotLoaded";
+    LoadState[LoadState["LS_Loaded"] = 1] = "LS_Loaded";
+    LoadState[LoadState["LS_Done"] = 2] = "LS_Done";
+})(LoadState || (LoadState = {}));
+var Platform;
+(function(Platform) {
+    Platform["Bluesky"] = "Bluesky";
+    Platform["Discord"] = "Discord";
+    Platform["Twitter"] = "Twitter";
+    Platform["YouTube"] = "YouTube";
+})(Platform || (Platform = {}));
 
-},{"./use-replicant":"iySid","./use-listen-for":"ffpLW","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"iySid":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"jlyLQ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useReplicant", ()=>useReplicant);
+parcelHelpers.export(exports, "FieldsetItemList", ()=>FieldsetItemList);
 var _react = require("react");
-var _json = require("klona/json");
-const useReplicant = (replicantName, { bundle, defaultValue, persistent } = {})=>{
-    const replicant = (0, _react.useMemo)(()=>{
-        if (typeof bundle === "string") return nodecg.Replicant(replicantName, bundle, {
-            defaultValue,
-            persistent
-        });
-        return nodecg.Replicant(replicantName, {
-            defaultValue,
-            persistent
-        });
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _layout = require("./Layout");
+var _react1 = require("@phosphor-icons/react");
+var _lodash = require("lodash");
+const FieldsetItemList = ({ list, setList, renderItem, defaultItem, title, maxHeight, canAddItems = true, canDeleteItems = true, canSwapItems = true })=>{
+    const moveItem = (0, _react.useCallback)((itemIndex, moveForward)=>{
+        if (itemIndex <= 0 && !moveForward || itemIndex >= list.length - 1 && moveForward) return;
+        const currentItem = list[itemIndex];
+        const swapIndex = itemIndex + (moveForward ? 1 : -1);
+        const swapItem = list[swapIndex];
+        setList(list.map((item, index)=>{
+            if (index === itemIndex) return swapItem;
+            else if (index === swapIndex) return currentItem;
+            else return item;
+        }));
     }, [
-        bundle,
-        defaultValue,
-        persistent,
-        replicantName
+        list,
+        setList
     ]);
-    const [value, setValue] = (0, _react.useState)(replicant.value);
-    (0, _react.useEffect)(()=>{
-        const changeHandler = (newValue)=>{
-            setValue((oldValue)=>{
-                if (newValue !== oldValue) return newValue;
-                return (0, _json.klona)(newValue);
-            });
-        };
-        replicant.on("change", changeHandler);
-        return ()=>{
-            replicant.removeListener("change", changeHandler);
-        };
+    const addItem = (0, _react.useCallback)(()=>{
+        setList([
+            ...list,
+            (0, _lodash.cloneDeep)(defaultItem)
+        ]);
     }, [
-        replicant
+        list,
+        defaultItem,
+        setList
     ]);
-    const updateValue = (0, _react.useCallback)((newValue)=>{
-        if (typeof newValue === "function") // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        newValue(replicant.value);
-        else replicant.value = newValue;
-    }, [
-        replicant
-    ]);
-    return [
-        value,
-        updateValue
-    ];
-};
-
-},{"react":"bH1AQ","klona/json":"loHAU","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"loHAU":[function(require,module,exports) {
-function klona(val) {
-    var k, out, tmp;
-    if (Array.isArray(val)) {
-        out = Array(k = val.length);
-        while(k--)out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    if (Object.prototype.toString.call(val) === "[object Object]") {
-        out = {}; // null
-        for(k in val)if (k === "__proto__") Object.defineProperty(out, k, {
-            value: klona(val[k]),
-            configurable: true,
-            enumerable: true,
-            writable: true
-        });
-        else out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    return val;
-}
-exports.klona = klona;
-
-},{}],"ffpLW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useListenFor", ()=>useListenFor);
-var _react = require("react");
-const useListenFor = (messageName, handler, { bundle } = {})=>{
-    (0, _react.useEffect)(()=>{
-        if (bundle) {
-            nodecg.listenFor(messageName, bundle, handler);
-            return ()=>{
-                nodecg.unlisten(messageName, bundle, handler);
+    const changeItem = (0, _react.useCallback)((partialItem, itemIndex)=>{
+        setList(list.map((item, index)=>{
+            if (index !== itemIndex) return item;
+            if (typeof partialItem === "object") return {
+                ...item,
+                ...partialItem
             };
-        }
-        nodecg.listenFor(messageName, handler);
-        return ()=>{
-            nodecg.unlisten(messageName, handler);
-        };
+            return partialItem;
+        }));
     }, [
-        handler,
-        messageName,
-        bundle
+        list,
+        setList
     ]);
+    const deleteItem = (0, _react.useCallback)((itemIndex)=>{
+        setList(list.filter((item, index)=>index !== itemIndex));
+    }, [
+        list,
+        setList
+    ]);
+    return /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $column: true,
+        $maxHeight: maxHeight,
+        __source: {
+            fileName: "src/dashboard/components/FieldsetItemList.tsx",
+            lineNumber: 60,
+            columnNumber: 10
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+        __source: {
+            fileName: "src/dashboard/components/FieldsetItemList.tsx",
+            lineNumber: 61,
+            columnNumber: 4
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        __source: {
+            fileName: "src/dashboard/components/FieldsetItemList.tsx",
+            lineNumber: 62,
+            columnNumber: 5
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/components/FieldsetItemList.tsx",
+            lineNumber: 63,
+            columnNumber: 6
+        },
+        __self: undefined
+    }, title), canAddItems && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonFieldset), {
+        $colorTag: "green",
+        onClick: ()=>{
+            addItem();
+        },
+        __source: {
+            fileName: "src/dashboard/components/FieldsetItemList.tsx",
+            lineNumber: 64,
+            columnNumber: 22
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.Plus), {
+        weight: "bold",
+        __source: {
+            fileName: "src/dashboard/components/FieldsetItemList.tsx",
+            lineNumber: 67,
+            columnNumber: 8
+        },
+        __self: undefined
+    })))), list.length <= 0 && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $justify: "center",
+        __source: {
+            fileName: "src/dashboard/components/FieldsetItemList.tsx",
+            lineNumber: 71,
+            columnNumber: 25
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/components/FieldsetItemList.tsx",
+            lineNumber: 72,
+            columnNumber: 6
+        },
+        __self: undefined
+    }, "This list is empty! ", canAddItems ? `Click the + to add items here.` : ``)), list.map((listItem, index, array)=>{
+        const item = renderItem(listItem, (partialItem)=>{
+            changeItem(partialItem, index);
+        });
+        return /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+            $expand: true,
+            key: index,
+            __source: {
+                fileName: "src/dashboard/components/FieldsetItemList.tsx",
+                lineNumber: 78,
+                columnNumber: 14
+            },
+            __self: undefined
+        }, canSwapItems && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Column), {
+            __source: {
+                fileName: "src/dashboard/components/FieldsetItemList.tsx",
+                lineNumber: 79,
+                columnNumber: 23
+            },
+            __self: undefined
+        }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonTiny), {
+            $colorTag: "blue",
+            $border: true,
+            disabled: index <= 0,
+            onClick: ()=>{
+                moveItem(index, false);
+            },
+            __source: {
+                fileName: "src/dashboard/components/FieldsetItemList.tsx",
+                lineNumber: 80,
+                columnNumber: 8
+            },
+            __self: undefined
+        }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretUp), {
+            __source: {
+                fileName: "src/dashboard/components/FieldsetItemList.tsx",
+                lineNumber: 82,
+                columnNumber: 14
+            },
+            __self: undefined
+        })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonTiny), {
+            $colorTag: "red",
+            $border: true,
+            disabled: index >= array.length - 1,
+            onClick: ()=>{
+                moveItem(index, true);
+            },
+            __source: {
+                fileName: "src/dashboard/components/FieldsetItemList.tsx",
+                lineNumber: 83,
+                columnNumber: 8
+            },
+            __self: undefined
+        }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretDown), {
+            __source: {
+                fileName: "src/dashboard/components/FieldsetItemList.tsx",
+                lineNumber: 85,
+                columnNumber: 14
+            },
+            __self: undefined
+        }))), item, canDeleteItems && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonSmall), {
+            $colorTag: "red",
+            onClick: ()=>{
+                deleteItem(index);
+            },
+            __source: {
+                fileName: "src/dashboard/components/FieldsetItemList.tsx",
+                lineNumber: 88,
+                columnNumber: 25
+            },
+            __self: undefined
+        }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.X), {
+            weight: "bold",
+            __source: {
+                fileName: "src/dashboard/components/FieldsetItemList.tsx",
+                lineNumber: 91,
+                columnNumber: 8
+            },
+            __self: undefined
+        })));
+    }));
 };
 
-},{"react":"bH1AQ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["hB2Fr"], "hB2Fr", "parcelRequire156b")
+},{"react":"bH1AQ","./Layout":"72fYZ","@phosphor-icons/react":"h9z2e","lodash":"iyL42","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"4TA1m":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "CollapseContainerItemList", ()=>CollapseContainerItemList);
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _styledComponents = require("styled-components");
+var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
+var _layout = require("./Layout");
+var _collapseContainer = require("./CollapseContainer");
+var _react1 = require("@phosphor-icons/react");
+const CollapseContainerItemList = ({ list, setList, renderTitle, renderItem, maxHeight, canSwapItems = true, getColorTag = ()=>undefined })=>{
+    const moveItem = (0, _react.useCallback)((itemIndex, moveForward)=>{
+        if (itemIndex <= 0 && !moveForward || itemIndex >= list.length - 1 && moveForward) return;
+        const currentItem = list[itemIndex];
+        const swapIndex = itemIndex + (moveForward ? 1 : -1);
+        const swapItem = list[swapIndex];
+        setList(list.map((item, index)=>{
+            if (index === itemIndex) return swapItem;
+            else if (index === swapIndex) return currentItem;
+            else return item;
+        }));
+    }, [
+        list,
+        setList
+    ]);
+    const changeItem = (0, _react.useCallback)((partialItem, itemIndex)=>{
+        setList(list.map((item, index)=>{
+            if (index !== itemIndex) return item;
+            return {
+                ...item,
+                ...partialItem
+            };
+        }));
+    }, [
+        list,
+        setList
+    ]);
+    return /*#__PURE__*/ (0, _reactDefault.default).createElement(ScrollContainer, {
+        $maxHeight: maxHeight,
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+            lineNumber: 48,
+            columnNumber: 10
+        },
+        __self: undefined
+    }, list.length <= 0 && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+            lineNumber: 50,
+            columnNumber: 6
+        },
+        __self: undefined
+    }, "There are no entries!"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+            lineNumber: 51,
+            columnNumber: 6
+        },
+        __self: undefined
+    }, "...unless you click the button to add one, perhaps!")), list.map((listItem, index, array)=>{
+        const colorTag = getColorTag(listItem);
+        const title = renderTitle(listItem, colorTag);
+        const item = renderItem(listItem, (partialItem)=>{
+            changeItem(partialItem, index);
+        }, index, colorTag);
+        return /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
+            key: index,
+            colorTag: colorTag,
+            title: /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).Fragment, null, canSwapItems && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Column), {
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 60,
+                    columnNumber: 25
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonTiny), {
+                $colorTag: "blue",
+                $border: true,
+                disabled: index <= 0,
+                onClick: ()=>{
+                    moveItem(index, false);
+                },
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 61,
+                    columnNumber: 10
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretUp), {
+                weight: "bold",
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 63,
+                    columnNumber: 14
+                }
+            })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonTiny), {
+                $colorTag: "red",
+                $border: true,
+                disabled: index >= array.length - 1,
+                onClick: ()=>{
+                    moveItem(index, true);
+                },
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 64,
+                    columnNumber: 10
+                }
+            }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretDown), {
+                weight: "bold",
+                __source: {
+                    fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                    lineNumber: 66,
+                    columnNumber: 14
+                }
+            }))), title),
+            __source: {
+                fileName: "src/dashboard/components/CollapseContainerItemList.tsx",
+                lineNumber: 59,
+                columnNumber: 14
+            },
+            __self: undefined
+        }, item);
+    }));
+};
+const ScrollContainer = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainerItemList__ScrollContainer",
+    componentId: "sc-k7zi8o-0"
+})([
+    "position:relative;width:100%;padding-right:8px;& > div{margin-bottom:5px;}& > div:last-of-type{margin-bottom:0;}",
+    ""
+], ({ $maxHeight })=>$maxHeight ? (0, _styledComponents.css)([
+        "overflow:auto;max-height:",
+        "px;"
+    ], $maxHeight) : (0, _styledComponents.css)([
+        ""
+    ]));
+
+},{"react":"bH1AQ","styled-components":"9xpRL","./Layout":"72fYZ","@phosphor-icons/react":"h9z2e","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","./CollapseContainer":"hrG5d"}],"hrG5d":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "CollapseContainer", ()=>CollapseContainer);
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _styledComponents = require("styled-components");
+var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
+var _layout = require("./Layout");
+var _react1 = require("@phosphor-icons/react");
+const CollapseContainer = ({ title, children, colorTag })=>{
+    const [collapsed, setCollapsed] = (0, _react.useState)(true);
+    return /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+        $colorTag: colorTag,
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 16,
+            columnNumber: 10
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Header, {
+        $colorTag: colorTag,
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 17,
+            columnNumber: 4
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Front, {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 18,
+            columnNumber: 5
+        },
+        __self: undefined
+    }, title), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.TransparentButton), {
+        onClick: ()=>{
+            setCollapsed(!collapsed);
+        },
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 21,
+            columnNumber: 5
+        },
+        __self: undefined
+    }, collapsed ? /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretDown), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 24,
+            columnNumber: 19
+        },
+        __self: undefined
+    }) : /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretUp), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 24,
+            columnNumber: 35
+        },
+        __self: undefined
+    }))), !collapsed && /*#__PURE__*/ (0, _reactDefault.default).createElement(Content, {
+        $colorTag: colorTag,
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 27,
+            columnNumber: 19
+        },
+        __self: undefined
+    }, " ", children, " "));
+};
+const Container = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Container",
+    componentId: "sc-z8wv3n-0"
+})([
+    "position:relative;width:100%;border-radius:0.5rem;background-color:var(--collapse",
+    ");"
+], ({ $colorTag })=>$colorTag ? `-${$colorTag}` : ``);
+const Header = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Header",
+    componentId: "sc-z8wv3n-1"
+})([
+    "position:relative;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding:3px 8px;gap:5px;border-radius:0.5rem;background-color:var(--collapse",
+    ");border:3px solid var(--collapse-",
+    "border);"
+], ({ $colorTag })=>$colorTag ? `-${$colorTag}` : ``, ({ $colorTag })=>$colorTag ? `${$colorTag}-` : ``);
+const Front = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Front",
+    componentId: "sc-z8wv3n-2"
+})([
+    "position:relative;display:flex;flex-direction:row;justify-content:flex-start;align-items:center;gap:5px;font-size:1.3rem;font-weight:700;"
+]);
+const Content = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Content",
+    componentId: "sc-z8wv3n-3"
+})([
+    "position:relative;margin-top:-8px;padding:10px 8px 5px;border:3px solid var(--collapse-",
+    "border);border-top:none;border-radius:0 0 0.5rem 0.5rem;"
+], ({ $colorTag })=>$colorTag ? `${$colorTag}-` : ``);
+
+},{"react":"bH1AQ","styled-components":"9xpRL","./Layout":"72fYZ","@phosphor-icons/react":"h9z2e","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["hB2Fr"], "hB2Fr", "parcelRequire156b")
 
 //# sourceMappingURL=socials.a131c9ed.js.map

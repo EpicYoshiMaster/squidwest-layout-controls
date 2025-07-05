@@ -154,19 +154,21 @@ var _client = require("react-dom/client");
 var _layout = require("./components/Layout");
 var _reactHooks = require("@nodecg/react-hooks");
 var _hooks = require("../helpers/hooks");
+var _collapseContainer = require("./components/CollapseContainer");
+var _lodash = require("lodash");
+const defaultObsSettings = {
+    serverIp: "localhost",
+    serverPort: "4455",
+    serverPassword: "",
+    autoConnect: false
+};
+const connectingMessage = "Connecting...";
 function OBSSettings() {
-    const [obsSettings, SetObsSettings] = (0, _reactHooks.useReplicant)("obssettings", {
+    const [obsSettings, setObsSettings] = (0, _reactHooks.useReplicant)("obssettings", {
         bundle: "squidwest-layout-controls",
-        defaultValue: {
-            serverIp: "",
-            serverPort: "",
-            autoConnect: false
-        }
+        defaultValue: defaultObsSettings
     });
-    const [serverIp, setServerIp] = (0, _react.useState)("localhost");
-    const [serverPort, setServerPort] = (0, _react.useState)("");
-    const [serverPassword, setServerPassword] = (0, _react.useState)("");
-    const [autoConnect, setAutoConnect] = (0, _react.useState)(false);
+    const [dashboardObsSettings, setDashboardObsSettings] = (0, _react.useState)(defaultObsSettings);
     const [statusText, setStatusText] = (0, _react.useState)("");
     const onDisconnect = (0, _react.useCallback)(()=>{
         setStatusText("OBS was disconnected.");
@@ -176,19 +178,23 @@ function OBSSettings() {
     });
     const setObsConnection = (0, _react.useCallback)((connect, settings)=>{
         if (!settings) return;
-        setStatusText("Connecting...");
+        setStatusText(connectingMessage);
         nodecg.sendMessage("setObsConnection", {
             connect: connect,
             settings: settings
         }).then(()=>{
-            setStatusText("OBS Connection Successful!");
+            //OBS Connection Successful
+            setStatusText("");
         }).catch((error)=>{
+            console.log(error);
             //Simplify some common errors
             if (error.message.includes("ECONNREFUSED")) setStatusText("OBS Connection Failed: Failed to connect. Is OBS open with the WebSocket Server enabled?");
             else if (error.message.includes("ETIMEDOUT")) setStatusText("OBS Connection Failed: Timed out. Double check your information matches what is in OBS!");
             else if (error.message.includes("authentication is required")) setStatusText("OBS Connection Failed: Missing authentication. Check that you've filled out the password field!");
             else if (error.message.includes("Authentication failed.")) setStatusText("OBS Connection Failed: Authentication failed. Verify that your password matches the one in OBS!");
-            else setStatusText(`${error.message}`);
+            else if (error.message.includes("socket hang up")) setStatusText("OBS Connection Failed: Socket hang up. Is the port number conflicting?");
+            else if (!error.message || error.message === "") setStatusText(`OBS Connection Failed: Unknown Error. Is OBS Open?`);
+            else setStatusText(`OBS Connection Failed: ${error.message}`);
         });
     }, []);
     (0, _react.useEffect)(()=>{
@@ -196,445 +202,458 @@ function OBSSettings() {
             if (!obsData) return;
             if (!connected && obsData.autoConnect) setObsConnection(true, obsData);
         });
-    }, []);
+    });
     (0, _react.useEffect)(()=>{
         if (!obsSettings) return;
-        setServerIp(obsSettings.serverIp);
-        setServerPort(obsSettings.serverPort);
-        if (obsSettings.serverPassword) setServerPassword(obsSettings.serverPassword);
-        setAutoConnect(obsSettings.autoConnect);
+        setDashboardObsSettings((0, _lodash.cloneDeep)(obsSettings));
     }, [
         obsSettings
     ]);
-    const updateObsSettings = (0, _react.useCallback)(()=>{
-        let newObsSettings = {
-            serverIp: serverIp,
-            serverPort: serverPort,
-            serverPassword: serverPassword,
-            autoConnect: autoConnect
-        };
-        SetObsSettings(newObsSettings);
+    const saveChanges = (0, _react.useCallback)(()=>{
+        setObsSettings(dashboardObsSettings);
     }, [
-        serverIp,
-        serverPort,
-        serverPassword,
-        autoConnect
+        dashboardObsSettings,
+        setObsSettings
+    ]);
+    const hasUnsavedChanges = (0, _react.useMemo)(()=>{
+        return !(0, _lodash.isEqual)(obsSettings, dashboardObsSettings);
+    }, [
+        obsSettings,
+        dashboardObsSettings
     ]);
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelContainer, {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 96,
-            columnNumber: 3
+            lineNumber: 78,
+            columnNumber: 10
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
+        title: "OBS Configuration",
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 97,
+            lineNumber: 79,
             columnNumber: 4
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("div", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 98,
-            columnNumber: 5
-        },
-        __self: this
-    }, "OBS Configuration"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputText), {
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 99,
+            lineNumber: 80,
             columnNumber: 5
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 100,
+            lineNumber: 81,
             columnNumber: 6
         },
         __self: this
     }, "To use this functionality, go to ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 100,
+            lineNumber: 81,
             columnNumber: 42
         },
         __self: this
     }, "OBS"), ", then ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 100,
+            lineNumber: 81,
             columnNumber: 69
         },
         __self: this
     }, "Tools"), ", then ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 100,
+            lineNumber: 81,
             columnNumber: 98
         },
         __self: this
     }, "WebSocket Server Settings"), "."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 101,
+            lineNumber: 82,
             columnNumber: 6
         },
         __self: this
     }, "Select ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 101,
+            lineNumber: 82,
             columnNumber: 16
         },
         __self: this
     }, "Enable WebSocket Server"), ", then copy everything in ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 101,
+            lineNumber: 82,
             columnNumber: 82
         },
         __self: this
     }, "Show Connect Info"), " here."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 102,
+            lineNumber: 83,
             columnNumber: 6
         },
         __self: this
     }, "If OBS is being hosted on this computer, you can instead enter ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 102,
+            lineNumber: 83,
             columnNumber: 72
         },
         __self: this
     }, "localhost"), " for the ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 102,
+            lineNumber: 83,
             columnNumber: 107
         },
         __self: this
     }, "Server IP"), "."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 103,
+            lineNumber: 84,
             columnNumber: 6
         },
         __self: this
     }, "This tool expects ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 103,
+            lineNumber: 84,
             columnNumber: 27
         },
         __self: this
     }, "IPv4 addresses"), " and will not work with IPv6."), /*#__PURE__*/ (0, _reactDefault.default).createElement("p", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 104,
+            lineNumber: 85,
             columnNumber: 6
         },
         __self: this
     }, "Once you're done, make sure to click ", /*#__PURE__*/ (0, _reactDefault.default).createElement("strong", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 104,
+            lineNumber: 85,
             columnNumber: 46
         },
         __self: this
-    }, "Apply"), " in OBS afterwards.")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, "Apply"), " in OBS afterwards.")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $templateColumns: "1fr 0.5fr",
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 106,
+            lineNumber: 87,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 107,
+            lineNumber: 88,
             columnNumber: 6
         },
         __self: this
-    }, "Server IP"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: serverIp,
-        onChange: (event)=>{
-            setServerIp(event.target.value);
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 89,
+            columnNumber: 7
         },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 89,
+            columnNumber: 15
+        },
+        __self: this
+    }, "Server IP")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+        type: "text",
+        $expand: true,
+        value: dashboardObsSettings.serverIp,
+        onChange: (event)=>setDashboardObsSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    serverIp: event.target.value
+                };
+            }),
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 90,
+            columnNumber: 7
+        },
+        __self: this
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 97,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 98,
+            columnNumber: 7
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 98,
+            columnNumber: 15
+        },
+        __self: this
+    }, "Server Port")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+        type: "text",
+        $expand: true,
+        value: dashboardObsSettings.serverPort,
+        onChange: (event)=>setDashboardObsSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    serverPort: event.target.value
+                };
+            }),
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 99,
+            columnNumber: 7
+        },
+        __self: this
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 107,
+            columnNumber: 5
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 108,
             columnNumber: 6
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 110,
-            columnNumber: 5
+            lineNumber: 108,
+            columnNumber: 14
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 111,
-            columnNumber: 6
-        },
-        __self: this
-    }, "Server Port"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: serverPort,
-        onChange: (event)=>{
-            setServerPort(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 112,
-            columnNumber: 6
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 114,
-            columnNumber: 5
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 115,
-            columnNumber: 6
-        },
-        __self: this
-    }, "Server Password"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
+    }, "Server Password")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
         type: "password",
-        value: serverPassword,
-        onChange: (event)=>{
-            setServerPassword(event.target.value);
+        $expand: true,
+        value: dashboardObsSettings.serverPassword,
+        onChange: (event)=>setDashboardObsSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    serverPassword: event.target.value
+                };
+            }),
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 109,
+            columnNumber: 6
         },
+        __self: this
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 116,
+            columnNumber: 5
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 117,
             columnNumber: 6
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, "Connect on Launch"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
+        $checked: dashboardObsSettings.autoConnect,
+        onClick: ()=>setDashboardObsSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    autoConnect: !currentSettings.autoConnect
+                };
+            }),
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 118,
-            columnNumber: 5
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 119,
             columnNumber: 6
         },
         __self: this
-    }, "Connect on Launch"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
-        $checked: autoConnect,
-        onClick: ()=>setAutoConnect(!autoConnect),
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "56px",
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 120,
-            columnNumber: 6
+            lineNumber: 126,
+            columnNumber: 4
         },
         __self: this
-    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: hasUnsavedChanges ? "dark-red" : "pink",
         onClick: ()=>{
-            updateObsSettings();
+            saveChanges();
         },
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 123,
-            columnNumber: 4
-        },
-        __self: this
-    }, "Save"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 124,
-            columnNumber: 4
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 125,
+            lineNumber: 127,
             columnNumber: 5
         },
         __self: this
-    }, "OBS Connection")), statusText && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ErrorText), {
-        __source: {
-            fileName: "src/dashboard/OBSSettings.tsx",
-            lineNumber: 128,
-            columnNumber: 5
-        },
-        __self: this
-    }, statusText), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, hasUnsavedChanges ? "Save Changes" : "Saved!"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
         disabled: connected,
-        onClick: ()=>{
-            obsSettings && setObsConnection(true, obsSettings);
-        },
+        $colorTag: "teal",
+        onClick: ()=>obsSettings && setObsConnection(true, obsSettings),
         __source: {
             fileName: "src/dashboard/OBSSettings.tsx",
             lineNumber: 130,
-            columnNumber: 4
+            columnNumber: 5
         },
         __self: this
-    }, connected ? "Connected" : "Connect"));
+    }, connected ? "Connected to OBS!" : "Connect to OBS")), statusText && /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $align: "flex-end",
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 132,
+            columnNumber: 19
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        $colorTag: statusText === connectingMessage ? "white" : "red",
+        __source: {
+            fileName: "src/dashboard/OBSSettings.tsx",
+            lineNumber: 132,
+            columnNumber: 42
+        },
+        __self: this
+    }, statusText)));
 }
-const PanelContainer = (0, _styledComponentsDefault.default).div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-`;
+const PanelContainer = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "OBSSettings__PanelContainer",
+    componentId: "sc-1ozylfv-0"
+})([
+    "position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:5px 10px 12px;"
+]);
 const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement(OBSSettings, {
     __source: {
         fileName: "src/dashboard/OBSSettings.tsx",
-        lineNumber: 143,
+        lineNumber: 140,
         columnNumber: 13
     },
     __self: undefined
 }));
 
-},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","../helpers/hooks":"2VUsa","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"audz3":[function(require,module,exports) {
+},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","../helpers/hooks":"2VUsa","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","./components/CollapseContainer":"hrG5d","lodash":"iyL42"}],"hrG5d":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _useReplicant = require("./use-replicant");
-parcelHelpers.exportAll(_useReplicant, exports);
-var _useListenFor = require("./use-listen-for");
-parcelHelpers.exportAll(_useListenFor, exports);
-
-},{"./use-replicant":"iySid","./use-listen-for":"ffpLW","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"iySid":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useReplicant", ()=>useReplicant);
+parcelHelpers.export(exports, "CollapseContainer", ()=>CollapseContainer);
 var _react = require("react");
-var _json = require("klona/json");
-const useReplicant = (replicantName, { bundle, defaultValue, persistent } = {})=>{
-    const replicant = (0, _react.useMemo)(()=>{
-        if (typeof bundle === "string") return nodecg.Replicant(replicantName, bundle, {
-            defaultValue,
-            persistent
-        });
-        return nodecg.Replicant(replicantName, {
-            defaultValue,
-            persistent
-        });
-    }, [
-        bundle,
-        defaultValue,
-        persistent,
-        replicantName
-    ]);
-    const [value, setValue] = (0, _react.useState)(replicant.value);
-    (0, _react.useEffect)(()=>{
-        const changeHandler = (newValue)=>{
-            setValue((oldValue)=>{
-                if (newValue !== oldValue) return newValue;
-                return (0, _json.klona)(newValue);
-            });
-        };
-        replicant.on("change", changeHandler);
-        return ()=>{
-            replicant.removeListener("change", changeHandler);
-        };
-    }, [
-        replicant
-    ]);
-    const updateValue = (0, _react.useCallback)((newValue)=>{
-        if (typeof newValue === "function") // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        newValue(replicant.value);
-        else replicant.value = newValue;
-    }, [
-        replicant
-    ]);
-    return [
-        value,
-        updateValue
-    ];
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _styledComponents = require("styled-components");
+var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
+var _layout = require("./Layout");
+var _react1 = require("@phosphor-icons/react");
+const CollapseContainer = ({ title, children, colorTag })=>{
+    const [collapsed, setCollapsed] = (0, _react.useState)(true);
+    return /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+        $colorTag: colorTag,
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 16,
+            columnNumber: 10
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Header, {
+        $colorTag: colorTag,
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 17,
+            columnNumber: 4
+        },
+        __self: undefined
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Front, {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 18,
+            columnNumber: 5
+        },
+        __self: undefined
+    }, title), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.TransparentButton), {
+        onClick: ()=>{
+            setCollapsed(!collapsed);
+        },
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 21,
+            columnNumber: 5
+        },
+        __self: undefined
+    }, collapsed ? /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretDown), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 24,
+            columnNumber: 19
+        },
+        __self: undefined
+    }) : /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretUp), {
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 24,
+            columnNumber: 35
+        },
+        __self: undefined
+    }))), !collapsed && /*#__PURE__*/ (0, _reactDefault.default).createElement(Content, {
+        $colorTag: colorTag,
+        __source: {
+            fileName: "src/dashboard/components/CollapseContainer.tsx",
+            lineNumber: 27,
+            columnNumber: 19
+        },
+        __self: undefined
+    }, " ", children, " "));
 };
+const Container = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Container",
+    componentId: "sc-z8wv3n-0"
+})([
+    "position:relative;width:100%;border-radius:0.5rem;background-color:var(--collapse",
+    ");"
+], ({ $colorTag })=>$colorTag ? `-${$colorTag}` : ``);
+const Header = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Header",
+    componentId: "sc-z8wv3n-1"
+})([
+    "position:relative;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding:3px 8px;gap:5px;border-radius:0.5rem;background-color:var(--collapse",
+    ");border:3px solid var(--collapse-",
+    "border);"
+], ({ $colorTag })=>$colorTag ? `-${$colorTag}` : ``, ({ $colorTag })=>$colorTag ? `${$colorTag}-` : ``);
+const Front = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Front",
+    componentId: "sc-z8wv3n-2"
+})([
+    "position:relative;display:flex;flex-direction:row;justify-content:flex-start;align-items:center;gap:5px;font-size:1.3rem;font-weight:700;"
+]);
+const Content = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Content",
+    componentId: "sc-z8wv3n-3"
+})([
+    "position:relative;margin-top:-8px;padding:10px 8px 5px;border:3px solid var(--collapse-",
+    "border);border-top:none;border-radius:0 0 0.5rem 0.5rem;"
+], ({ $colorTag })=>$colorTag ? `${$colorTag}-` : ``);
 
-},{"react":"bH1AQ","klona/json":"loHAU","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"loHAU":[function(require,module,exports) {
-function klona(val) {
-    var k, out, tmp;
-    if (Array.isArray(val)) {
-        out = Array(k = val.length);
-        while(k--)out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    if (Object.prototype.toString.call(val) === "[object Object]") {
-        out = {}; // null
-        for(k in val)if (k === "__proto__") Object.defineProperty(out, k, {
-            value: klona(val[k]),
-            configurable: true,
-            enumerable: true,
-            writable: true
-        });
-        else out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    return val;
-}
-exports.klona = klona;
-
-},{}],"ffpLW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useListenFor", ()=>useListenFor);
-var _react = require("react");
-const useListenFor = (messageName, handler, { bundle } = {})=>{
-    (0, _react.useEffect)(()=>{
-        if (bundle) {
-            nodecg.listenFor(messageName, bundle, handler);
-            return ()=>{
-                nodecg.unlisten(messageName, bundle, handler);
-            };
-        }
-        nodecg.listenFor(messageName, handler);
-        return ()=>{
-            nodecg.unlisten(messageName, handler);
-        };
-    }, [
-        handler,
-        messageName,
-        bundle
-    ]);
-};
-
-},{"react":"bH1AQ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"2VUsa":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useObsConnectionStatus", ()=>useObsConnectionStatus);
-var _react = require("react");
-const useObsConnectionStatus = (nodecg, options)=>{
-    const [connected, setConnected] = (0, _react.useState)(false);
-    const onConnectionStatus = (value)=>{
-        setConnected(value.isConnected);
-        if (options) {
-            if (options.onConnect && value.isConnected) options.onConnect();
-            if (options.onDisconnect && !value.isConnected) options.onDisconnect();
-        }
-    };
-    (0, _react.useEffect)(()=>{
-        nodecg.listenFor("obsConnectionStatus", onConnectionStatus);
-        return ()=>{
-            nodecg.unlisten("obsConnectionStatus", onConnectionStatus);
-        };
-    }, []);
-    return connected;
-};
-
-},{"react":"bH1AQ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["5QYpv"], "5QYpv", "parcelRequire156b")
+},{"react":"bH1AQ","styled-components":"9xpRL","./Layout":"72fYZ","@phosphor-icons/react":"h9z2e","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["5QYpv"], "5QYpv", "parcelRequire156b")
 
 //# sourceMappingURL=obssettings.2cbf19a2.js.map

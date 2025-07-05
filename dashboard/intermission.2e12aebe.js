@@ -154,309 +154,281 @@ var _client = require("react-dom/client");
 var _layout = require("./components/Layout");
 var _reactHooks = require("@nodecg/react-hooks");
 var _collapseContainer = require("./components/CollapseContainer");
+var _lodash = require("lodash");
+const defaultIntermissionSettings = {
+    showTime: true,
+    showEvent: true,
+    showLocation: true,
+    showFlavorText: true,
+    flavorText: ""
+};
 function Intermission() {
-    const [intermissionData, setIntermissionData] = (0, _reactHooks.useReplicant)("intermission", {
+    const [intermissionSettings, setIntermissionSettings] = (0, _reactHooks.useReplicant)("intermission", {
         bundle: "squidwest-layout-controls"
     });
-    const [showTime, setShowTime] = (0, _react.useState)(true);
-    const [showEvent, setShowEvent] = (0, _react.useState)(true);
-    const [showLocation, setShowLocation] = (0, _react.useState)(true);
-    const [showFlavorText, setShowFlavorText] = (0, _react.useState)(true);
-    const [flavorText, setFlavorText] = (0, _react.useState)("");
+    const [dashboardIntermissionSettings, setDashboardIntermissionSettings] = (0, _react.useState)(defaultIntermissionSettings);
     (0, _react.useEffect)(()=>{
-        if (!intermissionData) return;
-        setShowTime(intermissionData.showTime);
-        setShowEvent(intermissionData.showEvent);
-        setShowLocation(intermissionData.showLocation);
-        setShowFlavorText(intermissionData.showFlavorText);
-        setFlavorText(intermissionData.flavorText);
+        if (!intermissionSettings) return;
+        setDashboardIntermissionSettings((0, _lodash.cloneDeep)(intermissionSettings));
     }, [
-        intermissionData
+        intermissionSettings
     ]);
-    const updateIntermissionData = ()=>{
-        let newIntermissionData = {
-            showTime: showTime,
-            showEvent: showEvent,
-            showLocation: showLocation,
-            showFlavorText: showFlavorText,
-            flavorText: flavorText
-        };
-        setIntermissionData(newIntermissionData);
-    };
+    const saveChanges = (0, _react.useCallback)(()=>{
+        setIntermissionSettings(dashboardIntermissionSettings);
+    }, [
+        dashboardIntermissionSettings,
+        setIntermissionSettings
+    ]);
+    const hasUnsavedChanges = (0, _react.useMemo)(()=>{
+        return !(0, _lodash.isEqual)(intermissionSettings, dashboardIntermissionSettings);
+    }, [
+        intermissionSettings,
+        dashboardIntermissionSettings
+    ]);
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelContainer, {
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 42,
-            columnNumber: 3
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSection), {
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 43,
-            columnNumber: 4
+            lineNumber: 31,
+            columnNumber: 10
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _collapseContainer.CollapseContainer), {
         title: "Omnibar",
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 44,
+            lineNumber: 32,
+            columnNumber: 4
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 33,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $justify: "flex-end",
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 34,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 35,
+            columnNumber: 7
+        },
+        __self: this
+    }, "Show Time/Date"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
+        $checked: dashboardIntermissionSettings.showTime,
+        onClick: ()=>setDashboardIntermissionSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    showTime: !currentSettings.showTime
+                };
+            }),
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 36,
+            columnNumber: 7
+        },
+        __self: this
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $justify: "flex-end",
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 43,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 44,
+            columnNumber: 7
+        },
+        __self: this
+    }, "Show Event Info"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
+        $checked: dashboardIntermissionSettings.showEvent,
+        onClick: ()=>setDashboardIntermissionSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    showEvent: !currentSettings.showEvent
+                };
+            }),
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
             lineNumber: 45,
-            columnNumber: 6
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 46,
             columnNumber: 7
         },
         __self: this
-    }, "Show Time/Date"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
-        $checked: showTime,
-        onClick: ()=>setShowTime(!showTime),
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 47,
-            columnNumber: 7
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 49,
-            columnNumber: 6
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 50,
-            columnNumber: 7
-        },
-        __self: this
-    }, "Show Event Info"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
-        $checked: showEvent,
-        onClick: ()=>setShowEvent(!showEvent),
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 51,
-            columnNumber: 7
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
             lineNumber: 53,
-            columnNumber: 6
+            columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $justify: "flex-end",
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
             lineNumber: 54,
-            columnNumber: 7
+            columnNumber: 6
         },
         __self: this
-    }, "Show Event Location"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
-        $checked: showLocation,
-        onClick: ()=>setShowLocation(!showLocation),
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
             lineNumber: 55,
             columnNumber: 7
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, "Show Event Location"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
+        $checked: dashboardIntermissionSettings.showLocation,
+        onClick: ()=>setDashboardIntermissionSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    showLocation: !currentSettings.showLocation
+                };
+            }),
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 57,
-            columnNumber: 6
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 58,
+            lineNumber: 56,
             columnNumber: 7
         },
         __self: this
-    }, "Show Flavor Text"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
-        $checked: showFlavorText,
-        onClick: ()=>setShowFlavorText(!showFlavorText),
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 59,
-            columnNumber: 7
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 61,
-            columnNumber: 6
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 62,
-            columnNumber: 7
-        },
-        __self: this
-    }, "Flavor Text"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: flavorText,
-        onChange: (event)=>{
-            setFlavorText(event.target.value);
-        },
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $justify: "flex-end",
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
             lineNumber: 63,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 64,
             columnNumber: 7
         },
         __self: this
-    })))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
-        onClick: ()=>{
-            updateIntermissionData();
-        },
+    }, "Show Flavor Text"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
+        $checked: dashboardIntermissionSettings.showFlavorText,
+        onClick: ()=>setDashboardIntermissionSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    showFlavorText: !currentSettings.showFlavorText
+                };
+            }),
         __source: {
             fileName: "src/dashboard/Intermission.tsx",
-            lineNumber: 67,
+            lineNumber: 65,
+            columnNumber: 7
+        },
+        __self: this
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $justify: "flex-end",
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 73,
+            columnNumber: 5
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 74,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 75,
+            columnNumber: 7
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 75,
+            columnNumber: 15
+        },
+        __self: this
+    }, "Flavor Text")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+        type: "text",
+        $expand: true,
+        value: dashboardIntermissionSettings.flavorText,
+        onChange: (event)=>setDashboardIntermissionSettings((currentSettings)=>{
+                return {
+                    ...currentSettings,
+                    flavorText: event.target.value
+                };
+            }),
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 76,
+            columnNumber: 7
+        },
+        __self: this
+    })))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "56px",
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 85,
             columnNumber: 4
         },
         __self: this
-    }, "Save"));
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("div", {
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 86,
+            columnNumber: 5
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: hasUnsavedChanges ? "dark-red" : "pink",
+        onClick: ()=>{
+            saveChanges();
+        },
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 87,
+            columnNumber: 5
+        },
+        __self: this
+    }, hasUnsavedChanges ? "Save Changes" : "Saved!"), /*#__PURE__*/ (0, _reactDefault.default).createElement("div", {
+        __source: {
+            fileName: "src/dashboard/Intermission.tsx",
+            lineNumber: 90,
+            columnNumber: 5
+        },
+        __self: this
+    })));
 }
-const PanelContainer = (0, _styledComponentsDefault.default).div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-`;
+const PanelContainer = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Intermission__PanelContainer",
+    componentId: "sc-1nvsmlw-0"
+})([
+    "position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:5px 10px 12px;"
+]);
 const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement(Intermission, {
     __source: {
         fileName: "src/dashboard/Intermission.tsx",
-        lineNumber: 80,
+        lineNumber: 99,
         columnNumber: 13
     },
     __self: undefined
 }));
 
-},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","./components/CollapseContainer":"hrG5d"}],"audz3":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _useReplicant = require("./use-replicant");
-parcelHelpers.exportAll(_useReplicant, exports);
-var _useListenFor = require("./use-listen-for");
-parcelHelpers.exportAll(_useListenFor, exports);
-
-},{"./use-replicant":"iySid","./use-listen-for":"ffpLW","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"iySid":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useReplicant", ()=>useReplicant);
-var _react = require("react");
-var _json = require("klona/json");
-const useReplicant = (replicantName, { bundle, defaultValue, persistent } = {})=>{
-    const replicant = (0, _react.useMemo)(()=>{
-        if (typeof bundle === "string") return nodecg.Replicant(replicantName, bundle, {
-            defaultValue,
-            persistent
-        });
-        return nodecg.Replicant(replicantName, {
-            defaultValue,
-            persistent
-        });
-    }, [
-        bundle,
-        defaultValue,
-        persistent,
-        replicantName
-    ]);
-    const [value, setValue] = (0, _react.useState)(replicant.value);
-    (0, _react.useEffect)(()=>{
-        const changeHandler = (newValue)=>{
-            setValue((oldValue)=>{
-                if (newValue !== oldValue) return newValue;
-                return (0, _json.klona)(newValue);
-            });
-        };
-        replicant.on("change", changeHandler);
-        return ()=>{
-            replicant.removeListener("change", changeHandler);
-        };
-    }, [
-        replicant
-    ]);
-    const updateValue = (0, _react.useCallback)((newValue)=>{
-        if (typeof newValue === "function") // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        newValue(replicant.value);
-        else replicant.value = newValue;
-    }, [
-        replicant
-    ]);
-    return [
-        value,
-        updateValue
-    ];
-};
-
-},{"react":"bH1AQ","klona/json":"loHAU","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"loHAU":[function(require,module,exports) {
-function klona(val) {
-    var k, out, tmp;
-    if (Array.isArray(val)) {
-        out = Array(k = val.length);
-        while(k--)out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    if (Object.prototype.toString.call(val) === "[object Object]") {
-        out = {}; // null
-        for(k in val)if (k === "__proto__") Object.defineProperty(out, k, {
-            value: klona(val[k]),
-            configurable: true,
-            enumerable: true,
-            writable: true
-        });
-        else out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    return val;
-}
-exports.klona = klona;
-
-},{}],"ffpLW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useListenFor", ()=>useListenFor);
-var _react = require("react");
-const useListenFor = (messageName, handler, { bundle } = {})=>{
-    (0, _react.useEffect)(()=>{
-        if (bundle) {
-            nodecg.listenFor(messageName, bundle, handler);
-            return ()=>{
-                nodecg.unlisten(messageName, bundle, handler);
-            };
-        }
-        nodecg.listenFor(messageName, handler);
-        return ()=>{
-            nodecg.unlisten(messageName, handler);
-        };
-    }, [
-        handler,
-        messageName,
-        bundle
-    ]);
-};
-
-},{"react":"bH1AQ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"hrG5d":[function(require,module,exports) {
+},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","./components/CollapseContainer":"hrG5d","lodash":"iyL42"}],"hrG5d":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CollapseContainer", ()=>CollapseContainer);
@@ -466,79 +438,93 @@ var _styledComponents = require("styled-components");
 var _styledComponentsDefault = parcelHelpers.interopDefault(_styledComponents);
 var _layout = require("./Layout");
 var _react1 = require("@phosphor-icons/react");
-const CollapseContainer = ({ title, children })=>{
-    const [collapsed, setCollapsed] = (0, _react.useState)(false);
+const CollapseContainer = ({ title, children, colorTag })=>{
+    const [collapsed, setCollapsed] = (0, _react.useState)(true);
     return /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+        $colorTag: colorTag,
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
             lineNumber: 16,
-            columnNumber: 9
+            columnNumber: 10
         },
         __self: undefined
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(HeadRow, {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Header, {
+        $colorTag: colorTag,
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
             lineNumber: 17,
-            columnNumber: 13
+            columnNumber: 4
         },
         __self: undefined
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Front, {
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
             lineNumber: 18,
-            columnNumber: 17
+            columnNumber: 5
         },
         __self: undefined
-    }, title), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.CollapseButton), {
+    }, title), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.TransparentButton), {
         onClick: ()=>{
             setCollapsed(!collapsed);
         },
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
-            lineNumber: 19,
-            columnNumber: 17
+            lineNumber: 21,
+            columnNumber: 5
         },
         __self: undefined
     }, collapsed ? /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretDown), {
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
-            lineNumber: 21,
-            columnNumber: 32
+            lineNumber: 24,
+            columnNumber: 19
         },
         __self: undefined
     }) : /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretUp), {
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
-            lineNumber: 21,
-            columnNumber: 50
+            lineNumber: 24,
+            columnNumber: 35
         },
         __self: undefined
-    }))), !collapsed && /*#__PURE__*/ (0, _reactDefault.default).createElement(Container, {
+    }))), !collapsed && /*#__PURE__*/ (0, _reactDefault.default).createElement(Content, {
+        $colorTag: colorTag,
         __source: {
             fileName: "src/dashboard/components/CollapseContainer.tsx",
-            lineNumber: 24,
-            columnNumber: 13
+            lineNumber: 27,
+            columnNumber: 19
         },
         __self: undefined
-    }, children));
+    }, " ", children, " "));
 };
-const Container = (0, _styledComponentsDefault.default).div`
-    display: contents;
-`;
-const HeadRow = (0, _styledComponentsDefault.default).div`
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-`;
-const AddRemoveList = (0, _styledComponentsDefault.default).div`
-    grid-column: 2;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
-`;
+const Container = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Container",
+    componentId: "sc-z8wv3n-0"
+})([
+    "position:relative;width:100%;border-radius:0.5rem;background-color:var(--collapse",
+    ");"
+], ({ $colorTag })=>$colorTag ? `-${$colorTag}` : ``);
+const Header = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Header",
+    componentId: "sc-z8wv3n-1"
+})([
+    "position:relative;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding:3px 8px;gap:5px;border-radius:0.5rem;background-color:var(--collapse",
+    ");border:3px solid var(--collapse-",
+    "border);"
+], ({ $colorTag })=>$colorTag ? `-${$colorTag}` : ``, ({ $colorTag })=>$colorTag ? `${$colorTag}-` : ``);
+const Front = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Front",
+    componentId: "sc-z8wv3n-2"
+})([
+    "position:relative;display:flex;flex-direction:row;justify-content:flex-start;align-items:center;gap:5px;font-size:1.3rem;font-weight:700;"
+]);
+const Content = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "CollapseContainer__Content",
+    componentId: "sc-z8wv3n-3"
+})([
+    "position:relative;margin-top:-8px;padding:10px 8px 5px;border:3px solid var(--collapse-",
+    "border);border-top:none;border-radius:0 0 0.5rem 0.5rem;"
+], ({ $colorTag })=>$colorTag ? `${$colorTag}-` : ``);
 
 },{"react":"bH1AQ","styled-components":"9xpRL","./Layout":"72fYZ","@phosphor-icons/react":"h9z2e","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}]},["i1rCR"], "i1rCR", "parcelRequire156b")
 

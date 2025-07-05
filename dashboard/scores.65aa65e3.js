@@ -157,28 +157,25 @@ var _react1 = require("@phosphor-icons/react");
 var _utils = require("../helpers/utils");
 var _colorsJson = require("../data/colors.json");
 var _colorsJsonDefault = parcelHelpers.interopDefault(_colorsJson);
+var _lodash = require("lodash");
 const MIN_SCORE = 0;
 const MAX_SCORE = 9;
+const defaultMatchData = {
+    matchInfo: "Round 1",
+    teamA: "Team A",
+    teamB: "Team B",
+    scoreA: 0,
+    scoreB: 0,
+    matchColor: (0, _colorsJsonDefault.default).localMode[0],
+    swapColor: false
+};
 function Scores() {
     const [match, setMatch] = (0, _reactHooks.useReplicant)("match", {
         bundle: "squidwest-layout-controls",
-        defaultValue: {
-            matchInfo: "Round 1",
-            teamA: "Team A",
-            teamB: "Team B",
-            scoreA: 0,
-            scoreB: 0,
-            matchColor: (0, _colorsJsonDefault.default).localMode[0],
-            swapColor: false
-        }
+        defaultValue: defaultMatchData
     });
-    const [matchInfo, setMatchInfo] = (0, _react.useState)("Round 1");
-    const [teamA, setTeamA] = (0, _react.useState)("Team A");
-    const [teamB, setTeamB] = (0, _react.useState)("Team B");
-    const [scoreA, setScoreA] = (0, _react.useState)(0);
-    const [scoreB, setScoreB] = (0, _react.useState)(0);
+    const [dashboardMatch, setDashboardMatch] = (0, _react.useState)(defaultMatchData);
     const [colorIndex, setColorIndex] = (0, _react.useState)(0);
-    const [swapColor, setSwapColor] = (0, _react.useState)(false);
     const [colorLock, setColorLock] = (0, _react.useState)(false);
     const [onlineMode, setOnlineMode] = (0, _react.useState)(false);
     const colorList = (0, _react.useMemo)(()=>{
@@ -189,37 +186,21 @@ function Scores() {
     ]);
     (0, _react.useEffect)(()=>{
         if (!match) return;
-        setMatchInfo(match.matchInfo);
-        setTeamA(match.teamA);
-        setTeamB(match.teamB);
-        setScoreA(match.scoreA);
-        setScoreB(match.scoreB);
-        if (match.matchColor) setColorIndex(match.matchColor.index);
-        setSwapColor(match.swapColor);
+        setDashboardMatch((0, _lodash.cloneDeep)(match));
     }, [
         match
     ]);
-    const updateMatch = (0, _react.useCallback)(()=>{
-        let newMatch = {
-            matchInfo: matchInfo,
-            teamA: teamA,
-            teamB: teamB,
-            scoreA: scoreA,
-            scoreB: scoreB,
-            matchColor: colorList[colorIndex],
-            swapColor: swapColor
-        };
-        setMatch(newMatch);
+    const saveChanges = (0, _react.useCallback)(()=>{
+        setMatch(dashboardMatch);
     }, [
-        matchInfo,
-        teamA,
-        teamB,
-        scoreA,
-        scoreB,
-        colorList,
-        colorIndex,
-        swapColor,
+        dashboardMatch,
         setMatch
+    ]);
+    const hasUnsavedChanges = (0, _react.useMemo)(()=>{
+        return !(0, _lodash.isEqual)(match, dashboardMatch);
+    }, [
+        match,
+        dashboardMatch
     ]);
     const showScores = (0, _react.useCallback)(()=>{
         nodecg.sendMessage("scoresControl", true);
@@ -236,280 +217,248 @@ function Scores() {
     const updateColorIndex = (0, _react.useCallback)((index)=>{
         setColorIndex((0, _utils.modulo)(index, colorList.length));
     }, [
-        colorLock
+        colorList.length
     ]);
-    return /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelColumn, {
+    (0, _react.useEffect)(()=>{
+        setDashboardMatch((currentMatch)=>{
+            return {
+                ...currentMatch,
+                matchColor: colorList[colorIndex]
+            };
+        });
+    }, [
+        colorList,
+        colorIndex
+    ]);
+    return /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelContainer, {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 93,
-            columnNumber: 3
+            lineNumber: 67,
+            columnNumber: 10
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement(TeamScoreRow, {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 94,
+            lineNumber: 68,
             columnNumber: 4
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelColumn, {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 95,
+            lineNumber: 69,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(TeamInputSection, {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 96,
+            lineNumber: 70,
             columnNumber: 6
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputSubheader), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 97,
+            lineNumber: 71,
             columnNumber: 7
         },
         __self: this
-    }, "Match Information"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 71,
+            columnNumber: 15
+        },
+        __self: this
+    }, "Round Info (opt.)")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+        type: "text",
+        $expand: true,
+        value: dashboardMatch.matchInfo,
+        onChange: (event)=>{
+            setDashboardMatch((currentMatch)=>{
+                return {
+                    ...currentMatch,
+                    matchInfo: event.target.value
+                };
+            });
+        },
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 72,
+            columnNumber: 7
+        },
+        __self: this
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 81,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 82,
+            columnNumber: 7
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 82,
+            columnNumber: 15
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 83,
+            columnNumber: 8
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
+        $size: 20,
+        $color: (0, _utils.getIndexColor)(colorIndex, colorList, dashboardMatch.swapColor),
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 84,
+            columnNumber: 9
+        },
+        __self: this
+    }), "Team A"))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+        $expand: true,
+        $height: "2.5rem",
+        type: "text",
+        value: dashboardMatch.teamA,
+        onChange: (event)=>{
+            setDashboardMatch((currentMatch)=>{
+                return {
+                    ...currentMatch,
+                    teamA: event.target.value
+                };
+            });
+        },
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 88,
+            columnNumber: 7
+        },
+        __self: this
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Fieldset), {
+        $expand: true,
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 97,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement("legend", {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
             lineNumber: 98,
             columnNumber: 7
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 98,
+            columnNumber: 15
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
             lineNumber: 99,
             columnNumber: 8
         },
         __self: this
-    }, "Info (opt.)"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: matchInfo,
-        onChange: (event)=>{
-            setMatchInfo(event.target.value);
-        },
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
+        $size: 20,
+        $color: (0, _utils.getIndexColor)(colorIndex, colorList, !dashboardMatch.swapColor),
         __source: {
             fileName: "src/dashboard/Scores.tsx",
             lineNumber: 100,
-            columnNumber: 8
+            columnNumber: 9
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement(InputRowLarge, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 102,
-            columnNumber: 7
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 103,
-            columnNumber: 8
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
-        $size: 20,
-        $color: (0, _utils.getIndexColor)(colorIndex, colorList, swapColor),
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 103,
-            columnNumber: 20
-        },
-        __self: this
-    }), " Team A"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
+    }), "Team B"))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Input), {
+        $expand: true,
+        $height: "2.5rem",
         type: "text",
-        value: teamA,
+        value: dashboardMatch.teamB,
         onChange: (event)=>{
-            setTeamA(event.target.value);
+            setDashboardMatch((currentMatch)=>{
+                return {
+                    ...currentMatch,
+                    teamB: event.target.value
+                };
+            });
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
             lineNumber: 104,
-            columnNumber: 8
-        },
-        __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement(InputRowLarge, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 106,
             columnNumber: 7
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 107,
-            columnNumber: 8
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
-        $size: 20,
-        $color: (0, _utils.getIndexColor)(colorIndex, colorList, !swapColor),
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 107,
-            columnNumber: 20
-        },
-        __self: this
-    }), " Team B"), /*#__PURE__*/ (0, _reactDefault.default).createElement("input", {
-        type: "text",
-        value: teamB,
-        onChange: (event)=>{
-            setTeamB(event.target.value);
-        },
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 108,
-            columnNumber: 8
-        },
-        __self: this
-    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorRow, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 111,
-            columnNumber: 6
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorButton, {
-        onClick: ()=>{
-            updateColorIndex(colorIndex - 1);
-        },
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 112,
-            columnNumber: 7
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 113,
-            columnNumber: 8
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretLeft), {
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreColumn, {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
             lineNumber: 114,
-            columnNumber: 9
-        },
-        __self: this
-    }), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
-        $size: 25,
-        $color: (0, _utils.getIndexColor)(colorIndex - 1, colorList, swapColor),
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 115,
-            columnNumber: 9
-        },
-        __self: this
-    }), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
-        $size: 25,
-        $color: (0, _utils.getIndexColor)(colorIndex - 1, colorList, !swapColor),
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 116,
-            columnNumber: 9
-        },
-        __self: this
-    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorButton, {
-        onClick: ()=>{
-            setSwapColor(!swapColor);
-        },
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 119,
-            columnNumber: 7
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 120,
-            columnNumber: 8
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
-        $size: 40,
-        $color: (0, _utils.getIndexColor)(colorIndex, colorList, swapColor),
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 121,
-            columnNumber: 9
-        },
-        __self: this
-    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.Swap), {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 122,
-            columnNumber: 9
-        },
-        __self: this
-    }), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
-        $size: 40,
-        $color: (0, _utils.getIndexColor)(colorIndex, colorList, !swapColor),
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 123,
-            columnNumber: 9
-        },
-        __self: this
-    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorButton, {
-        onClick: ()=>{
-            updateColorIndex(colorIndex + 1);
-        },
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 126,
-            columnNumber: 7
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 127,
-            columnNumber: 8
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
-        $size: 25,
-        $color: (0, _utils.getIndexColor)(colorIndex + 1, colorList, swapColor),
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 128,
-            columnNumber: 9
-        },
-        __self: this
-    }), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
-        $size: 25,
-        $color: (0, _utils.getIndexColor)(colorIndex + 1, colorList, !swapColor),
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 129,
-            columnNumber: 9
-        },
-        __self: this
-    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretRight), {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 130,
-            columnNumber: 9
-        },
-        __self: this
-    }))))), /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreColumn, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 135,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreRow, {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 115,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreButton, {
+        $colorTag: "red",
+        onClick: ()=>{
+            setDashboardMatch((currentMatch)=>{
+                return {
+                    ...currentMatch,
+                    scoreA: (0, _utils.clamp)(currentMatch.scoreA - 1, MIN_SCORE, MAX_SCORE)
+                };
+            });
+        },
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 116,
+            columnNumber: 7
+        },
+        __self: this
+    }, "-"), /*#__PURE__*/ (0, _reactDefault.default).createElement(BigNumbers, {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 124,
+            columnNumber: 7
+        },
+        __self: this
+    }, dashboardMatch.scoreA), /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreButton, {
+        $colorTag: "green",
+        onClick: ()=>{
+            setDashboardMatch((currentMatch)=>{
+                return {
+                    ...currentMatch,
+                    scoreA: (0, _utils.clamp)(currentMatch.scoreA + 1, MIN_SCORE, MAX_SCORE)
+                };
+            });
+        },
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 127,
+            columnNumber: 7
+        },
+        __self: this
+    }, "+")), /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
             lineNumber: 136,
@@ -517,8 +466,14 @@ function Scores() {
         },
         __self: this
     }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreButton, {
+        $colorTag: "red",
         onClick: ()=>{
-            setScoreA((0, _utils.clamp)(scoreA - 1, MIN_SCORE, MAX_SCORE));
+            setDashboardMatch((currentMatch)=>{
+                return {
+                    ...currentMatch,
+                    scoreB: (0, _utils.clamp)(currentMatch.scoreB - 1, MIN_SCORE, MAX_SCORE)
+                };
+            });
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
@@ -529,47 +484,19 @@ function Scores() {
     }, "-"), /*#__PURE__*/ (0, _reactDefault.default).createElement(BigNumbers, {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 138,
-            columnNumber: 7
-        },
-        __self: this
-    }, scoreA), /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreButton, {
-        onClick: ()=>{
-            setScoreA((0, _utils.clamp)(scoreA + 1, MIN_SCORE, MAX_SCORE));
-        },
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 141,
-            columnNumber: 7
-        },
-        __self: this
-    }, "+")), /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreRow, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 143,
-            columnNumber: 6
-        },
-        __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreButton, {
-        onClick: ()=>{
-            setScoreB((0, _utils.clamp)(scoreB - 1, MIN_SCORE, MAX_SCORE));
-        },
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 144,
-            columnNumber: 7
-        },
-        __self: this
-    }, "-"), /*#__PURE__*/ (0, _reactDefault.default).createElement(BigNumbers, {
-        __source: {
-            fileName: "src/dashboard/Scores.tsx",
             lineNumber: 145,
             columnNumber: 7
         },
         __self: this
-    }, scoreB), /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreButton, {
+    }, dashboardMatch.scoreB), /*#__PURE__*/ (0, _reactDefault.default).createElement(ScoreButton, {
+        $colorTag: "green",
         onClick: ()=>{
-            setScoreB((0, _utils.clamp)(scoreB + 1, MIN_SCORE, MAX_SCORE));
+            setDashboardMatch((currentMatch)=>{
+                return {
+                    ...currentMatch,
+                    scoreB: (0, _utils.clamp)(currentMatch.scoreB + 1, MIN_SCORE, MAX_SCORE)
+                };
+            });
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
@@ -577,28 +504,172 @@ function Scores() {
             columnNumber: 7
         },
         __self: this
-    }, "+")))), /*#__PURE__*/ (0, _reactDefault.default).createElement(LeftPanelRow, {
+    }, "+")))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        $align: "center",
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 152,
+            lineNumber: 159,
             columnNumber: 4
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorButton, {
+        $colorTag: "purple",
+        onClick: ()=>{
+            updateColorIndex(colorIndex - 1);
+        },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 153,
+            lineNumber: 160,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 154,
+            lineNumber: 163,
             columnNumber: 6
         },
         __self: this
-    }, "Color Lock"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretLeft), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 164,
+            columnNumber: 7
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
+        $size: 25,
+        $color: (0, _utils.getIndexColor)(colorIndex - 1, colorList, dashboardMatch.swapColor),
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 165,
+            columnNumber: 7
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
+        $size: 25,
+        $color: (0, _utils.getIndexColor)(colorIndex - 1, colorList, !dashboardMatch.swapColor),
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 166,
+            columnNumber: 7
+        },
+        __self: this
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorButton, {
+        $colorTag: "purple",
+        onClick: ()=>{
+            setDashboardMatch((currentMatch)=>{
+                return {
+                    ...currentMatch,
+                    swapColor: !currentMatch.swapColor
+                };
+            });
+        },
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 169,
+            columnNumber: 5
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 177,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
+        $size: 40,
+        $color: (0, _utils.getIndexColor)(colorIndex, colorList, dashboardMatch.swapColor),
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 178,
+            columnNumber: 7
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.Swap), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 179,
+            columnNumber: 7
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
+        $size: 40,
+        $color: (0, _utils.getIndexColor)(colorIndex, colorList, !dashboardMatch.swapColor),
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 180,
+            columnNumber: 7
+        },
+        __self: this
+    }))), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorButton, {
+        $colorTag: "purple",
+        onClick: ()=>{
+            updateColorIndex(colorIndex + 1);
+        },
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 183,
+            columnNumber: 5
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 186,
+            columnNumber: 6
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
+        $size: 25,
+        $color: (0, _utils.getIndexColor)(colorIndex + 1, colorList, dashboardMatch.swapColor),
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 187,
+            columnNumber: 7
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement(ColorDisplay, {
+        $size: 25,
+        $color: (0, _utils.getIndexColor)(colorIndex + 1, colorList, !dashboardMatch.swapColor),
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 188,
+            columnNumber: 7
+        },
+        __self: this
+    }), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _react1.CaretRight), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 189,
+            columnNumber: 7
+        },
+        __self: this
+    })))), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "56px",
+        $templateColumns: "1fr 0.8fr 1fr",
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 193,
+            columnNumber: 4
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 194,
+            columnNumber: 5
+        },
+        __self: this
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        __source: {
+            fileName: "src/dashboard/Scores.tsx",
+            lineNumber: 195,
+            columnNumber: 6
+        },
+        __self: this
+    }, "Color Lock"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
         $checked: colorLock,
         onClick: ()=>{
             setColorLock(!colorLock);
@@ -606,25 +677,25 @@ function Scores() {
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 155,
+            lineNumber: 196,
             columnNumber: 6
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputRow), {
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Row), {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 157,
+            lineNumber: 201,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputLabel), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 158,
+            lineNumber: 202,
             columnNumber: 6
         },
         __self: this
-    }, "Online"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputCheckbox), {
+    }, "Online"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Checkbox), {
         $checked: onlineMode,
         onClick: ()=>{
             setOnlineMode(!onlineMode);
@@ -632,322 +703,178 @@ function Scores() {
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 159,
+            lineNumber: 203,
             columnNumber: 6
         },
         __self: this
-    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    })), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: hasUnsavedChanges ? "dark-red" : "pink",
         onClick: ()=>{
-            updateMatch();
+            saveChanges();
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 161,
+            lineNumber: 208,
             columnNumber: 5
         },
         __self: this
-    }, "Save")), /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelColumn, {
+    }, hasUnsavedChanges ? "Save Changes" : "Saved!")), /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelColumn, {
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 163,
+            lineNumber: 212,
             columnNumber: 4
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement(LeftInputSubheader, {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.Text), {
+        $textAlign: "center",
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 164,
+            lineNumber: 213,
             columnNumber: 5
         },
         __self: this
-    }, "Controls"), /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
+    }, "Controls"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "56px",
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 165,
+            lineNumber: 214,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "purple",
         onClick: ()=>{
             showScores();
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 166,
+            lineNumber: 215,
             columnNumber: 6
         },
         __self: this
-    }, "Show Scores"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, "Show Scores"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "purple",
         onClick: ()=>{
             hideScores();
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 167,
+            lineNumber: 218,
             columnNumber: 6
         },
         __self: this
-    }, "Hide Scores")), /*#__PURE__*/ (0, _reactDefault.default).createElement(PanelRow, {
+    }, "Hide Scores")), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.GridRow), {
+        $height: "56px",
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 169,
+            lineNumber: 222,
             columnNumber: 5
         },
         __self: this
-    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "purple",
         onClick: ()=>{
             showCommentators();
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 170,
+            lineNumber: 223,
             columnNumber: 6
         },
         __self: this
-    }, "Show Comms"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.InputButton), {
+    }, "Show Comms"), /*#__PURE__*/ (0, _reactDefault.default).createElement((0, _layout.ButtonWide), {
+        $expand: true,
+        $colorTag: "purple",
         onClick: ()=>{
             hideCommentators();
         },
         __source: {
             fileName: "src/dashboard/Scores.tsx",
-            lineNumber: 171,
+            lineNumber: 226,
             columnNumber: 6
         },
         __self: this
     }, "Hide Comms"))));
 }
-const PanelRow = (0, _styledComponentsDefault.default).div`
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-`;
-const LeftPanelRow = (0, _styledComponentsDefault.default)(PanelRow)`
-	justify-content: flex-start;	
-	padding-left: 5px;
-`;
-const TeamScoreRow = (0, _styledComponentsDefault.default).div`
-	width: 100%;
-	display: grid;
-	grid-template-columns: 1fr max-content;
-`;
-const PanelColumn = (0, _styledComponentsDefault.default).div`
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-`;
-const ScoreColumn = (0, _styledComponentsDefault.default)(PanelColumn)`
-	padding-top: 5.5rem;
-	justify-content: flex-start;
-`;
-const ScoreButton = (0, _styledComponentsDefault.default)((0, _layout.InputButtonSmall))`
-	margin: 0 10px;
-	padding: 3px 15px;
-	font-size: 1.5rem;
-`;
-const TeamInputSection = (0, _styledComponentsDefault.default)((0, _layout.InputSection))`
-	padding: 10px;	
-`;
-const LeftInputSubheader = (0, _styledComponentsDefault.default)((0, _layout.InputSubheader))`
-	width: 100%;
-	text-align: left;	
-`;
-const ColorButton = (0, _styledComponentsDefault.default)((0, _layout.InputButton))`
-	margin: 0 5px;
-	padding: 8px 3px;
-`;
-const ColorRow = (0, _styledComponentsDefault.default)(PanelRow)`
-	justify-content: center;
-`;
-const ScoreRow = (0, _styledComponentsDefault.default)(PanelRow)`
-`;
-const InputRowLarge = (0, _styledComponentsDefault.default)((0, _layout.InputRow))`
-	& > div, input, textarea, select {
-	}
-
-	& input, textarea, select {
-		height: 2.5rem;
-	}
-`;
-const ColorDisplay = (0, _styledComponentsDefault.default).div`
-	margin: 0 3px;
-	height: ${({ $size })=>$size}px;
-	width: ${({ $size })=>$size}px;
-	border: 3px solid black;
-	border-radius: 5px;
-	background-color: ${({ $color })=>$color};
-`;
-const BigNumbers = (0, _styledComponentsDefault.default).div`
-	font-size: 2.5rem;
-	font-weight: 600;
-	font-family: 'Courier New', Courier, Consolas, monospace;
-`;
+const PanelContainer = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Scores__PanelContainer",
+    componentId: "sc-spnar6-0"
+})([
+    "position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:5px 10px 12px;"
+]);
+const PanelRow = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Scores__PanelRow",
+    componentId: "sc-spnar6-1"
+})([
+    "width:100%;display:flex;flex-direction:row;justify-content:center;align-items:center;"
+]);
+const TeamScoreRow = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Scores__TeamScoreRow",
+    componentId: "sc-spnar6-2"
+})([
+    "width:100%;display:grid;grid-template-columns:1fr max-content;"
+]);
+const PanelColumn = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Scores__PanelColumn",
+    componentId: "sc-spnar6-3"
+})([
+    "height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;"
+]);
+const ScoreColumn = (0, _styledComponentsDefault.default)(PanelColumn).withConfig({
+    displayName: "Scores__ScoreColumn",
+    componentId: "sc-spnar6-4"
+})([
+    "padding-top:5.7rem;justify-content:flex-start;gap:1.7rem;"
+]);
+const ScoreButton = (0, _styledComponentsDefault.default)((0, _layout.ButtonWide)).withConfig({
+    displayName: "Scores__ScoreButton",
+    componentId: "sc-spnar6-5"
+})([
+    "margin:0 10px;width:40px;height:40px;padding:3px 0;font-size:1.5rem;"
+]);
+const ColorButton = (0, _styledComponentsDefault.default)((0, _layout.ButtonWide)).withConfig({
+    displayName: "Scores__ColorButton",
+    componentId: "sc-spnar6-6"
+})([
+    "margin:0 5px;padding:8px 3px;"
+]);
+const ColorDisplay = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Scores__ColorDisplay",
+    componentId: "sc-spnar6-7"
+})([
+    "margin:0 3px;height:",
+    "px;width:",
+    "px;border:3px solid black;border-radius:5px;background-color:",
+    ";"
+], ({ $size })=>$size, ({ $size })=>$size, ({ $color })=>$color);
+const BigNumbers = (0, _styledComponentsDefault.default).div.withConfig({
+    displayName: "Scores__BigNumbers",
+    componentId: "sc-spnar6-8"
+})([
+    "font-size:2.5rem;font-weight:600;font-family:'Courier New',Courier,Consolas,monospace;"
+]);
 const root = (0, _client.createRoot)(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _reactDefault.default).createElement((0, _reactDefault.default).StrictMode, {
     __source: {
         fileName: "src/dashboard/Scores.tsx",
-        lineNumber: 262,
+        lineNumber: 276,
         columnNumber: 13
     },
     __self: undefined
 }, /*#__PURE__*/ (0, _reactDefault.default).createElement(Scores, {
     __source: {
         fileName: "src/dashboard/Scores.tsx",
-        lineNumber: 262,
+        lineNumber: 276,
         columnNumber: 31
     },
     __self: undefined
 })));
 
-},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","@phosphor-icons/react":"h9z2e","../helpers/utils":"2gdT3","../data/colors.json":"lldi3"}],"audz3":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _useReplicant = require("./use-replicant");
-parcelHelpers.exportAll(_useReplicant, exports);
-var _useListenFor = require("./use-listen-for");
-parcelHelpers.exportAll(_useListenFor, exports);
-
-},{"./use-replicant":"iySid","./use-listen-for":"ffpLW","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"iySid":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useReplicant", ()=>useReplicant);
-var _react = require("react");
-var _json = require("klona/json");
-const useReplicant = (replicantName, { bundle, defaultValue, persistent } = {})=>{
-    const replicant = (0, _react.useMemo)(()=>{
-        if (typeof bundle === "string") return nodecg.Replicant(replicantName, bundle, {
-            defaultValue,
-            persistent
-        });
-        return nodecg.Replicant(replicantName, {
-            defaultValue,
-            persistent
-        });
-    }, [
-        bundle,
-        defaultValue,
-        persistent,
-        replicantName
-    ]);
-    const [value, setValue] = (0, _react.useState)(replicant.value);
-    (0, _react.useEffect)(()=>{
-        const changeHandler = (newValue)=>{
-            setValue((oldValue)=>{
-                if (newValue !== oldValue) return newValue;
-                return (0, _json.klona)(newValue);
-            });
-        };
-        replicant.on("change", changeHandler);
-        return ()=>{
-            replicant.removeListener("change", changeHandler);
-        };
-    }, [
-        replicant
-    ]);
-    const updateValue = (0, _react.useCallback)((newValue)=>{
-        if (typeof newValue === "function") // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        newValue(replicant.value);
-        else replicant.value = newValue;
-    }, [
-        replicant
-    ]);
-    return [
-        value,
-        updateValue
-    ];
-};
-
-},{"react":"bH1AQ","klona/json":"loHAU","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"loHAU":[function(require,module,exports) {
-function klona(val) {
-    var k, out, tmp;
-    if (Array.isArray(val)) {
-        out = Array(k = val.length);
-        while(k--)out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    if (Object.prototype.toString.call(val) === "[object Object]") {
-        out = {}; // null
-        for(k in val)if (k === "__proto__") Object.defineProperty(out, k, {
-            value: klona(val[k]),
-            configurable: true,
-            enumerable: true,
-            writable: true
-        });
-        else out[k] = (tmp = val[k]) && typeof tmp === "object" ? klona(tmp) : tmp;
-        return out;
-    }
-    return val;
-}
-exports.klona = klona;
-
-},{}],"ffpLW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useListenFor", ()=>useListenFor);
-var _react = require("react");
-const useListenFor = (messageName, handler, { bundle } = {})=>{
-    (0, _react.useEffect)(()=>{
-        if (bundle) {
-            nodecg.listenFor(messageName, bundle, handler);
-            return ()=>{
-                nodecg.unlisten(messageName, bundle, handler);
-            };
-        }
-        nodecg.listenFor(messageName, handler);
-        return ()=>{
-            nodecg.unlisten(messageName, handler);
-        };
-    }, [
-        handler,
-        messageName,
-        bundle
-    ]);
-};
-
-},{"react":"bH1AQ","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"2gdT3":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "formatTimeHMSC", ()=>formatTimeHMSC);
-parcelHelpers.export(exports, "formatDateHM", ()=>formatDateHM);
-parcelHelpers.export(exports, "formatDateMDY", ()=>formatDateMDY);
-parcelHelpers.export(exports, "modulo", ()=>modulo);
-parcelHelpers.export(exports, "getIndexColor", ()=>getIndexColor);
-parcelHelpers.export(exports, "lerp", ()=>lerp);
-parcelHelpers.export(exports, "clamp", ()=>clamp);
-const formatTimeHMSC = (ms)=>{
-    ms = ms > 0 ? ms : 0;
-    const hour = Math.floor(ms / 60 / 60 / 1000);
-    ms = ms % 3600000;
-    const minute = Math.floor(ms / 60 / 1000);
-    ms = ms % 60000;
-    const second = Math.floor(ms / 1000);
-    ms = ms % 1000;
-    const centiseconds = Math.floor(ms / 10);
-    return `${hour}:${minute < 10 ? `0${minute}` : minute}:${second < 10 ? `0${second}` : second}.${centiseconds < 10 ? `0${centiseconds}` : centiseconds}`;
-};
-const formatDateHM = (date)=>{
-    return date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
-};
-const formatDateMDY = (date)=>{
-    return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
-};
-const modulo = (dividend, divisor)=>{
-    return (dividend % divisor + divisor) % divisor;
-};
-const getIndexColor = (index, list, swap)=>{
-    return !swap ? list[modulo(index, list.length)].teamA : list[modulo(index, list.length)].teamB;
-};
-const lerp = (a, b, alpha)=>{
-    return a + alpha * (b - a);
-};
-const clamp = (value, min, max)=>{
-    return Math.min(Math.max(value, min), max);
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG"}],"lldi3":[function(require,module,exports) {
+},{"react":"bH1AQ","styled-components":"9xpRL","react-dom/client":"i5cPj","./components/Layout":"72fYZ","@nodecg/react-hooks":"audz3","@parcel/transformer-js/src/esmodule-helpers.js":"hvLRG","@phosphor-icons/react":"h9z2e","../helpers/utils":"2gdT3","../data/colors.json":"lldi3","lodash":"iyL42"}],"lldi3":[function(require,module,exports) {
 module.exports = JSON.parse('{"localMode":[{"index":0,"name":"YellowPurple","teamA":"#ceb121","teamB":"#9025c6"},{"index":1,"name":"TurquoiseRed","teamA":"#1ec0ad","teamB":"#d74b31"},{"index":2,"name":"TurquoisePink","teamA":"#1bbeab","teamB":"#c43a6e"},{"index":3,"name":"OrangePurple","teamA":"#cd510a","teamB":"#6e04b6"},{"index":4,"name":"LimegreenPurple","teamA":"#becd41","teamB":"#6325cd"},{"index":5,"name":"GreenPurple","teamA":"#a0c937","teamB":"#ba30b0"},{"index":6,"name":"BlueYellow","teamA":"#1a1aae","teamB":"#e38d24"},{"index":7,"name":"YellowBlue","teamA":"#d0be08","teamB":"#3a0ccd"},{"index":8,"name":"OrangeBlue","teamA":"#de6624","teamB":"#343bc4"},{"index":9,"name":"PinkGreen","teamA":"#c12d74","teamB":"#2cb721"}],"onlineMode":[{"index":0,"name":"GreenPurple","teamA":"#a0c937","teamB":"#ba30b0"},{"index":1,"name":"OrangeBlue","teamA":"#de6624","teamB":"#343bc4"},{"index":2,"name":"OrangePurple","teamA":"#cd510a","teamB":"#6e04b6"},{"index":3,"name":"BlueYellow","teamA":"#1a1aae","teamB":"#e38d24"},{"index":4,"name":"LimegreenPurple","teamA":"#becd41","teamB":"#6325cd"},{"index":5,"name":"YellowBlue","teamA":"#d0be08","teamB":"#3a0ccd"},{"index":6,"name":"TurquoiseRed","teamA":"#1ec0ad","teamB":"#d74b31"},{"index":7,"name":"TurquoisePink","teamA":"#1bbeab","teamB":"#c43a6e"},{"index":8,"name":"PinkGreen","teamA":"#c12d74","teamB":"#2cb721"},{"index":9,"name":"YellowPurple","teamA":"#ceb121","teamB":"#9025c6"}],"colorLock":[{"index":0,"name":"YellowBlue","teamA":"#caba21","teamB":"#502eba"},{"index":1,"name":"OrangeBlue","teamA":"#d99116","teamB":"#1655be"}]}');
 
 },{}]},["iiCR8"], "iiCR8", "parcelRequire156b")
