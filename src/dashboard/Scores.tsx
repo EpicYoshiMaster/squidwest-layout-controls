@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components'
 import { MatchData } from 'schemas/matchData';
 import { createRoot } from 'react-dom/client';
-import { InputCheckbox, InputSubheader, GridRow, ButtonWide, Text, Row, Input, Fieldset } from './components/Layout';
+import { InputCheckbox, GridRow, ButtonWide, Text, Row, Input, Fieldset } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { CaretLeft, CaretRight, Swap } from '@phosphor-icons/react';
 import { modulo, getIndexColor, clamp } from '../helpers/utils';
@@ -69,11 +69,12 @@ export function Scores() {
 	}, []);
 
 	const updateColorIndex = useCallback((index: number) => {
-		const newIndex = modulo(index, colorList.length);
-
-		setColorIndex(newIndex);
-		setDashboardMatch((currentMatch) => { return { ...currentMatch, matchColor: colorList[newIndex]}})
+		setColorIndex(modulo(index, colorList.length));
 	}, [colorList.length]);
+
+	useEffect(() => {
+		setDashboardMatch((currentMatch) => { return { ...currentMatch, matchColor: colorList[colorIndex]}});
+	}, [colorList, colorIndex]);
 
 	return (
 		<PanelContainer>
@@ -104,32 +105,9 @@ export function Scores() {
 						</Text></legend>
 						<Input $expand $height='2.5rem' type="text" value={dashboardMatch.teamB} onChange={(event) => { setDashboardMatch((currentMatch) => { return { ...currentMatch, teamB: event.target.value }}) }} />
 					</Fieldset>
-					<Row $align='center'>
-						<ColorButton $colorTag='purple' onClick={() => { updateColorIndex(colorIndex - 1); }}>
-							<PanelRow>
-								<CaretLeft />
-								<ColorDisplay $size={25} $color={getIndexColor(colorIndex - 1, colorList, dashboardMatch.swapColor)} />
-								<ColorDisplay $size={25} $color={getIndexColor(colorIndex - 1, colorList, !dashboardMatch.swapColor)} />
-							</PanelRow>
-						</ColorButton>
-						<ColorButton $colorTag='purple' onClick={() => { setDashboardMatch((currentMatch) => { return { ...currentMatch, swapColor: !currentMatch.swapColor}}) }}>
-							<PanelRow>
-								<ColorDisplay $size={40} $color={getIndexColor(colorIndex, colorList, dashboardMatch.swapColor)} />
-								<Swap />
-								<ColorDisplay $size={40} $color={getIndexColor(colorIndex, colorList, !dashboardMatch.swapColor)} />
-							</PanelRow>
-						</ColorButton>
-						<ColorButton $colorTag='purple' onClick={() => { updateColorIndex(colorIndex + 1); }}>
-							<PanelRow>
-								<ColorDisplay $size={25} $color={getIndexColor(colorIndex + 1, colorList, dashboardMatch.swapColor)} />
-								<ColorDisplay $size={25} $color={getIndexColor(colorIndex + 1, colorList, !dashboardMatch.swapColor)} />
-								<CaretRight />
-							</PanelRow>
-						</ColorButton>
-					</Row>
 				</PanelColumn>
 				<ScoreColumn>
-					<ScoreRow>
+					<PanelRow>
 						<ScoreButton $colorTag='red' 
 							onClick={() => { setDashboardMatch((currentMatch) => { return { ...currentMatch, scoreA: clamp(currentMatch.scoreA - 1, MIN_SCORE, MAX_SCORE)}}) }}>-</ScoreButton>
 						<BigNumbers>
@@ -137,8 +115,8 @@ export function Scores() {
 						</BigNumbers>
 						<ScoreButton $colorTag='green' 
 							onClick={() => { setDashboardMatch((currentMatch) => { return { ...currentMatch, scoreA: clamp(currentMatch.scoreA + 1, MIN_SCORE, MAX_SCORE)}}) }}>+</ScoreButton>
-					</ScoreRow>
-					<ScoreRow>
+					</PanelRow>
+					<PanelRow>
 						<ScoreButton $colorTag='red' 
 							onClick={() => { setDashboardMatch((currentMatch) => { return { ...currentMatch, scoreB: clamp(currentMatch.scoreB - 1, MIN_SCORE, MAX_SCORE)}}) }}>-</ScoreButton>
 						<BigNumbers>
@@ -146,10 +124,33 @@ export function Scores() {
 						</BigNumbers>
 						<ScoreButton $colorTag='green' 
 							onClick={() => { setDashboardMatch((currentMatch) => { return { ...currentMatch, scoreB: clamp(currentMatch.scoreB + 1, MIN_SCORE, MAX_SCORE)}}) }}>+</ScoreButton>
-					</ScoreRow>
+					</PanelRow>
 				</ScoreColumn>
 			</TeamScoreRow>
-			<GridRow $height='56px'>
+			<Row $align='center'>
+				<ColorButton $colorTag='purple' onClick={() => { updateColorIndex(colorIndex - 1); }}>
+					<PanelRow>
+						<CaretLeft />
+						<ColorDisplay $size={25} $color={getIndexColor(colorIndex - 1, colorList, dashboardMatch.swapColor)} />
+						<ColorDisplay $size={25} $color={getIndexColor(colorIndex - 1, colorList, !dashboardMatch.swapColor)} />
+					</PanelRow>
+				</ColorButton>
+				<ColorButton $colorTag='purple' onClick={() => { setDashboardMatch((currentMatch) => { return { ...currentMatch, swapColor: !currentMatch.swapColor}}) }}>
+					<PanelRow>
+						<ColorDisplay $size={40} $color={getIndexColor(colorIndex, colorList, dashboardMatch.swapColor)} />
+						<Swap />
+						<ColorDisplay $size={40} $color={getIndexColor(colorIndex, colorList, !dashboardMatch.swapColor)} />
+					</PanelRow>
+				</ColorButton>
+				<ColorButton $colorTag='purple' onClick={() => { updateColorIndex(colorIndex + 1); }}>
+					<PanelRow>
+						<ColorDisplay $size={25} $color={getIndexColor(colorIndex + 1, colorList, dashboardMatch.swapColor)} />
+						<ColorDisplay $size={25} $color={getIndexColor(colorIndex + 1, colorList, !dashboardMatch.swapColor)} />
+						<CaretRight />
+					</PanelRow>
+				</ColorButton>
+			</Row>
+			<GridRow $height='56px' $templateColumns='1fr 0.8fr 1fr'>
 				<Row>
 					<Text>Color Lock</Text>
 					<InputCheckbox $checked={colorLock} onClick={() => { setColorLock(!colorLock); setColorIndex(0); } } />
@@ -159,10 +160,9 @@ export function Scores() {
 					<InputCheckbox $checked={onlineMode} onClick={() => { setOnlineMode(!onlineMode); setColorIndex(0); } } />
 				</Row>
 				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { saveChanges(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
-				<div></div>
 			</GridRow>
 			<PanelColumn>
-				<LeftInputSubheader>Controls</LeftInputSubheader>
+				<Text $textAlign='center'>Controls</Text>
 				<GridRow $height='56px'>
 					<ButtonWide $expand={true} $colorTag='purple' onClick={() => { showScores(); }}>Show Scores</ButtonWide>
 					<ButtonWide $expand={true} $colorTag='purple' onClick={() => { hideScores(); }}>Hide Scores</ButtonWide>
@@ -210,28 +210,22 @@ const PanelColumn = styled.div`
 `;
 
 const ScoreColumn = styled(PanelColumn)`
-	padding-top: 5.5rem;
+	padding-top: 5.7rem;
 	justify-content: flex-start;
+	gap: 1.7rem;
 `;
 
 const ScoreButton = styled(ButtonWide)`
 	margin: 0 10px;
-	width: 35px;
+	width: 40px;
+	height: 40px;
 	padding: 3px 0;
 	font-size: 1.5rem;
-`;
-
-const LeftInputSubheader = styled(InputSubheader)`
-	width: 100%;
-	text-align: left;	
 `;
 
 const ColorButton = styled(ButtonWide)`
 	margin: 0 5px;
 	padding: 8px 3px;
-`;
-
-const ScoreRow = styled(PanelRow)`
 `;
 
 const ColorDisplay = styled.div<{ $size: number, $color: string }>`

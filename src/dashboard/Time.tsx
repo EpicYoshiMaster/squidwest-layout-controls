@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components'
 import { createRoot } from 'react-dom/client';
-import { ErrorText } from './components/Layout';
+import { Text } from './components/Layout';
 import { TimeDisplay } from './components/TimeDisplay';
 import { TimeInterval } from '../types/types';
 import { useObsConnectionStatus } from '../helpers/hooks';
@@ -70,11 +70,11 @@ export function Time() {
 
 			{!connected && (
 			<MarginWrapper>
-				<ErrorText>
+				<Text>
 					<p>OBS is not currently connected!</p>
 					<p>This panel provides information on OBS transitions and break timings.</p>
 					<p>To use it, go to <strong>2. Settings</strong> and check the <strong>OBS Settings</strong> NodeCG Panel to enable websocket support.</p>
-				</ErrorText>
+				</Text>
 			</MarginWrapper>
 			)}
 			
@@ -95,7 +95,8 @@ const Wrapper = styled.div`
 `;
 
 const MarginWrapper = styled.div`
-	margin: 1.5rem 0;
+	margin: 1.5rem 0.25rem;
+	font-size: 1.25rem;
 `;
 
 const root = createRoot(document.getElementById('root')!);

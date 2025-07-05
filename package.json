@@ -81,8 +81,8 @@
       },
       {
         "name": "scores",
-        "title": "Scores",
-        "width": 4,
+        "title": "Match Information",
+        "width": 3,
         "file": "scores.html",
         "workspace": "1. Stream Tech",
         "headerColor": "#525F78"

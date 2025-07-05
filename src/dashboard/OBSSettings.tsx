@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components'
 import { createRoot } from 'react-dom/client';
-import { InputCheckbox, InputSubheader, InputRow, InputLabel, InputSection, InputText, InputButton, ErrorText, GridRow, ButtonWide, Fieldset, Text, Input, Row } from './components/Layout';
+import { InputCheckbox, GridRow, ButtonWide, Fieldset, Text, Input, Row } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks';
 import { ObsData } from 'schemas/obsData';
 import { useObsConnectionStatus } from '../helpers/hooks'
@@ -141,7 +141,7 @@ export function OBSSettings() {
 					$expand={true} 
 					disabled={connected} 
 					$colorTag='purple' 
-					onClick={() => obsSettings && setObsConnection(true, obsSettings)}>{connected ? 'Connected!' : 'Connect'}</ButtonWide>
+					onClick={() => obsSettings && setObsConnection(true, obsSettings)}>{connected ? 'Connected to OBS!' : 'Connect to OBS'}</ButtonWide>
 			</GridRow>
 			{statusText && (
 				<Row $align='flex-end'><Text $colorTag={statusText === connectingMessage ? 'white' : 'red'}>{statusText}</Text></Row>

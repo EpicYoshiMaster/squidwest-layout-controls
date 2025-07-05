@@ -1,84 +1,5 @@
 import styled, { css } from "styled-components";
 
-export const InputSection = styled.div`
-	padding: 10px 20px;
-	width: 100%;
-
-	display: grid;
-	grid-template-columns: max-content 1fr;	
-`;
-
-export const InputRow = styled.div`
-	display: contents;
-
-	& input, textarea, select {
-		height: 2rem;
-		font-size: 1rem;
-	}
-`;
-
-export const InputSubheader = styled.div`
-    grid-column: 1 / -1;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0.75rem 0;
-`;
-
-export const InputText = styled.div`
-    grid-column: 1 / -1;
-    font-size: 1rem;
-	margin-bottom: 0.75rem;
-
-	p {
-		margin: 0;
-		margin-bottom: 5px;
-	}
-`;
-
-export const ErrorText = styled.div`
-	font-weight: 700;
-	font-size: 1.25rem;
-	margin: 0.5rem 0;
-	text-align: center;
-
-	p {
-		margin: 0;
-		margin-bottom: 5px;
-	}
-`;
-
-export const InputLabel = styled.div`
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	padding-right: 0.5rem;
-	font-weight: 700;
-	line-height: 2;
-`;
-
-export const InputButton = styled.button`
-	margin: 10px;
-	padding: 10px 50px;
-	font-size: 1.5rem;
-	font-weight: bold;
-	border: none;
-	border-radius: 0.5rem;
-	color: #ffffff;
-	background-color: #d346fe; //#9746fe
-
-	&:not(:disabled):hover {
-		background-color: #5f2573;
-	}
-
-	&:not(:disabled):active {
-		background-color: #4c1d5c;
-	}
-
-	&:disabled {
-		opacity: 0.5;
-	}
-`;
-
 export const TransparentButton = styled.button`
     margin: 0;
     padding: 0;
@@ -93,10 +14,6 @@ export const TransparentButton = styled.button`
     :hover {
         cursor: pointer;
     }
-`;
-
-export const TransparentButtonSmall = styled(TransparentButton)`
-	font-size: 1rem;
 `;
 
 export const InputCheckbox = styled.button<{ $checked: boolean }>`
@@ -132,12 +49,6 @@ export const InputCheckbox = styled.button<{ $checked: boolean }>`
 		color: #fff;
 		font-size: 1.5rem;
 	}
-`;
-
-export const InputButtonSmall = styled(InputButton)`
-    font-size: 1.25rem;
-    padding: 5px 25px;
-	font-family: 'Courier New', Courier, Consolas, monospace;
 `;
 
 /**
@@ -194,7 +105,7 @@ export const Input = styled.input<{ $expand?: boolean, $height?: string }>`
 	font-size: 1rem;
 	min-width: 0;
 
-	${({ $height}) => $height ? css`height: ${$height}` : css``};
+	${({ $height}) => $height ? css`height: ${$height};` : css``};
 `;
 
 export const Select = styled.select<{ $expand?: boolean, $width?: string }>`
