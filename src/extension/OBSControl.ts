@@ -47,7 +47,7 @@ export class OBSControl {
                 .on('StreamStateChanged', this.onStreamStateChanged.bind(this));
         }
         catch(e) {
-            throw new Error(`OBS Connection Failed: ${e instanceof Error ? e.message : String(e)}`);
+            throw new Error(`${e instanceof Error ? e.message : String(e)}`);
         }
     }
 
@@ -82,9 +82,9 @@ export class OBSControl {
 
         const { inputVolumeDb } = await this.getInputVolume(input);
 
-        let startTime = new Date().getTime();
+        const startTime = new Date().getTime();
 
-        let setVolumeInterval = setInterval(() => { 
+        const setVolumeInterval = setInterval(() => { 
             const alpha = (new Date().getTime() - startTime) / transitionTime;
             this.setInputVolume(input, lerp(inputVolumeDb, targetDb, clamp(interpFunc ? interpFunc(alpha) : alpha, 0, 1)));
             console.log(`${input} - alpha: ${alpha}, dB: ${lerp(inputVolumeDb, targetDb, clamp(interpFunc ? interpFunc(alpha) : alpha, 0, 1))}`);

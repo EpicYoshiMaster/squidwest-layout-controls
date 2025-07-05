@@ -6,13 +6,10 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type Socials = SocialsGroup[];
+export type CommentatorList = Commentator[];
 
-export interface SocialsGroup {
+export interface Commentator {
 	name: string;
-	items: SocialItem[];
-}
-export interface SocialItem {
-	platform: 'Bluesky' | 'Discord' | 'Twitter' | 'YouTube';
-	social: string;
+	pronouns: string;
+	tag: string;
 }

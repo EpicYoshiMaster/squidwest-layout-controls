@@ -1,79 +1,96 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components'
-import NodeCG from '@nodecg/types';
 import { createRoot } from 'react-dom/client';
-import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader } from './components/Layout';
+import { Checkbox, Text, Row, GridRow, Fieldset, Input, ButtonWide } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { IntermissionData } from 'schemas/intermissionData';
 import { CollapseContainer } from './components/CollapseContainer';
+import { cloneDeep, isEqual } from 'lodash';
+
+const defaultIntermissionSettings: IntermissionData = {
+	showTime: true,
+	showEvent: true,
+	showLocation: true,
+	showFlavorText: true,
+	flavorText: ""
+}
 
 export function Intermission() {
-	const [intermissionData, setIntermissionData] = useReplicant<IntermissionData>('intermission', { bundle: 'squidwest-layout-controls'});
-
-	const [showTime, setShowTime] = useState(true);
-	const [showEvent, setShowEvent] = useState(true);
-	const [showLocation, setShowLocation] = useState(true);
-	const [showFlavorText, setShowFlavorText] = useState(true);
-	const [flavorText, setFlavorText] = useState("");
+	const [intermissionSettings, setIntermissionSettings] = useReplicant<IntermissionData>('intermission', { bundle: 'squidwest-layout-controls'});
+	const [dashboardIntermissionSettings, setDashboardIntermissionSettings] = useState<IntermissionData>(defaultIntermissionSettings);
 
 	useEffect(() => {
-		if(!intermissionData) return;
-   
-		setShowTime(intermissionData.showTime);
-		setShowEvent(intermissionData.showEvent);
-		setShowLocation(intermissionData.showLocation);
-		setShowFlavorText(intermissionData.showFlavorText);
-		setFlavorText(intermissionData.flavorText);
-	}, [intermissionData]);
-	
-	const updateIntermissionData = () => {
-		let newIntermissionData: IntermissionData = {
-			showTime: showTime,
-			showEvent: showEvent,
-			showLocation: showLocation,
-			showFlavorText: showFlavorText,
-			flavorText: flavorText
-		};
+		if(!intermissionSettings) return;
 
-		setIntermissionData(newIntermissionData);
-	}
+		setDashboardIntermissionSettings(cloneDeep(intermissionSettings));
+	}, [intermissionSettings]);
+
+	const saveChanges = useCallback(() => {
+		setIntermissionSettings(dashboardIntermissionSettings);
+	}, [dashboardIntermissionSettings, setIntermissionSettings]);
+
+	const hasUnsavedChanges = useMemo(() => {
+		return !isEqual(intermissionSettings, dashboardIntermissionSettings);
+	}, [intermissionSettings, dashboardIntermissionSettings]);
 
 	return (
 		<PanelContainer>
-			<InputSection>
-				<CollapseContainer title="Omnibar">
-					<InputRow>
-						<InputLabel>Show Time/Date</InputLabel>
-						<InputCheckbox $checked={showTime} onClick={() => setShowTime(!showTime) } />
-					</InputRow>
-					<InputRow>
-						<InputLabel>Show Event Info</InputLabel>
-						<InputCheckbox $checked={showEvent} onClick={() => setShowEvent(!showEvent) } />
-					</InputRow>
-					<InputRow>
-						<InputLabel>Show Event Location</InputLabel>
-						<InputCheckbox $checked={showLocation} onClick={() => setShowLocation(!showLocation) } />
-					</InputRow>
-					<InputRow>
-						<InputLabel>Show Flavor Text</InputLabel>
-						<InputCheckbox $checked={showFlavorText} onClick={() => setShowFlavorText(!showFlavorText) } />
-					</InputRow>
-					<InputRow>
-						<InputLabel>Flavor Text</InputLabel>
-						<input type="text" value={flavorText} onChange={(event) => { setFlavorText(event.target.value); }} />
-					</InputRow>
-				</CollapseContainer>
-			</InputSection>
-			<InputButton onClick={() => { updateIntermissionData(); }}>Save</InputButton>
+			<CollapseContainer title="Omnibar">
+				<GridRow>
+					<Row $justify='flex-end'>
+						<Text>Show Time/Date</Text>
+						<Checkbox 
+							$checked={dashboardIntermissionSettings.showTime} 
+							onClick={() => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, showTime: !currentSettings.showTime }}) } />
+					</Row>
+					<Row $justify='flex-end'>
+						<Text>Show Event Info</Text>
+						<Checkbox 
+							$checked={dashboardIntermissionSettings.showEvent} 
+							onClick={() => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, showEvent: !currentSettings.showEvent }}) } />
+					</Row>	
+				</GridRow>
+				<GridRow>
+					<Row $justify='flex-end'>
+						<Text>Show Event Location</Text>
+						<Checkbox 
+							$checked={dashboardIntermissionSettings.showLocation} 
+							onClick={() => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, showLocation: !currentSettings.showLocation }}) } />
+					</Row>
+					<Row $justify='flex-end'>
+						<Text>Show Flavor Text</Text>
+						<Checkbox 
+							$checked={dashboardIntermissionSettings.showFlavorText} 
+							onClick={() => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, showFlavorText: !currentSettings.showFlavorText }}) } />
+					</Row>
+				</GridRow>
+				<Row $justify="flex-end">
+					<Fieldset $expand>
+						<legend><Text>Flavor Text</Text></legend>
+						<Input type="text" 
+							$expand
+							value={dashboardIntermissionSettings.flavorText} 
+							onChange={(event) => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, flavorText: event.target.value }}) }/>
+					</Fieldset>
+				</Row>
+			</CollapseContainer>
+			<GridRow $height='56px'>
+				<div></div>
+				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { saveChanges(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
+				<div></div>
+			</GridRow>
 		</PanelContainer>
 	)
 }
 
 const PanelContainer = styled.div`
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	gap: 5px;
+	padding: 5px 10px 12px;
 `;
 
 const root = createRoot(document.getElementById('root')!);

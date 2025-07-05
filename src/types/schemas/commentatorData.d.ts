@@ -7,15 +7,8 @@
  */
 
 export interface CommentatorData {
-	commentatorOne: CommentatorInfo;
-	commentatorTwo: CommentatorInfo;
 	autoShow: boolean;
 	delay: number;
 	autoHide: boolean;
 	lifetime: number;
-}
-export interface CommentatorInfo {
-	name: string;
-	pronouns: string;
-	tag: string;
 }

@@ -1,70 +1,77 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components'
-import NodeCG from '@nodecg/types';
-import { CommentatorData, CommentatorInfo } from 'schemas/commentatorData';
+import { CommentatorData } from 'schemas/commentatorData';
 import { createRoot } from 'react-dom/client';
-import { InputButton, InputCheckbox, InputLabel, InputRow, InputSection, InputSubheader } from './components/Layout';
+import { Badge, ButtonWide, Fieldset, GridRow, Input, Checkbox, Row, Text } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
-import { Commentator } from './components/Commentator';
 import { CollapseContainer } from './components/CollapseContainer';
+import { CommentatorList, Commentator } from 'schemas/commentatorList';
+import { cloneDeep, isEqual } from 'lodash';
+import { useListControl } from '../helpers/hooks';
+import { CollapseContainerItemList } from './components/CollapseContainerItemList';
 
-const defaultCommentator: CommentatorInfo = { name: "Commentator Name", pronouns: "any/all", tag: "@TagName" }
+const defaultCommentator: Commentator = { name: "Commentator Name", pronouns: "any/all", tag: "@TagName" }
+const defaultCommentatorData: CommentatorData = {
+	autoShow: true,
+	delay: 3000,
+	autoHide: true,
+	lifetime: 10000
+}
+
+const maxCommentators = 2;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isCommentator = (item: any): item is Commentator => {
+	if(!item) return false;
+
+	return item.name !== undefined 
+	&& item.pronouns !== undefined 
+	&& item.tag !== undefined;
+}
 
 export function Commentators() {
-	const [comms, setComms] = useReplicant<CommentatorData>('commentators', { 
-		bundle: 'squidwest-layout-controls',
-		defaultValue: { 
-			commentatorOne: defaultCommentator, 
-			commentatorTwo: defaultCommentator,
-			autoShow: true,
-			delay: 3000,
-			autoHide: true,
-			lifetime: 5000
-		}});
 
-	const [commentatorOne, setCommentatorOne ] = useState<CommentatorInfo>(defaultCommentator);
-	const [commentatorTwo, setCommentatorTwo ] = useState<CommentatorInfo>(defaultCommentator);
+	//const [commentatorDatabase, setCommentatorDatabase] = useReplicant<CommentatorList>('commentatorDatabase', { defaultValue: [] });
+	const [commentatorList, setCommentatorList] = useReplicant<CommentatorList>('commentatorList', { defaultValue: [] });
 
-	const [ autoShow, setAutoShow ] = useState<boolean>(true);
-	const [ delay, setDelay ] = useState<number>(3000);
-	const [ autoHide, setAutoHide ] = useState<boolean>(true);
-	const [ lifetime, setLifetime ] = useState<number>(5000);
+	const [settings, setSettings] = useReplicant<CommentatorData>('commentatorSettings', { defaultValue: defaultCommentatorData });
+
+	const [dashboardCommentatorList, setDashboardCommentatorList] = useState<CommentatorList>([]);
+	const [dashboardSettings, setDashboardSettings] = useState<CommentatorData>(defaultCommentatorData);
 
 	useEffect(() => {
-		if(!comms) return;
+		if(!settings) return;
 
-		setCommentatorOne(comms.commentatorOne);
-		setCommentatorTwo(comms.commentatorTwo);
-		setAutoShow(comms.autoShow);
-		setDelay(comms.delay);
-		setAutoHide(comms.autoHide);
-		setLifetime(comms.lifetime);
-	}, [comms]);
+		setDashboardSettings(cloneDeep(settings));
+	}, [settings]);
+
+	useEffect(() => {
+		if(!commentatorList) return;
+
+		setDashboardCommentatorList(cloneDeep(commentatorList));
+	}, [commentatorList]);
+
+	const { 
+		addItem, 
+		delete: {
+			deleteItem,
+			deleteConfirmIndex
+		}
+	} = useListControl(dashboardCommentatorList, setDashboardCommentatorList, defaultCommentator, isCommentator);
 	
-	const updateCommentators = useCallback(() => {
-		let newCommentators: CommentatorData = {
-			commentatorOne: commentatorOne,
-			commentatorTwo: commentatorTwo,
-			autoShow: autoShow,
-			delay: delay,
-			autoHide: autoHide,
-			lifetime: lifetime
-		};
+	const saveChanges = useCallback(() => {
+		setCommentatorList(dashboardCommentatorList);
+		setSettings(dashboardSettings);
+	}, [dashboardCommentatorList, dashboardSettings, setCommentatorList, setSettings]);
 
-		setComms(newCommentators);
-	}, [commentatorOne, commentatorTwo, autoShow, delay, autoHide, lifetime, setComms]);
-
-	const swapCommentators = useCallback(() => {
-		const commOne = commentatorOne;
-
-		setCommentatorOne(commentatorTwo);
-		setCommentatorTwo(commOne);
-	}, [commentatorOne, commentatorTwo]);
+	const hasUnsavedChanges = useMemo(() => {
+		return !isEqual(commentatorList, dashboardCommentatorList) || !isEqual(settings, dashboardSettings);
+	}, [commentatorList, dashboardCommentatorList, settings, dashboardSettings]);
 
 	const addToCredits = useCallback(() => {
-		nodecg.sendMessage('commsCredits', [commentatorOne.name || "", commentatorTwo.name || ""]);
-	}, [commentatorOne, commentatorTwo]);
+		nodecg.sendMessage('commsCredits', dashboardCommentatorList);
+	}, [dashboardCommentatorList]);
 
 	const showCommentators = useCallback(() => {
 		nodecg.sendMessage('commsControl', true);
@@ -76,42 +83,88 @@ export function Commentators() {
 
 	return (
 		<PanelContainer>
-			<InputSection>
-				<CollapseContainer title="Commentator #1">
-					<Commentator comm={commentatorOne} setCommentator={setCommentatorOne} />
-				</CollapseContainer>
-				<CollapseContainer title="Commentator #2">
-					<Commentator comm={commentatorTwo} setCommentator={setCommentatorTwo} />
-				</CollapseContainer>
-			</InputSection>
-			<InputButton onClick={() => { swapCommentators(); }}>Swap Commentators</InputButton>
-			<InputButton onClick={() => { addToCredits(); }}>Add to Credits</InputButton>
-			<InputSection>
-				<CollapseContainer title="Configuration">
-					<InputRow>
-						<InputLabel>Show Automatically</InputLabel>
-						<InputCheckbox $checked={autoShow} onClick={() => setAutoShow(!autoShow) } />
-					</InputRow>
-					<InputRow>
-						<InputLabel>Show Delay Time (ms)</InputLabel>
-						<input type="number" value={delay} onChange={(event) => { setDelay(Number(event.target.value));  }}/>
-					</InputRow>
-					<InputRow>
-						<InputLabel>Hide Automatically</InputLabel>
-						<InputCheckbox $checked={autoHide} onClick={() => setAutoHide(!autoHide) } />
-					</InputRow>
-					<InputRow>
-						<InputLabel>Lifetime (ms)</InputLabel>
-						<input type="number" value={lifetime} onChange={(event) => { setLifetime(Number(event.target.value)); }}/>
-					</InputRow>
-				</CollapseContainer>
-			</InputSection>
-			<InputButton onClick={() => { updateCommentators(); }}>Save</InputButton>
-			<InputSection>
-				<InputSubheader>Manual Controls</InputSubheader>
-			</InputSection>
-			<InputButton onClick={() => { showCommentators(); }}>Show Commentators</InputButton>
-			<InputButton onClick={() => { hideCommentators(); }}>Hide Commentators</InputButton>
+			<CollapseContainer title="Configuration">
+				<GridRow $height='4.5rem'>
+					<Row>
+						<Text>Show Automatically</Text>
+						<Checkbox 
+							$checked={dashboardSettings.autoShow} 
+							onClick={() => setDashboardSettings((currentSettings) => { return { ...currentSettings, autoShow: !currentSettings.autoShow }; }) } />
+					</Row>
+					<Fieldset $expand>
+						<legend><Text>Show Delay Time (ms)</Text></legend>
+						<Input type="number"
+							$expand
+							value={dashboardSettings.delay} 
+							onChange={(event) => { setDashboardSettings((currentSettings) => { return { ...currentSettings, delay: Number(event.target.value) }; })  }}/>
+					</Fieldset>
+				</GridRow>
+				<GridRow $height='4.5rem'>
+					<Row>
+						<Text>Hide Automatically</Text>
+						<Checkbox 
+							$checked={dashboardSettings.autoHide} 
+							onClick={() => setDashboardSettings((currentSettings) => { return { ...currentSettings, autoHide: !currentSettings.autoHide }; }) } />
+					</Row>
+					<Fieldset $expand>
+						<legend><Text>Lifetime (ms)</Text></legend>
+						<Input type="number" 
+							$expand
+							value={dashboardSettings.lifetime} 
+							onChange={(event) => { setDashboardSettings((currentSettings) => { return { ...currentSettings, lifetime: Number(event.target.value) }; }) }}/>
+					</Fieldset>
+				</GridRow>
+			</CollapseContainer>
+			<CollapseContainerItemList
+				maxHeight={500}
+				list={dashboardCommentatorList}
+				setList={setDashboardCommentatorList}
+				renderTitle={(commentator) => (
+					<>
+						{commentator.name}
+						{commentator.pronouns !== "" && (
+							<Badge $colorTag='teal'>{commentator.pronouns}</Badge>
+						)}
+					</>
+				)}
+				renderItem={(commentator, changeCommentator, index) => (
+					<>
+						<Row $expand>
+							<Fieldset $expand>
+								<legend><Text>Name</Text></legend>
+								<Input $expand type="text" value={commentator.name} onChange={(event) => { changeCommentator({ name: event.target.value }); }} />
+							</Fieldset>
+						</Row>
+						<Row $expand>
+							<Fieldset $expand>
+								<legend><Text>Pronouns</Text></legend>
+								<Input $expand type="text" value={commentator.pronouns} onChange={(event) => { changeCommentator({ pronouns: event.target.value }); }} />
+							</Fieldset>
+						</Row>
+						<Row $expand>
+							<Fieldset $expand>
+								<legend><Text>Tag</Text></legend>
+								<Input $expand type="text" value={commentator.tag} onChange={(event) => { changeCommentator({ tag: event.target.value }); }} />
+							</Fieldset>
+						</Row>
+						<GridRow $height='2rem'>
+							<div></div>
+							<ButtonWide $colorTag={ deleteConfirmIndex === index ? 'dark-red' : 'red' } onClick={() => deleteItem(index) }>{ deleteConfirmIndex === index ? 'Confirm?' : 'Delete' }</ButtonWide>
+							<div></div>
+						</GridRow>
+					</>
+				)}
+			/>
+			<GridRow $height='56px'>
+				<ButtonWide $expand={true} disabled={dashboardCommentatorList.length >= maxCommentators} $colorTag='green' onClick={() => { addItem(); }}>New Row</ButtonWide>
+				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { saveChanges(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
+				<ButtonWide $expand={true} $colorTag='teal' onClick={() => { addToCredits(); }}>Add to Credits</ButtonWide>
+			</GridRow>
+			<Text>Manual Controls</Text>
+			<GridRow $height='56px'>	
+				<ButtonWide $expand={true} $colorTag='purple' onClick={() => { showCommentators(); }}>Show Comms</ButtonWide>
+				<ButtonWide $expand={true} $colorTag='purple' onClick={() => { hideCommentators(); }}>Hide Comms</ButtonWide>
+			</GridRow>
 		</PanelContainer>
 	)
 }
@@ -121,6 +174,8 @@ const PanelContainer = styled.div`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	gap: 5px;
+	padding: 5px 10px 12px;
 `;
 
 const root = createRoot(document.getElementById('root')!);
