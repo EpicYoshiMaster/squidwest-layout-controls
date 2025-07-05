@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components'
 import { createRoot } from 'react-dom/client';
-import { InputCheckbox, Text, Row, GridRow, Fieldset, Input, ButtonWide } from './components/Layout';
+import { Checkbox, Text, Row, GridRow, Fieldset, Input, ButtonWide } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { IntermissionData } from 'schemas/intermissionData';
 import { CollapseContainer } from './components/CollapseContainer';
@@ -39,13 +39,13 @@ export function Intermission() {
 				<GridRow>
 					<Row $justify='flex-end'>
 						<Text>Show Time/Date</Text>
-						<InputCheckbox 
+						<Checkbox 
 							$checked={dashboardIntermissionSettings.showTime} 
 							onClick={() => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, showTime: !currentSettings.showTime }}) } />
 					</Row>
 					<Row $justify='flex-end'>
 						<Text>Show Event Info</Text>
-						<InputCheckbox 
+						<Checkbox 
 							$checked={dashboardIntermissionSettings.showEvent} 
 							onClick={() => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, showEvent: !currentSettings.showEvent }}) } />
 					</Row>	
@@ -53,13 +53,13 @@ export function Intermission() {
 				<GridRow>
 					<Row $justify='flex-end'>
 						<Text>Show Event Location</Text>
-						<InputCheckbox 
+						<Checkbox 
 							$checked={dashboardIntermissionSettings.showLocation} 
 							onClick={() => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, showLocation: !currentSettings.showLocation }}) } />
 					</Row>
 					<Row $justify='flex-end'>
 						<Text>Show Flavor Text</Text>
-						<InputCheckbox 
+						<Checkbox 
 							$checked={dashboardIntermissionSettings.showFlavorText} 
 							onClick={() => setDashboardIntermissionSettings((currentSettings) => { return { ...currentSettings, showFlavorText: !currentSettings.showFlavorText }}) } />
 					</Row>

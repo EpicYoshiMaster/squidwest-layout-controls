@@ -34,11 +34,6 @@
 	--color-border: #ffffff;
 	*/
 
-	--button: #d346fe;
-	--button-hover: #5f2573;
-	--button-active: #4c1d5c;
-	--button-border: #491c52;
-
 	--red: #fe4674;
 	--red-hover: #be3c63;
 	--red-active: #972d3b;
@@ -100,6 +95,12 @@
 	--white-border: #8f8f8f;
 
 	--black: #333333;
+
+	/* Default Colors (Purple) */
+	--button: #a25dcf;
+	--button-hover: #753b9c;
+	--button-active: #50246d;
+	--button-border: #341549;
 }
 
 body {

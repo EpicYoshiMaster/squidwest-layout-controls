@@ -1,59 +1,9 @@
 import styled, { css } from "styled-components";
 
-export const TransparentButton = styled.button`
-    margin: 0;
-    padding: 0;
-    font-size: 2rem;
-    font-weight: 800;
-    color: white;
-    background: transparent;
-    border: transparent;
-	display: flex;
-	align-items: center;
+const DefaultCheckboxColorTag = `pink`;
+const DefaultBadgeColorTag = `teal`;
+const DefaultButtonColorTag = `purple`;
 
-    :hover {
-        cursor: pointer;
-    }
-`;
-
-export const InputCheckbox = styled.button<{ $checked: boolean }>`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	width: 1.5rem;
-	height: 1.5rem;
-	margin: 3px;
-	margin-right: 8px;
-	padding: 15px;
-	border: solid 2px #d346fe;
-	border-radius: 0.5rem;
-
-	background-color: ${({ $checked }) => $checked ? '#d346fe' : 'transparent'};
-
-	&:not(:disabled):hover {
-		background-color: #5f2573;
-	}
-
-	&:not(:disabled):active {
-		background-color: #4c1d5c;
-	}
-
-	&:disabled {
-		opacity: 0.5;
-	}
-
-	&::after {
-		content: '✓';
-		display: ${({ $checked}) => $checked ? 'block' : 'none'};
-		color: #fff;
-		font-size: 1.5rem;
-	}
-`;
-
-/**
- * New Layout Items
- */
 export const Row = styled.div<{ $align?: string, $justify?: string, $height?: string, $expand?: boolean }>`
 	position: relative;
 	margin: 2px 0;
@@ -143,6 +93,57 @@ export const Fieldset = styled.fieldset<{ $maxHeight?: number, $column?: boolean
 	` : css``}
 `;
 
+export const Checkbox = styled.button<{ $checked: boolean, $colorTag?: string }>`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 1.5rem;
+	height: 1.5rem;
+	margin: 3px;
+	margin-right: 8px;
+	padding: 15px;
+	border: solid 2px var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : DefaultCheckboxColorTag});
+	border-radius: 0.5rem;
+
+	background-color: ${({ $checked, $colorTag }) => $checked ? ($colorTag ? `var(--${$colorTag})` : `var(--${DefaultCheckboxColorTag})`) : 'transparent'};
+
+	&:not(:disabled):hover {
+		background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : DefaultCheckboxColorTag}-hover);
+	}
+
+	&:not(:disabled):active {
+		background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : DefaultCheckboxColorTag}-active);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+	}
+
+	&::after {
+		content: '✓';
+		display: ${({ $checked}) => $checked ? 'block' : 'none'};
+		color: var(--white);
+		font-size: 1.5rem;
+	}
+`;
+
+export const TransparentButton = styled.button`
+    margin: 0;
+    padding: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    background: transparent;
+    border: transparent;
+	display: flex;
+	align-items: center;
+
+    :hover {
+        cursor: pointer;
+    }
+`;
+
 export const Badge = styled.div<{ $colorTag?: string }>`
 	position: relative;
 	display: flex;
@@ -153,7 +154,7 @@ export const Badge = styled.div<{ $colorTag?: string }>`
 	font-size: 1rem;
 	border-radius: 0.5rem;
 	color: var(--text);
-	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`});
+	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : DefaultBadgeColorTag});
 	min-width: max-content;
 `;
 
@@ -166,8 +167,8 @@ export const ButtonSmall = styled.button<{ $colorTag?: string, $expand?: boolean
 	border-radius: 0.25rem;
 	margin: 0;
 	color: var(--text);
-	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`});
-	border: ${({ $border, $colorTag }) => $border ? ($colorTag ? `2px solid var(--${$colorTag}-border)` : `2px solid var(--button-border)`) : `none`};
+	background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : DefaultButtonColorTag});
+	border: ${({ $border, $colorTag }) => $border ? ($colorTag ? `2px solid var(--${$colorTag}-border)` : `2px solid var(--${DefaultButtonColorTag}-border)`) : `none`};
 
 	height: ${({ $expand }) => $expand ? '100%' : 'auto'};
 	width: ${({ $expand }) => $expand ? '100%' : 'auto'};
@@ -177,11 +178,11 @@ export const ButtonSmall = styled.button<{ $colorTag?: string, $expand?: boolean
 	align-items: center;
 
 	&:not(:disabled):hover {
-		background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`}-hover);
+		background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : DefaultButtonColorTag}-hover);
 	}
 
 	&:not(:disabled):active {
-		background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : `button`}-active);
+		background-color: var(--${({ $colorTag }) => $colorTag ? `${$colorTag}` : DefaultButtonColorTag}-active);
 	}
 
 	&:disabled {

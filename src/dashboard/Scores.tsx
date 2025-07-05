@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components'
 import { MatchData } from 'schemas/matchData';
 import { createRoot } from 'react-dom/client';
-import { InputCheckbox, GridRow, ButtonWide, Text, Row, Input, Fieldset } from './components/Layout';
+import { Checkbox, GridRow, ButtonWide, Text, Row, Input, Fieldset } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { CaretLeft, CaretRight, Swap } from '@phosphor-icons/react';
 import { modulo, getIndexColor, clamp } from '../helpers/utils';
@@ -153,11 +153,11 @@ export function Scores() {
 			<GridRow $height='56px' $templateColumns='1fr 0.8fr 1fr'>
 				<Row>
 					<Text>Color Lock</Text>
-					<InputCheckbox $checked={colorLock} onClick={() => { setColorLock(!colorLock); setColorIndex(0); } } />
+					<Checkbox $checked={colorLock} onClick={() => { setColorLock(!colorLock); setColorIndex(0); } } />
 				</Row>
 				<Row>
 					<Text>Online</Text>
-					<InputCheckbox $checked={onlineMode} onClick={() => { setOnlineMode(!onlineMode); setColorIndex(0); } } />
+					<Checkbox $checked={onlineMode} onClick={() => { setOnlineMode(!onlineMode); setColorIndex(0); } } />
 				</Row>
 				<ButtonWide $expand={true} $colorTag={hasUnsavedChanges ? 'dark-red' : 'pink'} onClick={() => { saveChanges(); }}>{hasUnsavedChanges ? 'Save Changes' :  'Saved!'}</ButtonWide>
 			</GridRow>

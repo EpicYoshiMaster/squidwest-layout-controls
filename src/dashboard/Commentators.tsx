@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components'
 import { CommentatorData } from 'schemas/commentatorData';
 import { createRoot } from 'react-dom/client';
-import { Badge, ButtonWide, Fieldset, GridRow, Input, InputCheckbox, Row, Text } from './components/Layout';
+import { Badge, ButtonWide, Fieldset, GridRow, Input, Checkbox, Row, Text } from './components/Layout';
 import { useReplicant } from '@nodecg/react-hooks'
 import { CollapseContainer } from './components/CollapseContainer';
 import { CommentatorList, Commentator } from 'schemas/commentatorList';
@@ -87,7 +87,7 @@ export function Commentators() {
 				<GridRow $height='4.5rem'>
 					<Row>
 						<Text>Show Automatically</Text>
-						<InputCheckbox 
+						<Checkbox 
 							$checked={dashboardSettings.autoShow} 
 							onClick={() => setDashboardSettings((currentSettings) => { return { ...currentSettings, autoShow: !currentSettings.autoShow }; }) } />
 					</Row>
@@ -102,7 +102,7 @@ export function Commentators() {
 				<GridRow $height='4.5rem'>
 					<Row>
 						<Text>Hide Automatically</Text>
-						<InputCheckbox 
+						<Checkbox 
 							$checked={dashboardSettings.autoHide} 
 							onClick={() => setDashboardSettings((currentSettings) => { return { ...currentSettings, autoHide: !currentSettings.autoHide }; }) } />
 					</Row>
