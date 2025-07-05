@@ -135,7 +135,6 @@ export const updateBundleImages = (bundleImages: BundleImages) => {
 		bundleImages.images = getImages(imagePath, true);
 	}
 	else {
-		console.log(`No Images directory found!`);
 		bundleImages.images = [];
 	}
 

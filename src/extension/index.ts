@@ -63,7 +63,6 @@ export = async (nodecg: NodeCG.ServerAPI) => {
 
 	nodecg.listenFor('updateBundleImages', (oldValue: BundleImages) => {
 		bundleImages.value = updateBundleImages(oldValue);
-		console.log(bundleImages.value);
 	})
 
 	/*

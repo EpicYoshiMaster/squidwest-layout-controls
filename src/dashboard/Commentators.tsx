@@ -19,7 +19,7 @@ const defaultCommentatorData: CommentatorData = {
 	lifetime: 10000
 }
 
-const maxCommentators = 3;
+const maxCommentators = 2;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isCommentator = (item: any): item is Commentator => {
