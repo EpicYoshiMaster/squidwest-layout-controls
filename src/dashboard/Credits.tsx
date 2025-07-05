@@ -127,10 +127,10 @@ export function Credits() {
 					const specialRow = specialCreditsRows.find((value) => value.name === creditsRow.name);
 
 					return specialRow ? specialRow.colorTag : undefined; } }
-				renderTitle={(creditsRow, colorTag) => (
+				renderTitle={(creditsRow) => (
 					<>
 						{creditsRow.name}
-						{(creditsRow.items.length > 0 || colorTag) && (
+						{(creditsRow.items.length > 0 || shouldDisableRowFeatures(creditsRow)) && (
 							<Badge $colorTag='purple'>{shouldDisableRowFeatures(creditsRow) ? `Special Row` : `${creditsRow.items.length} Entries` }</Badge>
 						)}
 					</>
