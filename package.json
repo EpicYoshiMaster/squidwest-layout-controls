@@ -1,8 +1,8 @@
 {
   "name": "squidwest-layout-controls",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "squidwest": {
-    "month": "March 2025"
+    "month": "July 2025"
   },
   "description": "NodeCG Dashboard system for SquidWest Splatoon events",
   "homepage": "",
